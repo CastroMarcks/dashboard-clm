@@ -1,0 +1,478 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f0ede8;color:#1a1a1a;min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+.page-title{text-align:center;font-size:28px;font-weight:700;color:#1a56db;margin-bottom:20px;letter-spacing:-.5px}
+.topbar{background:#fff;border-radius:12px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.07);flex-wrap:wrap;gap:10px}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1a56db,#06b6d4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px}
+.topbar-name{font-size:14px;font-weight:600}
+.topbar-sub{font-size:11px;color:#999;margin-top:1px}
+.topbar-right{display:flex;gap:8px}
+.chip{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid #e5e7eb;background:#f9fafb;color:#555}
+.chip-blue{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
+
+/* NAV PRINCIPAL */
+.nav-main{display:flex;gap:2px;margin-bottom:16px;background:#fff;border-radius:10px;padding:6px;box-shadow:0 1px 3px rgba(0,0,0,.06);flex-wrap:wrap}
+.nav-item{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#666;transition:.15s;display:flex;align-items:center;gap:5px;border:none;background:transparent}
+.nav-item.ativo{background:#eff6ff;color:#1d4ed8;font-weight:600}
+.nav-item:hover:not(.ativo){background:#f5f5f5}
+
+/* PILL PRODUTO */
+.pill-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.pill{padding:5px 13px;border-radius:20px;border:1px solid #e5e7eb;font-size:12px;cursor:pointer;background:#fff;color:#555;font-weight:500;transition:.15s}
+.pill.ativo{background:#1a56db;color:#fff;border-color:#1a56db}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a56db 0%,#06b6d4 100%);border-radius:12px;padding:22px 24px;margin-bottom:16px;color:#fff}
+.hero-badge{font-size:10px;font-weight:700;letter-spacing:.08em;opacity:.85;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.hero-badge::before{content:'';width:8px;height:8px;border-radius:50%;background:#fbbf24;display:inline-block}
+.hero p{font-size:13px;line-height:1.7;opacity:.92}
+
+/* KPI */
+.section-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:#888;text-transform:uppercase;margin-bottom:10px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:640px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.kpi-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.kpi-label{font-size:9px;font-weight:700;letter-spacing:.07em;color:#999;text-transform:uppercase;margin-bottom:8px}
+.kpi-val{font-size:28px;font-weight:700;line-height:1;letter-spacing:-.5px}
+.kpi-sub{font-size:11px;color:#888;margin-top:5px}
+.ok{color:#059669}.warn{color:#d97706}.danger{color:#dc2626}
+
+/* CARDS GENÉRICOS */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.card-title{font-size:12px;font-weight:700;letter-spacing:.04em;color:#444;text-transform:uppercase;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.card-title span{font-size:10px;font-weight:400;color:#aaa;text-transform:none;letter-spacing:0}
+.full-card{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px}
+
+/* TABELA */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:8px 10px;font-size:9px;font-weight:700;color:#aaa;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid #f0f0f0}
+td{padding:9px 10px;border-bottom:1px solid #f7f7f7;vertical-align:middle}
+tr:last-child td{border:none}
+tr:hover td{background:#fafbff}
+
+/* BARRAS */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.bar-row:last-child{margin-bottom:0}
+.bar-name{font-size:12px;font-weight:500;min-width:100px;color:#333}
+.bar-track{flex:1;height:22px;background:#f0ede8;border-radius:6px;overflow:hidden}
+.bar-fill-h{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:10px;font-size:11px;font-weight:600;color:#fff}
+.bar-end{font-size:11px;color:#888;min-width:38px;text-align:right}
+
+/* HORÁRIOS */
+.hora-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hora-card{background:#f8faff;border:1px solid #e0eaff;border-radius:8px;padding:10px;text-align:center}
+.hora-num{font-size:20px;font-weight:700;color:#1a56db}
+.hora-pct{font-size:11px;font-weight:600;color:#059669;margin-top:2px}
+.hora-lbl{font-size:9px;color:#aaa;margin-top:1px}
+
+/* SCORE */
+.score-row{display:flex;align-items:center;gap:6px}
+.score-bg{flex:1;height:5px;background:#eee;border-radius:3px}
+.score-fg{height:5px;border-radius:3px}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.badge-ok{background:#d1fae5;color:#065f46}
+.badge-warn{background:#fef3c7;color:#92400e}
+.badge-danger{background:#fee2e2;color:#991b1b}
+.prod-tag{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:500}
+.pc{background:#dbeafe;color:#1e40af}.pe{background:#ede9fe;color:#5b21b6}
+.pr{background:#d1fae5;color:#065f46}.pcd{background:#ffedd5;color:#9a3412}
+.pw{background:#fce7f3;color:#9d174d}
+
+/* INSIGHTS */
+.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:700px){.insight-grid{grid-template-columns:1fr}}
+.insight-card{background:#fff;border-radius:10px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.07);border-left:3px solid #ccc}
+.insight-card.success{border-left-color:#059669}
+.insight-card.warning{border-left-color:#d97706}
+.insight-card.danger{border-left-color:#dc2626}
+.insight-card.info{border-left-color:#1a56db}
+.insight-icon{font-size:18px;margin-bottom:6px}
+.insight-title{font-size:13px;font-weight:700;margin-bottom:4px;color:#111}
+.insight-body{font-size:11px;color:#666;line-height:1.6}
+.insight-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;margin-top:6px}
+.tag-s{background:#d1fae5;color:#065f46}
+.tag-w{background:#fef3c7;color:#92400e}
+.tag-d{background:#fee2e2;color:#991b1b}
+.tag-i{background:#dbeafe;color:#1e40af}
+.padroes-list{list-style:none;padding:0}
+.padroes-list li{padding:10px 0;border-bottom:1px solid #f5f5f5;font-size:12px;display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.padroes-list li:last-child{border:none}
+.padroes-list .ico{font-size:16px;min-width:20px}
+.padroes-list strong{font-weight:600;color:#111}
+
+/* VOLUME POR USUÁRIO */
+.vol-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:640px){.vol-kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.freq-bar-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f5}
+.freq-bar-row:last-child{border:none}
+.freq-label{font-size:12px;font-weight:500;min-width:130px;color:#333}
+.freq-track{flex:1;height:18px;background:#f0ede8;border-radius:5px;overflow:hidden}
+.freq-fill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:600;color:#fff}
+.freq-val{font-size:11px;color:#888;min-width:50px;text-align:right}
+.fadiga-card{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px}
+.fadiga-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #f7f7f7;font-size:12px}
+.fadiga-row:last-child{border:none}
+.fadiga-nome{font-weight:500;color:#333}
+.fadiga-val{font-weight:700}
+.semaforo{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.s-ok{background:#059669}.s-warn{background:#d97706}.s-danger{background:#dc2626}
+.heatmap-wrap{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.hm-cell{border-radius:4px;height:28px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff}
+.hm-label{font-size:10px;color:#aaa;text-align:center;margin-bottom:4px}
+.hm-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:3px}
+.rodape{text-align:center;font-size:10px;color:#bbb;padding:8px 0 4px}
+
+/* ABAS */
+.page-section{display:none}
+.page-section.ativo{display:block}
+</style>
+
+<div class="wrap">
+  <p class="page-title">Dashboard de Performance</p>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-icon">📧</div>
+      <div>
+        <div class="topbar-name">Email Marketing · Intelligence</div>
+        <div class="topbar-sub">Campaign Performance Dashboard</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="chip chip-blue">📊 Performance</div>
+      <div class="chip">Abril 2025</div>
+    </div>
+  </div>
+
+  <!-- NAV PRINCIPAL -->
+  <div class="nav-main">
+    <button class="nav-item ativo" data-sec="perf">📈 Visão Geral</button>
+    <button class="nav-item" data-sec="insights">💡 Insights</button>
+    <button class="nav-item" data-sec="volume">👥 Volume por Usuário</button>
+  </div>
+
+  <!-- ===================== SEÇÃO: PERFORMANCE ===================== -->
+  <div id="sec-perf" class="page-section ativo">
+    <div class="pill-nav" id="pillNav">
+      <button class="pill ativo" data-p="todos">Todos</button>
+      <button class="pill" data-p="credito">💳 Crédito</button>
+      <button class="pill" data-p="envios">📦 Envios</button>
+      <button class="pill" data-p="erp">🖥 ERP</button>
+      <button class="pill" data-p="conta_digital">🏦 Conta Digital</button>
+      <button class="pill" data-p="card_wallet">💎 Card Wallet</button>
+    </div>
+    <div class="hero"><div class="hero-badge">SITUAÇÃO ESTRATÉGICA</div><p id="heroText"></p></div>
+    <p class="section-label">Métricas-chave do período</p>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">📬 Taxa de abertura</div><div class="kpi-val" id="kA"></div><div class="kpi-sub" id="kAr"></div></div>
+      <div class="kpi-card"><div class="kpi-label">🖱 Taxa de clique</div><div class="kpi-val" id="kC"></div><div class="kpi-sub" id="kCr"></div></div>
+      <div class="kpi-card"><div class="kpi-label">⚠️ Taxa de bounce</div><div class="kpi-val" id="kB"></div><div class="kpi-sub" id="kBr"></div></div>
+      <div class="kpi-card"><div class="kpi-label">🏆 Score geral</div><div class="kpi-val" id="kS"></div><div class="kpi-sub" id="kSr"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="card-title">Performance por produto <span>média abertura</span></div><div id="saudeDiv"></div></div>
+      <div class="card"><div class="card-title">Melhores horários <span>taxa de abertura</span></div><div class="hora-grid" id="horaGrid"></div></div>
+    </div>
+    <div class="full-card">
+      <div class="card-title">Top campanhas <span id="subtitulo"></span></div>
+      <table><thead><tr>
+        <th>#</th><th>Campanha</th><th>Produto</th><th>Enviados</th>
+        <th>Abertura</th><th>Clique</th><th>Bounce</th><th>Score</th><th>Status</th>
+      </tr></thead><tbody id="tbl"></tbody></table>
+    </div>
+  </div>
+
+  <!-- ===================== SEÇÃO: INSIGHTS ===================== -->
+  <div id="sec-insights" class="page-section">
+    <p class="section-label" style="margin-bottom:14px">Alertas e oportunidades detectados automaticamente</p>
+    <div class="insight-grid" id="insightCards"></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Padrões de sucesso <span>campanhas com score ≥ 70</span></div>
+        <ul class="padroes-list" id="padroesList"></ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Produtos em destaque <span>últimos 30 dias</span></div>
+        <div id="destDiv"></div>
+      </div>
+    </div>
+    <div class="full-card">
+      <div class="card-title">Ranking de campanhas · padrões identificados <span>o que diferencia as top campanhas</span></div>
+      <table><thead><tr>
+        <th>Campanha</th><th>Produto</th><th>Abertura</th><th>Clique</th><th>Score</th><th>Diferencial</th>
+      </tr></thead><tbody id="tblInsight"></tbody></table>
+    </div>
+  </div>
+
+  <!-- ===================== SEÇÃO: VOLUME POR USUÁRIO ===================== -->
+  <div id="sec-volume" class="page-section">
+    <p class="section-label" style="margin-bottom:14px">Pressão de comunicação · últimos 30 dias</p>
+    <div class="vol-kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">📨 Total de disparos</div><div class="kpi-val" style="color:#1a56db">186.200</div><div class="kpi-sub">todos os produtos</div></div>
+      <div class="kpi-card"><div class="kpi-label">👤 Média por usuário</div><div class="kpi-val warn">4,2</div><div class="kpi-sub">emails / mês</div></div>
+      <div class="kpi-card"><div class="kpi-label">🔥 Usuários sobrecarregados</div><div class="kpi-val danger">3.240</div><div class="kpi-sub">≥ 8 emails no mês</div></div>
+      <div class="kpi-card"><div class="kpi-label">😴 Usuários inativos</div><div class="kpi-val" style="color:#7c3aed">12.100</div><div class="kpi-sub">0 aberturas em 30d</div></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Distribuição de frequência <span>emails recebidos / usuário / mês</span></div>
+        <div id="freqDiv"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Volume por produto <span>total enviado</span></div>
+        <div id="volProdDiv"></div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="fadiga-card">
+        <div class="card-title" style="font-size:12px;font-weight:700;letter-spacing:.04em;color:#444;text-transform:uppercase;margin-bottom:14px">Sinais de fadiga por produto</div>
+        <div class="fadiga-row"><span class="fadiga-nome"><span class="semaforo s-ok"></span>Crédito</span><span>Unsub: <span class="fadiga-val ok">0,9%</span></span><span>Inativos: <span class="fadiga-val ok">18%</span></span></div>
+        <div class="fadiga-row"><span class="fadiga-nome"><span class="semaforo s-warn"></span>Envios</span><span>Unsub: <span class="fadiga-val warn">2,1%</span></span><span>Inativos: <span class="fadiga-val warn">31%</span></span></div>
+        <div class="fadiga-row"><span class="fadiga-nome"><span class="semaforo s-ok"></span>ERP</span><span>Unsub: <span class="fadiga-val ok">0,8%</span></span><span>Inativos: <span class="fadiga-val ok">14%</span></span></div>
+        <div class="fadiga-row"><span class="fadiga-nome"><span class="semaforo s-ok"></span>Conta Digital</span><span>Unsub: <span class="fadiga-val ok">1,3%</span></span><span>Inativos: <span class="fadiga-val ok">22%</span></span></div>
+        <div class="fadiga-row"><span class="fadiga-nome"><span class="semaforo s-danger"></span>Card Wallet</span><span>Unsub: <span class="fadiga-val danger">3,4%</span></span><span>Inativos: <span class="fadiga-val danger">41%</span></span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Heatmap de envios <span>dia da semana vs hora</span></div>
+        <div id="heatmapDiv"></div>
+      </div>
+    </div>
+
+    <div class="full-card">
+      <div class="card-title">Segmentos de engajamento <span>classificação da base ativa</span></div>
+      <table><thead><tr>
+        <th>Segmento</th><th>Usuários</th><th>% base</th><th>Média aberturas</th><th>Recomendação</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-ok">Champions</span></td><td>8.400</td><td>18%</td><td>4,1 / mês</td><td>Manter cadência, testar conteúdo premium</td></tr>
+        <tr><td><span class="badge" style="background:#dbeafe;color:#1e40af">Engajados</span></td><td>14.200</td><td>30%</td><td>2,3 / mês</td><td>Aumentar frequência com cuidado</td></tr>
+        <tr><td><span class="badge badge-warn">Em risco</span></td><td>9.800</td><td>21%</td><td>0,8 / mês</td><td>Campanha de reativação personalizada</td></tr>
+        <tr><td><span class="badge" style="background:#ede9fe;color:#5b21b6">Dormentes</span></td><td>12.100</td><td>26%</td><td>0 / mês</td><td>Win-back ou suppressão da base</td></tr>
+        <tr><td><span class="badge badge-danger">Fadiga</span></td><td>2.200</td><td>5%</td><td>—</td><td>Remover de fluxos ativos imediatamente</td></tr>
+      </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="rodape">Dados consolidados via Automation Studio · BU Tiny + BU Domínio · Atualizado diariamente às 06h</p>
+</div>
+
+<script>
+var HEROES={
+  todos:"Visão consolidada de todas as campanhas dos últimos 30 dias. Crédito e Conta Digital lideram em engajamento. Bounce geral controlado. Card Wallet apresenta sinais de fadiga que merecem atenção.",
+  credito:"Crédito Pessoal é o produto de maior volume e melhor abertura da BU. Campanhas segmentadas por limite disponível têm score acima de 70. Horário de pico às 10h.",
+  envios:"Campanhas de Envios têm alta taxa de clique, indicando forte intenção pós-abertura. Taxa de unsub levemente elevada — revisar frequência de envio.",
+  erp:"ERP apresenta menor volume, porém alta qualidade de abertura — base B2B mais engajada. Bounce dentro do limite. Score médio acima de 60.",
+  conta_digital:"Conta Digital concentra campanhas de ativação com abertura acima da média de mercado (20%). Unsub baixo indica boa relevância percebida.",
+  card_wallet:"Card Wallet é o produto com maior sinal de fadiga: unsub de 3,4% e 41% de base inativa. Revisar cadência e segmentação urgentemente."
+};
+
+var DADOS={
+  todos:[
+    {nome:"Oferta Crédito Pessoal — Abril",  prod:"credito",       env:42000,ab:28.4,cl:4.1,bo:1.2,hr:10},
+    {nome:"Limite Aumentado — Seg. A",        prod:"credito",       env:18500,ab:31.2,cl:5.3,bo:0.9,hr:10},
+    {nome:"Ativação Conta Digital",           prod:"conta_digital", env:35000,ab:26.1,cl:3.8,bo:1.5,hr:9},
+    {nome:"Cashback Card Wallet",             prod:"card_wallet",   env:12000,ab:24.7,cl:3.2,bo:1.8,hr:11},
+    {nome:"Promoção Envios — Frete Grátis",  prod:"envios",        env:28000,ab:22.3,cl:5.9,bo:2.1,hr:8},
+    {nome:"ERP — Upgrade de Plano",           prod:"erp",           env:8500, ab:24.0,cl:2.9,bo:1.1,hr:14},
+    {nome:"Crédito — Reengajamento",          prod:"credito",       env:11000,ab:19.8,cl:2.4,bo:3.2,hr:18},
+    {nome:"Envios — Rastreamento Ativo",      prod:"envios",        env:21000,ab:18.5,cl:4.7,bo:1.9,hr:8},
+    {nome:"Conta Digital — Pix Cashback",     prod:"conta_digital", env:29000,ab:23.4,cl:3.1,bo:1.3,hr:9},
+    {nome:"ERP — Newsletter Produto",         prod:"erp",           env:6200, ab:21.6,cl:2.1,bo:0.8,hr:14}
+  ]
+};
+["credito","envios","erp","conta_digital","card_wallet"].forEach(function(p){
+  DADOS[p]=DADOS.todos.filter(function(r){return r.prod===p;});
+});
+
+var CORES={credito:"#1a56db",envios:"#7c3aed",erp:"#059669",conta_digital:"#d97706",card_wallet:"#db2777"};
+var PCLS={credito:"pc",envios:"pe",erp:"pr",conta_digital:"pcd",card_wallet:"pw"};
+var PLBL={credito:"Crédito",envios:"Envios",erp:"ERP",conta_digital:"Conta Digital",card_wallet:"Card Wallet"};
+
+function score(r){return Math.min(100,Math.max(0,Math.round((r.ab*0.4+r.cl*0.4-r.bo*0.1)/0.12*10)/10));}
+function avg(arr,k){return arr.length?arr.reduce(function(s,r){return s+r[k];},0)/arr.length:0;}
+
+// ---- RENDER PERFORMANCE ----
+var prodAtivo="todos";
+function renderPerf(p){
+  prodAtivo=p;
+  var lista=DADOS[p]||[];
+  document.getElementById("heroText").textContent=HEROES[p]||"";
+  document.querySelectorAll("#pillNav .pill").forEach(function(el){el.classList.toggle("ativo",el.dataset.p===p);});
+
+  var mA=Math.round(avg(lista,"ab")*10)/10;
+  var mC=Math.round(avg(lista,"cl")*10)/10;
+  var mB=Math.round(avg(lista,"bo")*10)/10;
+  var mS=lista.length?Math.round(lista.reduce(function(s,r){return s+score(r);},0)/lista.length):0;
+
+  function setKpi(id,val,refId,refHtml,cls){
+    document.getElementById(id).textContent=val;
+    document.getElementById(id).className="kpi-val "+cls;
+    document.getElementById(refId).innerHTML=refHtml;
+  }
+  setKpi("kA",mA+"%","kAr",mA>=20?'<span class="ok">Acima da média (ref. 20%)</span>':'<span class="warn">Abaixo de 20% — atenção</span>',mA>=20?"ok":mA>=12?"warn":"danger");
+  setKpi("kC",mC+"%","kCr",mC>=2?'<span class="ok">Dentro do esperado</span>':'<span class="warn">Abaixo de 2% — atenção</span>',mC>=2?"ok":"warn");
+  setKpi("kB",mB+"%","kBr",mB<=2?'<span class="ok">Saudável (limite 2%)</span>':'<span class="danger">Acima do limite — alerta!</span>',mB<=2?"ok":mB<=4?"warn":"danger");
+  setKpi("kS",mS+"/100","kSr",mS>=60?'<span class="ok">Bom desempenho</span>':mS>=40?'<span class="warn">Atenção</span>':'<span class="danger">Crítico</span>',mS>=60?"ok":mS>=40?"warn":"danger");
+
+  // barras produto
+  var sd=document.getElementById("saudeDiv");sd.innerHTML="";
+  var prods=p==="todos"?["credito","envios","erp","conta_digital","card_wallet"]:[p];
+  var maxAb=Math.max.apply(null,prods.map(function(k){var l=DADOS[k];return l.length?avg(l,"ab"):0;}));
+  prods.forEach(function(k){
+    var l=DADOS[k];if(!l.length)return;
+    var med=Math.round(avg(l,"ab")*10)/10;
+    var w=Math.round(med/Math.max(maxAb,1)*100);
+    sd.innerHTML+='<div class="bar-row"><span class="bar-name">'+PLBL[k]+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+CORES[k]+'">'+med+'%</div></div><span class="bar-end">'+l.length+' camp.</span></div>';
+  });
+
+  // horários
+  var hg=document.getElementById("horaGrid");hg.innerHTML="";
+  var hmap={};
+  lista.forEach(function(r){if(!hmap[r.hr])hmap[r.hr]={s:0,n:0};hmap[r.hr].s+=r.ab;hmap[r.hr].n++;});
+  Object.keys(hmap).map(function(h){return{h:h,med:Math.round(hmap[h].s/hmap[h].n*10)/10};})
+    .sort(function(a,b){return b.med-a.med;}).slice(0,6)
+    .forEach(function(x){hg.innerHTML+='<div class="hora-card"><div class="hora-num">'+x.h+'h</div><div class="hora-pct">'+x.med+'%</div><div class="hora-lbl">abertura média</div></div>';});
+
+  // tabela
+  document.getElementById("subtitulo").textContent=(p==="todos"?"todos os produtos":"produto: "+PLBL[p])+" · últimos 30 dias";
+  var tbody=document.getElementById("tbl");tbody.innerHTML="";
+  lista.slice().sort(function(a,b){return score(b)-score(a);}).slice(0,10).forEach(function(r,i){
+    var s=score(r);
+    var badge=s>=60?'<span class="badge badge-ok">Saudável</span>':s>=40?'<span class="badge badge-warn">Atenção</span>':'<span class="badge badge-danger">Crítico</span>';
+    tbody.innerHTML+='<tr><td style="color:#aaa;font-size:11px">'+(i+1)+'</td><td style="font-weight:500">'+r.nome+'</td><td><span class="prod-tag '+PCLS[r.prod]+'">'+PLBL[r.prod]+'</span></td><td>'+r.env.toLocaleString('pt-BR')+'</td><td class="'+(r.ab>=20?"ok":r.ab>=12?"warn":"danger")+'" style="font-weight:600">'+r.ab+'%</td><td class="'+(r.cl>=2?"ok":"warn")+'" style="font-weight:600">'+r.cl+'%</td><td class="'+(r.bo<=2?"ok":r.bo<=4?"warn":"danger")+'" style="font-weight:600">'+r.bo+'%</td><td><div class="score-row"><div class="score-bg"><div class="score-fg" style="width:'+s+'%;background:'+CORES[r.prod]+'"></div></div><span style="font-size:11px;min-width:24px;text-align:right">'+s+'</span></div></td><td>'+badge+'</td></tr>';
+  });
+}
+
+// ---- RENDER INSIGHTS ----
+function renderInsights(){
+  // cards de alerta
+  var insights=[
+    {type:"success",icon:"🏆",title:"Crédito lidera abertura",body:"Campanhas de Crédito têm média de 28,4% de abertura, 42% acima da referência de mercado. Horário 10h é consistentemente o melhor.",tag:"Oportunidade",tagCls:"tag-s"},
+    {type:"warning",icon:"⚠️",title:"Card Wallet com fadiga",body:"Taxa de unsub de 3,4% e 41% de base inativa. Reduzir frequência e revisar segmentação antes do próximo disparo.",tag:"Ação necessária",tagCls:"tag-w"},
+    {type:"info",icon:"🕐",title:"Janela ideal: 8h–11h",body:"75% das campanhas com score ≥ 70 foram enviadas entre 8h e 11h. ERP performa bem às 14h (base B2B).",tag:"Padrão",tagCls:"tag-i"},
+    {type:"danger",icon:"🚨",title:"Bounce Crédito Reengaj.",body:"Campanha 'Crédito — Reengajamento' com bounce de 3,2% — acima do limite de 2%. Base provavelmente desatualizada.",tag:"Alerta crítico",tagCls:"tag-d"},
+    {type:"success",icon:"🖱",title:"Envios: melhor CTR",body:"Produto Envios tem a maior taxa de clique (5,3% média). Conteúdo de frete e rastreamento gera alta intenção de ação.",tag:"Destaque",tagCls:"tag-s"},
+    {type:"info",icon:"📦",title:"ERP: baixo volume, alta qualidade",body:"Base B2B menor, mas com abertura de 24% e bounce de apenas 0,9%. Potencial para aumentar volume com segmentação cuidadosa.",tag:"Oportunidade",tagCls:"tag-i"}
+  ];
+  var ic=document.getElementById("insightCards");ic.innerHTML="";
+  insights.forEach(function(ins){
+    ic.innerHTML+='<div class="insight-card '+ins.type+'"><div class="insight-icon">'+ins.icon+'</div><div class="insight-title">'+ins.title+'</div><div class="insight-body">'+ins.body+'</div><span class="insight-tag '+ins.tagCls+'">'+ins.tag+'</span></div>';
+  });
+
+  // padrões de sucesso
+  var padroes=[
+    {ico:"⏰",txt:"<strong>Horário certo:</strong> todas as top 3 campanhas foram enviadas entre 9h e 11h, quando a base tem maior disponibilidade."},
+    {ico:"🎯",txt:"<strong>Segmentação precisa:</strong> campanhas com score ≥ 70 usaram segmentos comportamentais, não apenas demográficos."},
+    {ico:"📝",txt:"<strong>Assunto com urgência:</strong> campanhas com prazo no assunto ('Abril', 'Hoje') tiveram +18% de abertura vs genéricas."},
+    {ico:"🔁",txt:"<strong>Frequência semanal:</strong> base que recebe 1-2 emails/semana tem unsub 3x menor que base com 4+ emails/semana."}
+  ];
+  var pl=document.getElementById("padroesList");pl.innerHTML="";
+  padroes.forEach(function(p){pl.innerHTML+='<li><span class="ico">'+p.ico+'</span><span>'+p.txt+'</span></li>';});
+
+  // destaque de produtos
+  var dd=document.getElementById("destDiv");dd.innerHTML="";
+  var prods=["credito","envios","erp","conta_digital","card_wallet"];
+  var maxS=Math.max.apply(null,prods.map(function(k){var l=DADOS[k];return l.length?l.reduce(function(s,r){return s+score(r);},0)/l.length:0;}));
+  prods.forEach(function(k){
+    var l=DADOS[k];if(!l.length)return;
+    var ms=Math.round(l.reduce(function(s,r){return s+score(r);},0)/l.length);
+    var w=Math.round(ms/Math.max(maxS,1)*100);
+    dd.innerHTML+='<div class="bar-row"><span class="bar-name">'+PLBL[k]+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+CORES[k]+'">'+ms+'</div></div><span class="bar-end ok" style="font-weight:600">'+ms+'/100</span></div>';
+  });
+
+  // tabela insights
+  var tb=document.getElementById("tblInsight");tb.innerHTML="";
+  var DIFS={credito:"Horário 10h + segmento por limite",envios:"CTA de rastreamento direto",erp:"Base B2B, baixíssimo bounce",conta_digital:"Tema Pix gera alta relevância",card_wallet:"Onboarding com benefício claro"};
+  DADOS.todos.slice().sort(function(a,b){return score(b)-score(a);}).slice(0,7).forEach(function(r){
+    var s=score(r);
+    tb.innerHTML+='<tr><td style="font-weight:500;font-size:12px">'+r.nome+'</td><td><span class="prod-tag '+PCLS[r.prod]+'">'+PLBL[r.prod]+'</span></td><td class="'+(r.ab>=20?"ok":"warn")+'" style="font-weight:600">'+r.ab+'%</td><td class="'+(r.cl>=2?"ok":"warn")+'" style="font-weight:600">'+r.cl+'%</td><td><div class="score-row"><div class="score-bg"><div class="score-fg" style="width:'+s+'%;background:'+CORES[r.prod]+'"></div></div><span style="font-size:11px;min-width:24px;text-align:right">'+s+'</span></div></td><td style="font-size:11px;color:#555">'+DIFS[r.prod]+'</td></tr>';
+  });
+}
+
+// ---- RENDER VOLUME ----
+function renderVolume(){
+  // frequência
+  var freqs=[
+    {lbl:"1–2 emails/mês",  pct:38, n:"17.900", cor:"#059669"},
+    {lbl:"3–4 emails/mês",  pct:29, n:"13.700", cor:"#1a56db"},
+    {lbl:"5–7 emails/mês",  pct:19, n:"8.950",  cor:"#d97706"},
+    {lbl:"8–10 emails/mês", pct:9,  n:"4.240",  cor:"#dc2626"},
+    {lbl:"11+ emails/mês",  pct:5,  n:"2.360",  cor:"#7c3aed"}
+  ];
+  var fd=document.getElementById("freqDiv");fd.innerHTML="";
+  freqs.forEach(function(f){
+    fd.innerHTML+='<div class="freq-bar-row"><span class="freq-label">'+f.lbl+'</span><div class="freq-track"><div class="freq-fill" style="width:'+f.pct+'%;background:'+f.cor+'">'+f.pct+'%</div></div><span class="freq-val">'+f.n+'</span></div>';
+  });
+
+  // volume por produto
+  var vols=[
+    {k:"credito",       v:71500},
+    {k:"conta_digital", v:64000},
+    {k:"envios",        v:49000},
+    {k:"card_wallet",   v:12000},
+    {k:"erp",           v:14700}
+  ];
+  var vd=document.getElementById("volProdDiv");vd.innerHTML="";
+  var maxV=Math.max.apply(null,vols.map(function(x){return x.v;}));
+  vols.forEach(function(x){
+    var w=Math.round(x.v/maxV*100);
+    vd.innerHTML+='<div class="bar-row"><span class="bar-name">'+PLBL[x.k]+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+CORES[x.k]+'">'+x.v.toLocaleString('pt-BR')+'</div></div></div>';
+  });
+
+  // heatmap
+  var days=["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"];
+  var slots=["8h","10h","12h","14h","18h"];
+  var heat=[
+    [90,95,70,60,40,10,5],
+    [85,100,80,75,55,8,3],
+    [50,60,55,50,35,5,2],
+    [30,45,40,60,30,4,1],
+    [60,70,50,45,55,6,2]
+  ];
+  var hd=document.getElementById("heatmapDiv");
+  var html='<div class="hm-days">';
+  days.forEach(function(d){html+='<div class="hm-label">'+d+'</div>';});
+  html+='</div>';
+  slots.forEach(function(s,si){
+    html+='<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px"><span style="font-size:9px;color:#aaa;min-width:22px">'+s+'</span><div style="flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:4px">';
+    days.forEach(function(d,di){
+      var v=heat[si][di];
+      var alpha=Math.round(v/100*100)/100;
+      var bg='rgba(26,86,219,'+alpha+')';
+      html+='<div class="hm-cell" style="background:'+bg+';color:'+(v>50?'#fff':'#aaa')+'">'+v+'</div>';
+    });
+    html+='</div></div>';
+  });
+  hd.innerHTML=html;
+}
+
+// ---- NAV PRINCIPAL ----
+document.querySelector(".nav-main").addEventListener("click",function(e){
+  var btn=e.target.closest(".nav-item");
+  if(!btn)return;
+  var sec=btn.dataset.sec;
+  document.querySelectorAll(".page-section").forEach(function(el){el.classList.remove("ativo");});
+  document.querySelectorAll(".nav-item").forEach(function(el){el.classList.remove("ativo");});
+  document.getElementById("sec-"+sec).classList.add("ativo");
+  btn.classList.add("ativo");
+  if(sec==="insights") renderInsights();
+  if(sec==="volume")   renderVolume();
+});
+
+// ---- PILLS PRODUTO ----
+document.getElementById("pillNav").addEventListener("click",function(e){
+  var btn=e.target.closest(".pill");
+  if(btn) renderPerf(btn.dataset.p);
+});
+
+renderPerf("todos");
+</script>
