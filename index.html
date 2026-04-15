@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#f0ede8;color:#1a1a1a;min-height:100vh}
-.wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+.wrap{max-width:1140px;margin:0 auto;padding:24px 20px}
 .page-title{text-align:center;font-size:28px;font-weight:700;color:#1a56db;margin-bottom:20px;letter-spacing:-.5px}
 .topbar{background:#fff;border-radius:12px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.07);flex-wrap:wrap;gap:10px}
 .topbar-left{display:flex;align-items:center;gap:10px}
@@ -19,14 +19,22 @@ body{font-family:'Inter',sans-serif;background:#f0ede8;color:#1a1a1a;min-height:
 .chip{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid #e5e7eb;background:#f9fafb;color:#555}
 .chip-blue{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
 
+/* FILTER BAR */
+.filter-bar{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.filter-bar-title{font-size:10px;font-weight:700;letter-spacing:.08em;color:#888;text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.filter-bar-title button{font-size:10px;color:#1a56db;background:none;border:none;cursor:pointer;font-weight:600}
+.filter-bar-title button:hover{text-decoration:underline}
+.filter-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.filter-group{display:flex;flex-direction:column;gap:4px}
+.filter-group label{font-size:10px;font-weight:600;color:#666;letter-spacing:.04em}
+.filter-group select,.filter-group input{font-size:12px;padding:6px 10px;border:1px solid #e5e7eb;border-radius:8px;background:#f9fafb;color:#333;font-family:inherit;min-width:130px}
+.filter-group select:focus,.filter-group input:focus{outline:none;border-color:#1a56db;box-shadow:0 0 0 2px rgba(26,86,219,.1)}
+.filter-active-count{font-size:10px;color:#1a56db;font-weight:600;background:#eff6ff;padding:2px 8px;border-radius:10px}
+
 .nav-main{display:flex;gap:2px;margin-bottom:16px;background:#fff;border-radius:10px;padding:6px;box-shadow:0 1px 3px rgba(0,0,0,.06);flex-wrap:wrap}
 .nav-item{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#666;transition:.15s;display:flex;align-items:center;gap:5px;border:none;background:transparent}
 .nav-item.ativo{background:#eff6ff;color:#1d4ed8;font-weight:600}
 .nav-item:hover:not(.ativo){background:#f5f5f5}
-
-.pill-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.pill{padding:5px 13px;border-radius:20px;border:1px solid #e5e7eb;font-size:12px;cursor:pointer;background:#fff;color:#555;font-weight:500;transition:.15s}
-.pill.ativo{background:#1a56db;color:#fff;border-color:#1a56db}
 
 .hero{background:linear-gradient(135deg,#1a56db 0%,#06b6d4 100%);border-radius:12px;padding:22px 24px;margin-bottom:16px;color:#fff}
 .hero-badge{font-size:10px;font-weight:700;letter-spacing:.08em;opacity:.85;margin-bottom:8px;display:flex;align-items:center;gap:6px}
@@ -57,7 +65,7 @@ tr:hover td{background:#fafbff}
 
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
 .bar-row:last-child{margin-bottom:0}
-.bar-name{font-size:12px;font-weight:500;min-width:100px;color:#333}
+.bar-name{font-size:12px;font-weight:500;min-width:110px;color:#333}
 .bar-track{flex:1;height:22px;background:#f0ede8;border-radius:6px;overflow:hidden}
 .bar-fill-h{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:10px;font-size:11px;font-weight:600;color:#fff;min-width:fit-content;white-space:nowrap}
 .bar-end{font-size:11px;color:#888;min-width:60px;text-align:right}
@@ -95,15 +103,13 @@ tr:hover td{background:#fafbff}
 .score-bg{flex:1;height:5px;background:#eee;border-radius:3px}
 .score-fg{height:5px;border-radius:3px}
 
-.canal-icon{font-size:14px}
-
 .vol-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
 @media(max-width:640px){.vol-kpi-grid{grid-template-columns:repeat(2,1fr)}}
 
 .timeline-bar{display:flex;align-items:flex-end;gap:3px;height:120px;padding-top:10px}
-.tl-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%}
+.tl-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;min-width:0}
 .tl-bar-wrap{flex:1;width:100%;display:flex;flex-direction:column;justify-content:flex-end}
-.tl-bar{width:100%;border-radius:3px 3px 0 0;background:#1a56db;min-height:2px;transition:.3s}
+.tl-bar{width:100%;border-radius:3px 3px 0 0;min-height:2px;transition:.3s}
 .tl-label{font-size:8px;color:#aaa;writing-mode:vertical-lr;transform:rotate(180deg);max-height:40px;overflow:hidden}
 .tl-val{font-size:8px;color:#666;font-weight:600}
 
@@ -129,6 +135,11 @@ tr:hover td{background:#fafbff}
 .page-section{display:none}
 .page-section.ativo{display:block}
 .rodape{text-align:center;font-size:10px;color:#bbb;padding:8px 0 4px}
+
+.donut-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.donut-item{text-align:center}
+.donut-item .val{font-size:22px;font-weight:700;line-height:1}
+.donut-item .lbl{font-size:9px;color:#888;margin-top:2px}
 </style>
 </head>
 <body>
@@ -146,9 +157,53 @@ tr:hover td{background:#fafbff}
     <div class="topbar-right">
       <div class="chip chip-blue" id="chipTotal"></div>
       <div class="chip" id="chipPeriodo"></div>
+      <div class="chip" id="chipFiltro" style="display:none"></div>
     </div>
   </div>
 
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-bar-title">
+      <span>Filtros <span class="filter-active-count" id="filterCount" style="display:none"></span></span>
+      <button id="btnClearFilters">Limpar filtros</button>
+    </div>
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>Data Inicio</label>
+        <select id="fMesIni"></select>
+      </div>
+      <div class="filter-group">
+        <label>Data Fim</label>
+        <select id="fMesFim"></select>
+      </div>
+      <div class="filter-group">
+        <label>BU</label>
+        <select id="fBu"><option value="">Todas</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fCanal"><option value="">Todos</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Objetivo</label>
+        <select id="fObjetivo"><option value="">Todos</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Metrica</label>
+        <select id="fMetrica"><option value="">Todas</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Tipo</label>
+        <select id="fFlag">
+          <option value="">Todos</option>
+          <option value="Pontual">Pontual</option>
+          <option value="Recorrente">Recorrente</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
   <div class="nav-main">
     <button class="nav-item ativo" data-sec="perf">📈 Visao Geral</button>
     <button class="nav-item" data-sec="canais">📡 Canais</button>
@@ -158,17 +213,14 @@ tr:hover td{background:#fafbff}
 
   <!-- =================== VISAO GERAL =================== -->
   <div id="sec-perf" class="page-section ativo">
-    <div class="pill-nav" id="pillBu"></div>
     <div class="hero"><div class="hero-badge">VISAO ESTRATEGICA</div><p id="heroText"></p></div>
-
     <p class="section-label">Metricas-chave</p>
     <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">📬 Total de disparos</div><div class="kpi-val" id="kTotal" style="color:#1a56db"></div><div class="kpi-sub">atividades unicas</div></div>
+      <div class="kpi-card"><div class="kpi-label">📬 Total de disparos</div><div class="kpi-val" id="kTotal" style="color:#1a56db"></div><div class="kpi-sub" id="kTotalSub"></div></div>
       <div class="kpi-card"><div class="kpi-label">✅ Taxa de entrega</div><div class="kpi-val" id="kEntrega"></div><div class="kpi-sub" id="kEntregaSub"></div></div>
       <div class="kpi-card"><div class="kpi-label">👁 Taxa de leitura</div><div class="kpi-val" id="kLeitura"></div><div class="kpi-sub" id="kLeituraSub"></div></div>
       <div class="kpi-card"><div class="kpi-label">⚠️ Taxa de falha</div><div class="kpi-val" id="kFalha"></div><div class="kpi-sub" id="kFalhaSub"></div></div>
     </div>
-
     <div class="grid2">
       <div class="card">
         <div class="card-title">Performance por BU <span>taxa de entrega</span></div>
@@ -179,7 +231,16 @@ tr:hover td{background:#fafbff}
         <div id="objBars"></div>
       </div>
     </div>
-
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Distribuicao de Status <span>contagem</span></div>
+        <div id="statusBars"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Por Metrica <span>taxa de leitura</span></div>
+        <div id="metricaBars"></div>
+      </div>
+    </div>
     <div class="full-card">
       <div class="card-title">Top Jornadas <span id="jornadaSub"></span></div>
       <table><thead><tr>
@@ -193,20 +254,18 @@ tr:hover td{background:#fafbff}
   <div id="sec-canais" class="page-section">
     <p class="section-label" style="margin-bottom:14px">Performance por canal de comunicacao</p>
     <div class="kpi-grid" id="canalKpis"></div>
-
     <div class="grid2">
       <div class="card">
-        <div class="card-title">Volume por canal <span>total de disparos</span></div>
+        <div class="card-title">Volume por canal <span>total</span></div>
         <div id="canalBars"></div>
       </div>
       <div class="card">
-        <div class="card-title">Por Metrica <span>taxa de leitura</span></div>
-        <div id="metricaBars"></div>
+        <div class="card-title">Pontual vs Recorrente <span>comparativo</span></div>
+        <div id="flagDiv"></div>
       </div>
     </div>
-
     <div class="full-card">
-      <div class="card-title">BU x Canal · Cruzamento <span>taxa de entrega por combinacao</span></div>
+      <div class="card-title">BU x Canal <span>cruzamento</span></div>
       <table><thead><tr>
         <th>BU</th><th>Canal</th><th>Volume</th><th>Entrega</th><th>Leitura</th><th>Falha</th><th>Health</th>
       </tr></thead><tbody id="tblBuCanal"></tbody></table>
@@ -219,12 +278,12 @@ tr:hover td{background:#fafbff}
     <div class="insight-grid" id="insightCards"></div>
     <div class="grid2">
       <div class="card">
-        <div class="card-title">Padroes identificados <span>analise dos dados</span></div>
+        <div class="card-title">Padroes identificados <span>analise dos dados filtrados</span></div>
         <ul class="padroes-list" id="padroesList"></ul>
       </div>
       <div class="card">
-        <div class="card-title">Pontual vs Recorrente <span>comparativo</span></div>
-        <div id="flagDiv"></div>
+        <div class="card-title">Ranking de Metricas <span>por leitura</span></div>
+        <div id="metricaRankDiv"></div>
       </div>
     </div>
   </div>
@@ -233,23 +292,20 @@ tr:hover td{background:#fafbff}
   <div id="sec-volume" class="page-section">
     <p class="section-label" style="margin-bottom:14px">Evolucao mensal dos disparos</p>
     <div class="vol-kpi-grid" id="volKpis"></div>
-
     <div class="full-card">
       <div class="card-title">Volume mensal <span>atividades por mes</span></div>
       <div class="timeline-bar" id="timelineDiv"></div>
     </div>
-
     <div class="grid2">
       <div class="full-card">
-        <div class="card-title">Taxa de entrega mensal <span>% entregue por mes</span></div>
+        <div class="card-title">Taxa de entrega mensal <span>%</span></div>
         <div class="timeline-bar" id="tlEntrega" style="height:100px"></div>
       </div>
       <div class="full-card">
-        <div class="card-title">Taxa de leitura mensal <span>% lido por mes</span></div>
+        <div class="card-title">Taxa de leitura mensal <span>%</span></div>
         <div class="timeline-bar" id="tlLeitura" style="height:100px"></div>
       </div>
     </div>
-
     <div class="grid2">
       <div class="card">
         <div class="card-title">Heatmap de envios <span>dia da semana</span></div>
@@ -266,240 +322,473 @@ tr:hover td{background:#fafbff}
 </div>
 
 <script>
-var D;
-
-fetch('data.json').then(function(r){return r.json();}).then(function(data){
-  D=data;
-  initApp();
-}).catch(function(){
-  // fallback: try inline
-  alert('Erro ao carregar data.json. Verifique se o arquivo existe.');
-});
-
+var D, CROSS, FILTERED;
 var CORES_BU={'ERP':'#1a56db','Conta Digital':'#d97706','Envios':'#7c3aed','Loja':'#059669','Ecommerce':'#db2777','Outros':'#6b7280'};
 var TAG_BU={'ERP':'t-erp','Conta Digital':'t-conta','Envios':'t-envios','Loja':'t-loja','Ecommerce':'t-ecommerce','Outros':'t-outros'};
 var CANAL_ICON={'sms':'💬','email':'📧','whats':'📱','Grupo Controle':'🧪','API':'🔗'};
+var CORES_CANAL={'sms':'#1a56db','email':'#059669','whats':'#7c3aed','Grupo Controle':'#d97706','API':'#6b7280'};
 
 function num(n){return n.toLocaleString('pt-BR');}
 function pct(n){return n+'%';}
-function cls(val,good,mid){return val>=good?'ok':val>=mid?'warn':'danger';}
+function cls(v,g,m){return v>=g?'ok':v>=m?'warn':'danger';}
+function r1(n){return Math.round(n*10)/10;}
 
-function initApp(){
-  var k=D.kpis;
-  document.getElementById('chipTotal').textContent='📊 '+num(k.total)+' atividades';
-  var tl=D.timeline;
-  document.getElementById('chipPeriodo').textContent=tl[0].mes+' a '+tl[tl.length-1].mes;
-
-  // Build BU pills
-  var pillHtml='<button class="pill ativo" data-bu="todos">Todos</button>';
-  D.by_bu.forEach(function(b){
-    pillHtml+='<button class="pill" data-bu="'+b.bu+'">'+b.bu+' ('+num(b.total)+')</button>';
+// ---- AGGREGATE from filtered cross-tab ----
+function agg(rows){
+  var total=0,del=0,rd=0,cl=0,fl=0,snt=0;
+  rows.forEach(function(r){
+    var n=r.n;
+    total+=n;
+    if(r.status==='delivered') del+=n;
+    else if(r.status==='read') rd+=n;
+    else if(r.status==='click') cl+=n;
+    else if(r.status==='failed') fl+=n;
+    else if(r.status==='sent') snt+=n;
   });
-  document.getElementById('pillBu').innerHTML=pillHtml;
-
-  renderPerf('todos');
-  setupNav();
+  return {
+    total:total,delivered:del,read:rd,click:cl,failed:fl,sent:snt,
+    taxa_entrega:total?r1((del+rd+cl)/total*100):0,
+    taxa_leitura:total?r1((rd+cl)/total*100):0,
+    taxa_click:total?r1(cl/total*100):0,
+    taxa_falha:total?r1(fl/total*100):0
+  };
 }
 
-// ---- HEROES ----
-function getHeroText(bu){
-  if(bu==='todos'){
-    var k=D.kpis;
-    return 'Visao consolidada de '+num(k.total)+' atividades unicas. Taxa de entrega geral de '+pct(k.taxa_entrega)+'. '+
-      'SMS domina com '+num(D.by_canal[0].total)+' disparos ('+pct(D.by_canal[0].taxa_entrega)+' de entrega). '+
-      'WhatsApp lidera em leitura com '+pct(D.by_canal.find(function(c){return c.canal==='whats';}).taxa_leitura)+'. '+
-      'Taxa de falha geral em '+pct(k.taxa_falha)+'.';
+function groupBy(rows,key){
+  var map={};
+  rows.forEach(function(r){
+    var k=r[key];
+    if(!map[k]) map[k]=[];
+    map[k].push(r);
+  });
+  return map;
+}
+
+// ---- FILTER ENGINE ----
+function getFilters(){
+  return {
+    mesIni:document.getElementById('fMesIni').value,
+    mesFim:document.getElementById('fMesFim').value,
+    bu:document.getElementById('fBu').value,
+    canal:document.getElementById('fCanal').value,
+    objetivo:document.getElementById('fObjetivo').value,
+    metrica:document.getElementById('fMetrica').value,
+    flag:document.getElementById('fFlag').value
+  };
+}
+
+function applyFilters(){
+  var f=getFilters();
+  FILTERED=CROSS.filter(function(r){
+    if(f.mesIni && r.mes<f.mesIni) return false;
+    if(f.mesFim && r.mes>f.mesFim) return false;
+    if(f.bu && r.bu!==f.bu) return false;
+    if(f.canal && r.canal!==f.canal) return false;
+    if(f.objetivo && r.objetivo!==f.objetivo) return false;
+    if(f.metrica && r.metrica!==f.metrica) return false;
+    if(f.flag && r.flag_pontual!==f.flag) return false;
+    return true;
+  });
+
+  // Count active filters
+  var count=0;
+  if(f.bu) count++;
+  if(f.canal) count++;
+  if(f.objetivo) count++;
+  if(f.metrica) count++;
+  if(f.flag) count++;
+  var meses=D.filtros.meses;
+  if(f.mesIni && f.mesIni!==meses[0]) count++;
+  if(f.mesFim && f.mesFim!==meses[meses.length-1]) count++;
+
+  var fcEl=document.getElementById('filterCount');
+  var cfEl=document.getElementById('chipFiltro');
+  if(count>0){
+    fcEl.style.display='inline';
+    fcEl.textContent=count+' ativo'+(count>1?'s':'');
+    cfEl.style.display='inline';
+    cfEl.textContent='🔍 '+count+' filtro'+(count>1?'s':'')+' ativo'+(count>1?'s':'');
+  } else {
+    fcEl.style.display='none';
+    cfEl.style.display='none';
   }
-  var b=D.by_bu.find(function(x){return x.bu===bu;});
-  if(!b) return '';
-  return b.bu+' tem '+num(b.total)+' atividades. Taxa de entrega: '+pct(b.taxa_entrega)+
-    '. Taxa de leitura: '+pct(b.taxa_leitura)+'. Taxa de falha: '+pct(b.taxa_falha)+'.';
+
+  var k=agg(FILTERED);
+  document.getElementById('chipTotal').textContent='📊 '+num(k.total)+' atividades';
+
+  renderCurrentTab();
+}
+
+function renderCurrentTab(){
+  var active=document.querySelector('.nav-item.ativo');
+  var sec=active?active.dataset.sec:'perf';
+  if(sec==='perf') renderPerf();
+  if(sec==='canais') renderCanais();
+  if(sec==='insights') renderInsights();
+  if(sec==='volume') renderTimeline();
+}
+
+// ---- INIT ----
+fetch('data.json').then(function(r){return r.json();}).then(function(data){
+  D=data;
+  CROSS=data.cross;
+  initFilters();
+  applyFilters();
+}).catch(function(e){alert('Erro ao carregar data.json: '+e);});
+
+function initFilters(){
+  var f=D.filtros;
+  var selIni=document.getElementById('fMesIni');
+  var selFim=document.getElementById('fMesFim');
+  f.meses.forEach(function(m){
+    selIni.innerHTML+='<option value="'+m+'">'+m+'</option>';
+    selFim.innerHTML+='<option value="'+m+'">'+m+'</option>';
+  });
+  selIni.value=f.meses[0];
+  selFim.value=f.meses[f.meses.length-1];
+
+  var selBu=document.getElementById('fBu');
+  f.bus.forEach(function(b){selBu.innerHTML+='<option value="'+b+'">'+b+'</option>';});
+
+  var selCanal=document.getElementById('fCanal');
+  f.canais.forEach(function(c){selCanal.innerHTML+='<option value="'+c+'">'+(CANAL_ICON[c]||'')+' '+c+'</option>';});
+
+  var selObj=document.getElementById('fObjetivo');
+  f.objetivos.forEach(function(o){selObj.innerHTML+='<option value="'+o+'">'+o+'</option>';});
+
+  var selMet=document.getElementById('fMetrica');
+  f.metricas.forEach(function(m){selMet.innerHTML+='<option value="'+m+'">'+m+'</option>';});
+
+  // Events
+  ['fMesIni','fMesFim','fBu','fCanal','fObjetivo','fMetrica','fFlag'].forEach(function(id){
+    document.getElementById(id).addEventListener('change', applyFilters);
+  });
+
+  document.getElementById('btnClearFilters').addEventListener('click', function(){
+    document.getElementById('fMesIni').value=f.meses[0];
+    document.getElementById('fMesFim').value=f.meses[f.meses.length-1];
+    document.getElementById('fBu').value='';
+    document.getElementById('fCanal').value='';
+    document.getElementById('fObjetivo').value='';
+    document.getElementById('fMetrica').value='';
+    document.getElementById('fFlag').value='';
+    applyFilters();
+  });
+
+  // Nav
+  document.querySelector('.nav-main').addEventListener('click',function(e){
+    var btn=e.target.closest('.nav-item');
+    if(!btn) return;
+    var sec=btn.dataset.sec;
+    document.querySelectorAll('.page-section').forEach(function(el){el.classList.remove('ativo');});
+    document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('ativo');});
+    document.getElementById('sec-'+sec).classList.add('ativo');
+    btn.classList.add('ativo');
+    renderCurrentTab();
+  });
+
+  document.getElementById('chipPeriodo').textContent=f.meses[0]+' a '+f.meses[f.meses.length-1];
 }
 
 // ---- RENDER PERF ----
-function renderPerf(bu){
-  document.querySelectorAll('#pillBu .pill').forEach(function(el){el.classList.toggle('ativo',el.dataset.bu===bu);});
-  document.getElementById('heroText').textContent=getHeroText(bu);
+function renderPerf(){
+  var k=agg(FILTERED);
 
-  var k=bu==='todos'?D.kpis:D.by_bu.find(function(x){return x.bu===bu;});
-  if(!k) return;
+  // Hero
+  var f=getFilters();
+  var parts=[];
+  parts.push(num(k.total)+' atividades no periodo selecionado.');
+  parts.push('Taxa de entrega: '+pct(k.taxa_entrega)+'.');
+  parts.push('Taxa de leitura: '+pct(k.taxa_leitura)+'.');
+  if(k.taxa_falha>5) parts.push('Atencao: taxa de falha em '+pct(k.taxa_falha)+'.');
+  else parts.push('Taxa de falha controlada em '+pct(k.taxa_falha)+'.');
+  document.getElementById('heroText').textContent=parts.join(' ');
 
+  // KPIs
   document.getElementById('kTotal').textContent=num(k.total);
+  document.getElementById('kTotalSub').textContent='atividades unicas';
+
   var eEl=document.getElementById('kEntrega');
-  eEl.textContent=pct(k.taxa_entrega);
-  eEl.className='kpi-val '+cls(k.taxa_entrega,80,60);
+  eEl.textContent=pct(k.taxa_entrega);eEl.className='kpi-val '+cls(k.taxa_entrega,80,60);
   document.getElementById('kEntregaSub').innerHTML=k.taxa_entrega>=80?'<span class="ok">Saudavel</span>':'<span class="warn">Abaixo do ideal</span>';
 
   var lEl=document.getElementById('kLeitura');
-  lEl.textContent=pct(k.taxa_leitura);
-  lEl.className='kpi-val '+cls(k.taxa_leitura,30,10);
-  document.getElementById('kLeituraSub').innerHTML=k.taxa_leitura>=30?'<span class="ok">Bom engajamento</span>':k.taxa_leitura>=10?'<span class="warn">Moderado</span>':'<span class="danger">Baixo engajamento</span>';
+  lEl.textContent=pct(k.taxa_leitura);lEl.className='kpi-val '+cls(k.taxa_leitura,30,10);
+  document.getElementById('kLeituraSub').innerHTML=k.taxa_leitura>=30?'<span class="ok">Bom engajamento</span>':k.taxa_leitura>=10?'<span class="warn">Moderado</span>':'<span class="danger">Baixo</span>';
 
   var fEl=document.getElementById('kFalha');
-  fEl.textContent=pct(k.taxa_falha);
-  fEl.className='kpi-val '+(k.taxa_falha<=3?'ok':k.taxa_falha<=8?'warn':'danger');
-  document.getElementById('kFalhaSub').innerHTML=k.taxa_falha<=3?'<span class="ok">Controlada</span>':k.taxa_falha<=8?'<span class="warn">Atencao</span>':'<span class="danger">Acima do limite</span>';
+  fEl.textContent=pct(k.taxa_falha);fEl.className='kpi-val '+(k.taxa_falha<=3?'ok':k.taxa_falha<=8?'warn':'danger');
+  document.getElementById('kFalhaSub').innerHTML=k.taxa_falha<=3?'<span class="ok">Controlada</span>':k.taxa_falha<=8?'<span class="warn">Atencao</span>':'<span class="danger">Critica</span>';
 
   // BU bars
-  var bd=document.getElementById('buBars');bd.innerHTML='';
-  var maxE=Math.max.apply(null,D.by_bu.map(function(b){return b.taxa_entrega;}));
-  D.by_bu.forEach(function(b){
-    var w=Math.round(b.taxa_entrega/Math.max(maxE,1)*100);
-    var cor=CORES_BU[b.bu]||'#6b7280';
-    bd.innerHTML+='<div class="bar-row"><span class="bar-name">'+b.bu+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+cor+'">'+pct(b.taxa_entrega)+'</div></div><span class="bar-end">'+num(b.total)+'</span></div>';
-  });
+  renderGroupedBars('buBars', FILTERED, 'bu', 'taxa_entrega', CORES_BU);
 
   // Objetivo bars
-  var od=document.getElementById('objBars');od.innerHTML='';
-  var cores_obj=['#1a56db','#7c3aed','#059669','#d97706','#dc2626','#db2777'];
-  var maxL=Math.max.apply(null,D.by_objetivo.map(function(o){return o.taxa_leitura;}));
-  D.by_objetivo.forEach(function(o,i){
-    var w=Math.round(o.taxa_leitura/Math.max(maxL,1)*100);
-    od.innerHTML+='<div class="bar-row"><span class="bar-name">'+o.objetivo+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+cores_obj[i%cores_obj.length]+'">'+pct(o.taxa_leitura)+'</div></div><span class="bar-end">'+num(o.total)+'</span></div>';
+  var cores_obj={'Aquisição':'#1a56db','Expansão':'#7c3aed','Ativação':'#059669','Retenção':'#d97706','Outros':'#6b7280','Billing':'#db2777'};
+  renderGroupedBars('objBars', FILTERED, 'objetivo', 'taxa_leitura', cores_obj);
+
+  // Status bars
+  var sd=document.getElementById('statusBars');sd.innerHTML='';
+  var statusMap={'delivered':{l:'Entregue',c:'#059669'},'read':{l:'Lido',c:'#1a56db'},'sent':{l:'Enviado',c:'#d97706'},'click':{l:'Click',c:'#7c3aed'},'failed':{l:'Falhou',c:'#dc2626'}};
+  var byStatus=groupBy(FILTERED,'status');
+  var statusArr=[];
+  for(var s in byStatus){
+    var t=0;byStatus[s].forEach(function(r){t+=r.n;});
+    if(statusMap[s]) statusArr.push({status:s,total:t,label:statusMap[s].l,cor:statusMap[s].c});
+  }
+  statusArr.sort(function(a,b){return b.total-a.total;});
+  var maxSt=statusArr.length?statusArr[0].total:1;
+  statusArr.forEach(function(s){
+    var w=Math.max(3,Math.round(s.total/maxSt*100));
+    sd.innerHTML+='<div class="bar-row"><span class="bar-name">'+s.label+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+s.cor+'">'+num(s.total)+'</div></div><span class="bar-end">'+r1(s.total/k.total*100)+'%</span></div>';
   });
 
-  // Top jornadas table
-  document.getElementById('jornadaSub').textContent=bu==='todos'?'todas as BUs':'BU: '+bu;
+  // Metrica bars
+  var cores_met=['#1a56db','#7c3aed','#059669','#d97706','#dc2626','#db2777','#6366f1','#0891b2','#65a30d','#be185d','#6b7280','#ea580c'];
+  renderGroupedBarsCustom('metricaBars', FILTERED, 'metrica', 'taxa_leitura', cores_met);
+
+  // Jornadas table
+  renderJornadasTable();
+}
+
+function renderGroupedBars(elId, rows, key, metric, coresMap){
+  var el=document.getElementById(elId);el.innerHTML='';
+  var groups=groupBy(rows,key);
+  var arr=[];
+  for(var k in groups){
+    var a=agg(groups[k]);
+    arr.push({name:k,val:a[metric],total:a.total});
+  }
+  arr.sort(function(a,b){return b.total-a.total;});
+  var maxV=Math.max.apply(null,arr.map(function(x){return x.val;}))||1;
+  arr.forEach(function(item){
+    var w=Math.max(3,Math.round(item.val/maxV*100));
+    var cor=(coresMap&&coresMap[item.name])||'#6b7280';
+    el.innerHTML+='<div class="bar-row"><span class="bar-name">'+item.name+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+cor+'">'+pct(item.val)+'</div></div><span class="bar-end">'+num(item.total)+'</span></div>';
+  });
+}
+
+function renderGroupedBarsCustom(elId, rows, key, metric, coresArr){
+  var el=document.getElementById(elId);el.innerHTML='';
+  var groups=groupBy(rows,key);
+  var arr=[];
+  for(var k in groups){
+    var a=agg(groups[k]);
+    arr.push({name:k,val:a[metric],total:a.total});
+  }
+  arr.sort(function(a,b){return b.total-a.total;});
+  var maxV=Math.max.apply(null,arr.map(function(x){return x.val;}))||1;
+  arr.slice(0,8).forEach(function(item,i){
+    var w=Math.max(3,Math.round(item.val/maxV*100));
+    el.innerHTML+='<div class="bar-row"><span class="bar-name">'+item.name+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+coresArr[i%coresArr.length]+'">'+pct(item.val)+'</div></div><span class="bar-end">'+num(item.total)+'</span></div>';
+  });
+}
+
+function renderJornadasTable(){
+  var f=getFilters();
+  var jornadas=D.jornadas.filter(function(j){
+    if(f.bu && j.b!==f.bu) return false;
+    if(f.canal && j.c!==f.canal) return false;
+    if(f.objetivo && j.o!==f.objetivo) return false;
+    if(f.metrica && j.m!==f.metrica) return false;
+    if(f.flag && j.f!==f.flag) return false;
+    if(f.mesIni && j.mes_max<f.mesIni) return false;
+    if(f.mesFim && j.mes_min>f.mesFim) return false;
+    return true;
+  });
+
+  document.getElementById('jornadaSub').textContent=jornadas.length+' jornadas encontradas';
   var tbody=document.getElementById('tblJornadas');tbody.innerHTML='';
-  var jornadas=D.top_jornadas;
-  if(bu!=='todos') jornadas=jornadas.filter(function(j){return j.bu===bu;});
-  jornadas.slice(0,15).forEach(function(j,i){
-    var health=j.taxa_falha<=3?'<span class="badge badge-ok">Saudavel</span>':j.taxa_falha<=8?'<span class="badge badge-warn">Atencao</span>':'<span class="badge badge-danger">Critico</span>';
-    var tagCls=TAG_BU[j.bu]||'t-outros';
+  jornadas.slice(0,20).forEach(function(j,i){
+    var t=j.del+j.rd+j.cl+j.fl+j.snt;
+    var te=t?r1((j.del+j.rd+j.cl)/t*100):0;
+    var tl=t?r1((j.rd+j.cl)/t*100):0;
+    var tf=t?r1(j.fl/t*100):0;
+    var health=tf<=3?'<span class="badge badge-ok">Saudavel</span>':tf<=8?'<span class="badge badge-warn">Atencao</span>':'<span class="badge badge-danger">Critico</span>';
+    var tagCls=TAG_BU[j.b]||'t-outros';
     tbody.innerHTML+='<tr><td style="color:#aaa;font-size:11px">'+(i+1)+'</td>'+
-      '<td style="font-weight:500;font-size:11px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+j.jornada+'">'+j.jornada+'</td>'+
-      '<td><span class="prod-tag '+tagCls+'">'+j.bu+'</span></td>'+
-      '<td><span class="canal-icon">'+(CANAL_ICON[j.canal_principal]||'')+'</span> '+j.canal_principal+'</td>'+
-      '<td>'+num(j.total)+'</td>'+
-      '<td class="'+cls(j.taxa_entrega,80,50)+'" style="font-weight:600">'+pct(j.taxa_entrega)+'</td>'+
-      '<td class="'+cls(j.taxa_leitura,30,10)+'" style="font-weight:600">'+pct(j.taxa_leitura)+'</td>'+
-      '<td class="'+(j.taxa_falha<=3?'ok':j.taxa_falha<=8?'warn':'danger')+'" style="font-weight:600">'+pct(j.taxa_falha)+'</td>'+
+      '<td style="font-weight:500;font-size:11px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+j.j+'">'+j.j+'</td>'+
+      '<td><span class="prod-tag '+tagCls+'">'+j.b+'</span></td>'+
+      '<td>'+(CANAL_ICON[j.c]||'')+' '+j.c+'</td>'+
+      '<td>'+num(j.n)+'</td>'+
+      '<td class="'+cls(te,80,50)+'" style="font-weight:600">'+pct(te)+'</td>'+
+      '<td class="'+cls(tl,30,10)+'" style="font-weight:600">'+pct(tl)+'</td>'+
+      '<td class="'+(tf<=3?'ok':tf<=8?'warn':'danger')+'" style="font-weight:600">'+pct(tf)+'</td>'+
       '<td>'+health+'</td></tr>';
   });
 }
 
 // ---- RENDER CANAIS ----
 function renderCanais(){
-  // KPI cards per canal
+  var groups=groupBy(FILTERED,'canal');
   var kd=document.getElementById('canalKpis');kd.innerHTML='';
-  D.by_canal.forEach(function(c){
-    if(c.total<3) return;
-    var icon=CANAL_ICON[c.canal]||'📡';
-    kd.innerHTML+='<div class="kpi-card"><div class="kpi-label">'+icon+' '+c.canal.toUpperCase()+'</div><div class="kpi-val" style="color:#1a56db">'+num(c.total)+'</div><div class="kpi-sub">Entrega: <span class="'+cls(c.taxa_entrega,80,50)+'">'+pct(c.taxa_entrega)+'</span> · Leitura: <span class="'+cls(c.taxa_leitura,30,10)+'">'+pct(c.taxa_leitura)+'</span></div></div>';
+  var canalArr=[];
+  for(var c in groups){
+    var a=agg(groups[c]);
+    if(a.total<2) continue;
+    canalArr.push({canal:c,agg:a});
+  }
+  canalArr.sort(function(a,b){return b.agg.total-a.agg.total;});
+  canalArr.forEach(function(item){
+    var c=item.canal,a=item.agg;
+    var icon=CANAL_ICON[c]||'📡';
+    kd.innerHTML+='<div class="kpi-card"><div class="kpi-label">'+icon+' '+c.toUpperCase()+'</div><div class="kpi-val" style="color:#1a56db">'+num(a.total)+'</div><div class="kpi-sub">Entrega: <span class="'+cls(a.taxa_entrega,80,50)+'">'+pct(a.taxa_entrega)+'</span> · Leitura: <span class="'+cls(a.taxa_leitura,30,10)+'">'+pct(a.taxa_leitura)+'</span></div></div>';
   });
 
-  // Canal bars
+  // Canal volume bars
   var cb=document.getElementById('canalBars');cb.innerHTML='';
-  var cores_canal={'sms':'#1a56db','email':'#059669','whats':'#7c3aed','Grupo Controle':'#d97706'};
-  var maxC=Math.max.apply(null,D.by_canal.map(function(c){return c.total;}));
-  D.by_canal.forEach(function(c){
-    if(c.total<3) return;
-    var w=Math.max(3,Math.round(c.total/maxC*100));
-    var cor=cores_canal[c.canal]||'#6b7280';
-    cb.innerHTML+='<div class="bar-row"><span class="bar-name">'+(CANAL_ICON[c.canal]||'')+' '+c.canal+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+cor+'">'+num(c.total)+'</div></div></div>';
+  var maxC=canalArr.length?canalArr[0].agg.total:1;
+  canalArr.forEach(function(item){
+    var w=Math.max(3,Math.round(item.agg.total/maxC*100));
+    var cor=CORES_CANAL[item.canal]||'#6b7280';
+    cb.innerHTML+='<div class="bar-row"><span class="bar-name">'+(CANAL_ICON[item.canal]||'')+' '+item.canal+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+cor+'">'+num(item.agg.total)+'</div></div></div>';
   });
 
-  // Metrica bars
-  var mb=document.getElementById('metricaBars');mb.innerHTML='';
-  var cores_met=['#1a56db','#7c3aed','#059669','#d97706','#dc2626','#db2777','#6366f1','#0891b2','#65a30d','#be185d'];
-  var maxM=Math.max.apply(null,D.by_metrica.map(function(m){return m.taxa_leitura;}));
-  D.by_metrica.slice(0,8).forEach(function(m,i){
-    var w=Math.max(3,Math.round(m.taxa_leitura/Math.max(maxM,1)*100));
-    mb.innerHTML+='<div class="bar-row"><span class="bar-name">'+m.metrica+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+cores_met[i%cores_met.length]+'">'+pct(m.taxa_leitura)+'</div></div><span class="bar-end">'+num(m.total)+'</span></div>';
-  });
+  // Flag comparison
+  var fd=document.getElementById('flagDiv');fd.innerHTML='';
+  var byFlag=groupBy(FILTERED,'flag_pontual');
+  for(var fl in byFlag){
+    var a=agg(byFlag[fl]);
+    var cor=fl==='Recorrente'?'#059669':'#1a56db';
+    fd.innerHTML+='<div style="background:#f8faff;border:1px solid #e0eaff;border-radius:8px;padding:14px;margin-bottom:10px">'+
+      '<div style="font-size:13px;font-weight:700;color:'+cor+';margin-bottom:8px">'+fl+' <span style="font-size:11px;font-weight:400;color:#888">('+num(a.total)+')</span></div>'+
+      '<div style="display:flex;gap:20px;font-size:12px">'+
+        '<span>Entrega: <strong class="'+cls(a.taxa_entrega,80,50)+'">'+pct(a.taxa_entrega)+'</strong></span>'+
+        '<span>Leitura: <strong class="'+cls(a.taxa_leitura,30,10)+'">'+pct(a.taxa_leitura)+'</strong></span>'+
+        '<span>Falha: <strong class="'+(a.taxa_falha<=3?'ok':a.taxa_falha<=8?'warn':'danger')+'">'+pct(a.taxa_falha)+'</strong></span>'+
+      '</div></div>';
+  }
 
   // BU x Canal table
+  var buCanal={};
+  FILTERED.forEach(function(r){
+    var key=r.bu+'||'+r.canal;
+    if(!buCanal[key]) buCanal[key]=[];
+    buCanal[key].push(r);
+  });
   var tb=document.getElementById('tblBuCanal');tb.innerHTML='';
-  D.bu_canal.sort(function(a,b){return b.total-a.total;}).forEach(function(bc){
-    var health=bc.taxa_falha<=3?'<span class="badge badge-ok">OK</span>':bc.taxa_falha<=8?'<span class="badge badge-warn">Atencao</span>':'<span class="badge badge-danger">Alerta</span>';
-    var tagCls=TAG_BU[bc.bu]||'t-outros';
-    tb.innerHTML+='<tr>'+
-      '<td><span class="prod-tag '+tagCls+'">'+bc.bu+'</span></td>'+
+  var bcArr=[];
+  for(var key in buCanal){
+    var parts=key.split('||');
+    var a=agg(buCanal[key]);
+    if(a.total<2) continue;
+    bcArr.push({bu:parts[0],canal:parts[1],agg:a});
+  }
+  bcArr.sort(function(a,b){return b.agg.total-a.agg.total;});
+  bcArr.forEach(function(bc){
+    var a=bc.agg;
+    var health=a.taxa_falha<=3?'<span class="badge badge-ok">OK</span>':a.taxa_falha<=8?'<span class="badge badge-warn">Atencao</span>':'<span class="badge badge-danger">Alerta</span>';
+    tb.innerHTML+='<tr><td><span class="prod-tag '+(TAG_BU[bc.bu]||'t-outros')+'">'+bc.bu+'</span></td>'+
       '<td>'+(CANAL_ICON[bc.canal]||'')+' '+bc.canal+'</td>'+
-      '<td>'+num(bc.total)+'</td>'+
-      '<td class="'+cls(bc.taxa_entrega,80,50)+'" style="font-weight:600">'+pct(bc.taxa_entrega)+'</td>'+
-      '<td class="'+cls(bc.taxa_leitura,30,10)+'" style="font-weight:600">'+pct(bc.taxa_leitura)+'</td>'+
-      '<td class="'+(bc.taxa_falha<=3?'ok':bc.taxa_falha<=8?'warn':'danger')+'" style="font-weight:600">'+pct(bc.taxa_falha)+'</td>'+
+      '<td>'+num(a.total)+'</td>'+
+      '<td class="'+cls(a.taxa_entrega,80,50)+'" style="font-weight:600">'+pct(a.taxa_entrega)+'</td>'+
+      '<td class="'+cls(a.taxa_leitura,30,10)+'" style="font-weight:600">'+pct(a.taxa_leitura)+'</td>'+
+      '<td class="'+(a.taxa_falha<=3?'ok':a.taxa_falha<=8?'warn':'danger')+'" style="font-weight:600">'+pct(a.taxa_falha)+'</td>'+
       '<td>'+health+'</td></tr>';
   });
 }
 
 // ---- RENDER INSIGHTS ----
 function renderInsights(){
-  var sms=D.by_canal.find(function(c){return c.canal==='sms';});
-  var whats=D.by_canal.find(function(c){return c.canal==='whats';});
-  var email=D.by_canal.find(function(c){return c.canal==='email';});
-  var erp=D.by_bu.find(function(c){return c.bu==='ERP';});
-  var envios=D.by_bu.find(function(c){return c.bu==='Envios';});
+  var k=agg(FILTERED);
+  var byCanal=groupBy(FILTERED,'canal');
+  var byBu=groupBy(FILTERED,'bu');
+  var byObj=groupBy(FILTERED,'objetivo');
+  var byMet=groupBy(FILTERED,'metrica');
+  var byFlag=groupBy(FILTERED,'flag_pontual');
 
-  var insights=[
-    {type:'info',icon:'💬',title:'SMS domina o volume',body:'SMS representa '+num(sms.total)+' disparos ('+Math.round(sms.total/D.kpis.total*100)+'% do total) com '+pct(sms.taxa_entrega)+' de entrega. Porem, nao permite medir leitura — considerar complementar com canais mensuráveis.',tag:'Volume',tagCls:'tag-i'},
-    {type:'success',icon:'📱',title:'WhatsApp lidera leitura',body:'Com '+pct(whats.taxa_leitura)+' de taxa de leitura, WhatsApp e o canal mais efetivo para engajamento. Taxa de falha de apenas '+pct(whats.taxa_falha)+'.',tag:'Destaque',tagCls:'tag-s'},
-    {type:'warning',icon:'📧',title:'Email com entrega baixa',body:'Email tem apenas '+pct(email.taxa_entrega)+' de taxa de entrega. Porem a leitura entre entregues e de '+pct(email.taxa_leitura)+' com '+pct(D.by_canal.find(function(c){return c.canal==='email';}).taxa_click)+' de click.',tag:'Atencao',tagCls:'tag-w'},
-    {type:'danger',icon:'⚠️',title:'ERP: alta taxa de falha',body:'BU ERP concentra '+pct(erp.taxa_falha)+' de falha com '+num(erp.failed)+' atividades falhadas. Maioria via SMS — revisar base de contatos.',tag:'Alerta',tagCls:'tag-d'},
-    {type:'success',icon:'📦',title:'Envios: menor falha',body:'BU Envios apresenta apenas '+pct(envios.taxa_falha)+' de falha e '+pct(envios.taxa_leitura)+' de leitura — melhor performance entre as BUs.',tag:'Referencia',tagCls:'tag-s'},
-    {type:'info',icon:'🔄',title:'Recorrente vs Pontual',body:'Jornadas recorrentes tem '+pct(D.by_flag[1].taxa_leitura)+' de leitura vs '+pct(D.by_flag[0].taxa_leitura)+' das pontuais. Recorrentes sao mais engajantes, mas representam apenas '+num(D.by_flag[1].total)+' atividades.',tag:'Padrao',tagCls:'tag-i'}
-  ];
+  // Find best/worst
+  function best(groups,metric,dir){
+    var arr=[];
+    for(var k in groups){var a=agg(groups[k]);if(a.total>=5) arr.push({name:k,agg:a});}
+    arr.sort(function(a,b){return dir==='desc'?b.agg[metric]-a.agg[metric]:a.agg[metric]-b.agg[metric];});
+    return arr.length?arr[0]:null;
+  }
+
+  var bestCanalLeit=best(byCanal,'taxa_leitura','desc');
+  var worstBuFalha=best(byBu,'taxa_falha','desc');
+  var bestBuEntrega=best(byBu,'taxa_entrega','desc');
+  var bestObjLeit=best(byObj,'taxa_leitura','desc');
+  var bestMetLeit=best(byMet,'taxa_leitura','desc');
+
+  var insights=[];
+  if(bestCanalLeit) insights.push({type:'success',icon:'📱',title:bestCanalLeit.name+' lidera leitura',body:'Canal '+bestCanalLeit.name+' tem '+pct(bestCanalLeit.agg.taxa_leitura)+' de taxa de leitura com '+num(bestCanalLeit.agg.total)+' disparos.',tag:'Destaque',tagCls:'tag-s'});
+  if(worstBuFalha && worstBuFalha.agg.taxa_falha>3) insights.push({type:'danger',icon:'⚠️',title:worstBuFalha.name+': alta falha',body:'BU '+worstBuFalha.name+' tem '+pct(worstBuFalha.agg.taxa_falha)+' de falha ('+num(worstBuFalha.agg.failed)+' falhadas). Revisar base de contatos.',tag:'Alerta',tagCls:'tag-d'});
+  if(bestBuEntrega) insights.push({type:'info',icon:'✅',title:bestBuEntrega.name+': melhor entrega',body:'BU '+bestBuEntrega.name+' lidera com '+pct(bestBuEntrega.agg.taxa_entrega)+' de taxa de entrega.',tag:'Referencia',tagCls:'tag-i'});
+  if(bestObjLeit) insights.push({type:'success',icon:'🎯',title:bestObjLeit.name+' engaja mais',body:'Objetivo "'+bestObjLeit.name+'" tem '+pct(bestObjLeit.agg.taxa_leitura)+' de leitura — maior entre os objetivos filtrados.',tag:'Oportunidade',tagCls:'tag-s'});
+  if(bestMetLeit) insights.push({type:'info',icon:'🏆',title:'Metrica: '+bestMetLeit.name,body:'Metrica "'+bestMetLeit.name+'" lidera leitura com '+pct(bestMetLeit.agg.taxa_leitura)+' ('+num(bestMetLeit.agg.total)+' atividades).',tag:'Destaque',tagCls:'tag-i'});
+
+  var recFlag=byFlag['Recorrente']?agg(byFlag['Recorrente']):null;
+  var ponFlag=byFlag['Pontual']?agg(byFlag['Pontual']):null;
+  if(recFlag && ponFlag && recFlag.total>=5) insights.push({type:'warning',icon:'🔄',title:'Recorrente vs Pontual',body:'Recorrentes: '+pct(recFlag.taxa_leitura)+' leitura vs Pontuais: '+pct(ponFlag.taxa_leitura)+'. '+(recFlag.taxa_leitura>ponFlag.taxa_leitura?'Recorrentes engajam mais.':'Pontuais engajam mais neste corte.'),tag:'Comparativo',tagCls:'tag-w'});
 
   var ic=document.getElementById('insightCards');ic.innerHTML='';
   insights.forEach(function(ins){
     ic.innerHTML+='<div class="insight-card '+ins.type+'"><div class="insight-icon">'+ins.icon+'</div><div class="insight-title">'+ins.title+'</div><div class="insight-body">'+ins.body+'</div><span class="insight-tag '+ins.tagCls+'">'+ins.tag+'</span></div>';
   });
+  if(!insights.length) ic.innerHTML='<div class="insight-card info"><div class="insight-icon">ℹ️</div><div class="insight-title">Sem dados suficientes</div><div class="insight-body">Ajuste os filtros para ter pelo menos 5 atividades em cada grupo.</div></div>';
 
   // Padroes
-  var padroes=[
-    {ico:'📱',txt:'<strong>WhatsApp e o rei do engajamento:</strong> taxa de leitura '+pct(whats.taxa_leitura)+' — 2x maior que email. Ideal para comunicacoes criticas.'},
-    {ico:'💬',txt:'<strong>SMS garante entrega mas nao leitura:</strong> '+pct(sms.taxa_entrega)+' de entrega, mas sem metrica de leitura. Usar como canal de alcance, nao de engajamento.'},
-    {ico:'🎯',txt:'<strong>Expansao tem melhor leitura por objetivo:</strong> '+pct(D.by_objetivo.find(function(o){return o.objetivo==='Expansão';}).taxa_leitura)+' — mensagens de upsell/cross-sell ressoam com a base ativa.'},
-    {ico:'⚡',txt:'<strong>Jornadas recorrentes engajam mais:</strong> '+pct(D.by_flag[1].taxa_leitura)+' de leitura vs '+pct(D.by_flag[0].taxa_leitura)+' das pontuais. Sequencias educam e retém.'},
-    {ico:'🏆',txt:'<strong>Crossell lidera em metrica de leitura:</strong> '+pct(D.by_metrica.find(function(m){return m.metrica==='Crossell';}).taxa_leitura)+' — ofertas complementares geram curiosidade.'}
-  ];
   var pl=document.getElementById('padroesList');pl.innerHTML='';
+  var padroes=[];
+  if(bestCanalLeit) padroes.push({ico:'📱',txt:'<strong>'+bestCanalLeit.name+' e o melhor canal para leitura</strong> com '+pct(bestCanalLeit.agg.taxa_leitura)+' no periodo filtrado.'});
+
+  var smsData=byCanal['sms']?agg(byCanal['sms']):null;
+  if(smsData && smsData.total>0) padroes.push({ico:'💬',txt:'<strong>SMS garante alcance:</strong> '+pct(smsData.taxa_entrega)+' de entrega, mas sem metrica de leitura disponivel.'});
+
+  if(recFlag && recFlag.taxa_leitura>10) padroes.push({ico:'🔁',txt:'<strong>Jornadas recorrentes:</strong> '+pct(recFlag.taxa_leitura)+' de leitura. Sequencias educam e retêm.'});
+
+  if(k.taxa_falha>5) padroes.push({ico:'⚠️',txt:'<strong>Taxa de falha acima de 5%:</strong> '+pct(k.taxa_falha)+' geral. Recomenda-se higienizacao da base.'});
+  else padroes.push({ico:'✅',txt:'<strong>Taxa de falha controlada:</strong> '+pct(k.taxa_falha)+' esta dentro do aceitavel.'});
+
   padroes.forEach(function(p){pl.innerHTML+='<li><span class="ico">'+p.ico+'</span><span>'+p.txt+'</span></li>';});
 
-  // Flag comparison
-  var fd=document.getElementById('flagDiv');fd.innerHTML='';
-  D.by_flag.forEach(function(f){
-    var cor=f.flag==='Recorrente'?'#059669':'#1a56db';
-    fd.innerHTML+='<div style="background:#f8faff;border:1px solid #e0eaff;border-radius:8px;padding:14px;margin-bottom:10px">'+
-      '<div style="font-size:13px;font-weight:700;color:'+cor+';margin-bottom:8px">'+f.flag+' <span style="font-size:11px;font-weight:400;color:#888">('+num(f.total)+' atividades)</span></div>'+
-      '<div style="display:flex;gap:20px;font-size:12px">'+
-        '<span>Entrega: <strong class="'+cls(f.taxa_entrega,80,50)+'">'+pct(f.taxa_entrega)+'</strong></span>'+
-        '<span>Leitura: <strong class="'+cls(f.taxa_leitura,30,10)+'">'+pct(f.taxa_leitura)+'</strong></span>'+
-        '<span>Falha: <strong class="'+(f.taxa_falha<=3?'ok':f.taxa_falha<=8?'warn':'danger')+'">'+pct(f.taxa_falha)+'</strong></span>'+
-      '</div></div>';
+  // Metrica rank
+  var mr=document.getElementById('metricaRankDiv');mr.innerHTML='';
+  var metArr=[];
+  for(var m in byMet){var a=agg(byMet[m]);if(a.total>=2) metArr.push({name:m,agg:a});}
+  metArr.sort(function(a,b){return b.agg.taxa_leitura-a.agg.taxa_leitura;});
+  var cores_met=['#1a56db','#7c3aed','#059669','#d97706','#dc2626','#db2777','#6366f1','#0891b2','#65a30d','#be185d','#6b7280','#ea580c'];
+  var maxML=metArr.length?metArr[0].agg.taxa_leitura:1;
+  metArr.slice(0,8).forEach(function(item,i){
+    var w=Math.max(3,Math.round(item.agg.taxa_leitura/Math.max(maxML,1)*100));
+    mr.innerHTML+='<div class="bar-row"><span class="bar-name">'+item.name+'</span><div class="bar-track"><div class="bar-fill-h" style="width:'+w+'%;background:'+cores_met[i%cores_met.length]+'">'+pct(item.agg.taxa_leitura)+'</div></div><span class="bar-end">'+num(item.agg.total)+'</span></div>';
   });
 }
 
 // ---- RENDER TIMELINE ----
 function renderTimeline(){
-  var tl=D.timeline.filter(function(t){return t.total>=10;});
+  var byMes=groupBy(FILTERED,'mes');
+  var meses=Object.keys(byMes).sort();
+  var tlData=meses.map(function(m){var a=agg(byMes[m]);a.mes=m;return a;});
 
   // Vol KPIs
   var vk=document.getElementById('volKpis');
-  var last3=tl.slice(-3);
-  var avgVol=Math.round(last3.reduce(function(s,t){return s+t.total;},0)/last3.length);
-  var avgEnt=Math.round(last3.reduce(function(s,t){return s+t.taxa_entrega;},0)/last3.length*10)/10;
-  var avgLei=Math.round(last3.reduce(function(s,t){return s+t.taxa_leitura;},0)/last3.length*10)/10;
-  var avgFal=Math.round(last3.reduce(function(s,t){return s+t.taxa_falha;},0)/last3.length*10)/10;
-  vk.innerHTML='<div class="kpi-card"><div class="kpi-label">📅 Meses com dados</div><div class="kpi-val" style="color:#1a56db">'+tl.length+'</div><div class="kpi-sub">meses ativos</div></div>'+
-    '<div class="kpi-card"><div class="kpi-label">📊 Media ultimos 3m</div><div class="kpi-val warn">'+num(avgVol)+'</div><div class="kpi-sub">atividades/mes</div></div>'+
-    '<div class="kpi-card"><div class="kpi-label">✅ Entrega media 3m</div><div class="kpi-val '+cls(avgEnt,80,50)+'">'+pct(avgEnt)+'</div><div class="kpi-sub">taxa de entrega</div></div>'+
-    '<div class="kpi-card"><div class="kpi-label">👁 Leitura media 3m</div><div class="kpi-val '+cls(avgLei,30,10)+'">'+pct(avgLei)+'</div><div class="kpi-sub">taxa de leitura</div></div>';
+  var last3=tlData.slice(-3);
+  var avgVol=last3.length?Math.round(last3.reduce(function(s,t){return s+t.total;},0)/last3.length):0;
+  var avgEnt=last3.length?r1(last3.reduce(function(s,t){return s+t.taxa_entrega;},0)/last3.length):0;
+  var avgLei=last3.length?r1(last3.reduce(function(s,t){return s+t.taxa_leitura;},0)/last3.length):0;
+  var totalK=agg(FILTERED);
+  vk.innerHTML='<div class="kpi-card"><div class="kpi-label">📅 Meses com dados</div><div class="kpi-val" style="color:#1a56db">'+meses.length+'</div><div class="kpi-sub">meses ativos</div></div>'+
+    '<div class="kpi-card"><div class="kpi-label">📊 Media ult. 3m</div><div class="kpi-val warn">'+num(avgVol)+'</div><div class="kpi-sub">atividades/mes</div></div>'+
+    '<div class="kpi-card"><div class="kpi-label">✅ Entrega med. 3m</div><div class="kpi-val '+cls(avgEnt,80,50)+'">'+pct(avgEnt)+'</div><div class="kpi-sub">taxa entrega</div></div>'+
+    '<div class="kpi-card"><div class="kpi-label">👁 Leitura med. 3m</div><div class="kpi-val '+cls(avgLei,30,10)+'">'+pct(avgLei)+'</div><div class="kpi-sub">taxa leitura</div></div>';
 
   // Timeline bars
-  var maxVol=Math.max.apply(null,tl.map(function(t){return t.total;}));
-  function renderTlBars(elId,data,key,maxVal,cor){
+  var maxVol=Math.max.apply(null,tlData.map(function(t){return t.total;}))||1;
+  function renderTl(elId,data,key,maxVal,cor){
     var el=document.getElementById(elId);el.innerHTML='';
     data.forEach(function(t){
-      var h=Math.max(3,Math.round(t[key]/(maxVal||1)*100));
+      var val=t[key];
+      var h=Math.max(3,Math.round(val/(maxVal||1)*100));
       var label=t.mes.substring(2);
-      el.innerHTML+='<div class="tl-col"><div class="tl-val">'+(typeof t[key]==='number'&&t[key]<1000?t[key]:key.includes('taxa')?pct(t[key]):num(t[key]))+'</div><div class="tl-bar-wrap"><div class="tl-bar" style="height:'+h+'%;background:'+(cor||'#1a56db')+'"></div></div><div class="tl-label">'+label+'</div></div>';
+      var display=key==='total'?num(val):pct(val);
+      el.innerHTML+='<div class="tl-col"><div class="tl-val">'+display+'</div><div class="tl-bar-wrap"><div class="tl-bar" style="height:'+h+'%;background:'+cor+'"></div></div><div class="tl-label">'+label+'</div></div>';
     });
   }
-  renderTlBars('timelineDiv',tl,'total',maxVol,'#1a56db');
-  renderTlBars('tlEntrega',tl,'taxa_entrega',100,'#059669');
-  renderTlBars('tlLeitura',tl,'taxa_leitura',100,'#7c3aed');
+  renderTl('timelineDiv',tlData,'total',maxVol,'#1a56db');
+  renderTl('tlEntrega',tlData,'taxa_entrega',100,'#059669');
+  renderTl('tlLeitura',tlData,'taxa_leitura',100,'#7c3aed');
 
   // Heatmap
   var days=['Seg','Ter','Qua','Qui','Sex','Sab','Dom'];
@@ -509,15 +798,12 @@ function renderTimeline(){
   html+='</div>';
   var maxH=0;
   for(var k in D.heatmap) if(D.heatmap[k]>maxH) maxH=D.heatmap[k];
-  var hours=[0,2,8,10,12,13,14,15,16,18];
-  hours.forEach(function(h){
+  [0,2,8,10,12,14,16,18].forEach(function(h){
     html+='<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px"><span style="font-size:9px;color:#aaa;min-width:22px">'+h+'h</span><div style="flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:4px">';
     for(var d=0;d<7;d++){
       var v=D.heatmap[d+'_'+h]||0;
-      var alpha=Math.min(1,Math.max(0.05,v/Math.max(maxH*0.05,1)));
+      var alpha=v>0?Math.min(1,Math.max(0.08,v/Math.max(maxH*0.03,1))):0.03;
       if(v>maxH*0.3) alpha=1;
-      else if(v>maxH*0.01) alpha=0.4+v/maxH*0.6;
-      else alpha=v>0?0.15:0.03;
       html+='<div class="hm-cell" style="background:rgba(26,86,219,'+alpha+');color:'+(alpha>0.4?'#fff':'#aaa')+'">'+(v>0?num(v):'')+'</div>';
     }
     html+='</div></div>';
@@ -526,31 +812,14 @@ function renderTimeline(){
 
   // Saude BU
   var sd=document.getElementById('saudeBuDiv');sd.innerHTML='';
-  D.by_bu.forEach(function(b){
-    var semCls=b.taxa_falha<=3?'s-ok':b.taxa_falha<=8?'s-warn':'s-danger';
-    var valCls=b.taxa_falha<=3?'ok':b.taxa_falha<=8?'warn':'danger';
-    sd.innerHTML+='<div class="fadiga-row"><span class="fadiga-nome"><span class="semaforo '+semCls+'"></span>'+b.bu+'</span><span>Falha: <span class="fadiga-val '+valCls+'">'+pct(b.taxa_falha)+'</span></span><span>Leitura: <span class="fadiga-val '+cls(b.taxa_leitura,30,10)+'">'+pct(b.taxa_leitura)+'</span></span><span>Vol: <span class="fadiga-val" style="color:#1a56db">'+num(b.total)+'</span></span></div>';
-  });
-}
-
-// ---- NAV ----
-function setupNav(){
-  document.querySelector('.nav-main').addEventListener('click',function(e){
-    var btn=e.target.closest('.nav-item');
-    if(!btn) return;
-    var sec=btn.dataset.sec;
-    document.querySelectorAll('.page-section').forEach(function(el){el.classList.remove('ativo');});
-    document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('ativo');});
-    document.getElementById('sec-'+sec).classList.add('ativo');
-    btn.classList.add('ativo');
-    if(sec==='canais') renderCanais();
-    if(sec==='insights') renderInsights();
-    if(sec==='volume') renderTimeline();
-  });
-
-  document.getElementById('pillBu').addEventListener('click',function(e){
-    var btn=e.target.closest('.pill');
-    if(btn) renderPerf(btn.dataset.bu);
+  var byBu=groupBy(FILTERED,'bu');
+  var buArr=[];
+  for(var b in byBu){var a=agg(byBu[b]);buArr.push({bu:b,agg:a});}
+  buArr.sort(function(a,b){return b.agg.total-a.agg.total;});
+  buArr.forEach(function(item){
+    var a=item.agg;
+    var semCls=a.taxa_falha<=3?'s-ok':a.taxa_falha<=8?'s-warn':'s-danger';
+    sd.innerHTML+='<div class="fadiga-row"><span class="fadiga-nome"><span class="semaforo '+semCls+'"></span>'+item.bu+'</span><span>Falha: <span class="fadiga-val '+(a.taxa_falha<=3?'ok':a.taxa_falha<=8?'warn':'danger')+'">'+pct(a.taxa_falha)+'</span></span><span>Leitura: <span class="fadiga-val '+cls(a.taxa_leitura,30,10)+'">'+pct(a.taxa_leitura)+'</span></span><span>Vol: <span class="fadiga-val" style="color:#1a56db">'+num(a.total)+'</span></span></div>';
   });
 }
 </script>
