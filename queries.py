@@ -12,17 +12,6 @@
 
 def query_bsa_sfmc_clm_journeyhistory():
     return """
-    SELECT 
-    id, contato, data_envio, nome_jornada, nome_atividade, 
-    canal, status, id_empresa, cnpj, flag_pontual, 
-    objetivo, bu, campanha, metrica
-    FROM (
-    SELECT *,
-        ROW_NUMBER() OVER (
-            PARTITION BY nome_atividade 
-            ORDER BY data_envio DESC
-        ) AS linha_num
-    FROM "datalake_gold"."bsa_sfmc_clm_journeyhistory"
-    )
-    WHERE linha_num = 1
+    SELECT * FROM "datalake_gold"."bsa_sfmc_clm_journeyhistory"
+    WHERE data_envio >= TIMESTAMP '2026-01-01 00:00:00.000'
     """

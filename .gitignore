@@ -4,4 +4,6 @@ __pycache__/
 *.pyc
 .env
 dados.csv
+data.json
 .claude/
+
