@@ -2277,13 +2277,34 @@ function loadDataStatus(){
 function refreshData(){
   var btn=document.getElementById('btnRefresh');
   var orig=btn.textContent;
+  var pw=sessionStorage.getItem('dash_pw');
+  if(!pw){alert('Sessao expirou — recarregue a pagina.');return;}
+
+  // Em hosting estatico (GitHub Pages) nao ha backend — recarrega data.enc.json direto
+  var isStatic=!window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1');
+  if(isStatic){
+    btn.textContent='⏳ Carregando...';
+    btn.disabled=true;
+    fetch('data.enc.json?t='+Date.now()).then(function(r){return r.json();}).then(function(blob){
+      ENC_BLOB=blob;
+      return decryptBlob(blob, pw);
+    }).then(function(data){
+      loadInto(data);
+      renderHeaderRange();
+      refreshFilterOptions();
+      applyFilters();
+      loadDataStatus();
+      btn.textContent='✓ Atualizado';
+      setTimeout(function(){btn.textContent=orig;btn.disabled=false;},1500);
+    }).catch(function(e){alert('Erro ao decifrar: '+e);btn.textContent=orig;btn.disabled=false;});
+    return;
+  }
+
+  // Servidor local: chama /refresh para regenerar dados
   btn.textContent='⏳ Processando...';
   btn.disabled=true;
   fetch('/refresh').then(function(r){return r.json();}).then(function(res){
     if(!res.ok){alert('Erro ao regenerar: '+(res.stderr||'').slice(0,500));btn.textContent=orig;btn.disabled=false;return;}
-    // reload data encriptado e re-decifra com senha em cache
-    var pw=sessionStorage.getItem('dash_pw');
-    if(!pw){alert('Sessao expirou — recarregue a pagina.');btn.textContent=orig;btn.disabled=false;return;}
     fetch('data.enc.json?t='+Date.now()).then(function(r){return r.json();}).then(function(blob){
       ENC_BLOB=blob;
       return decryptBlob(blob, pw);
