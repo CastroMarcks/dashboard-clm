@@ -10,8 +10,9 @@
 # sandbox_datalake_sales_ops.oli_pedidos_marketmap
 
 
-def query_bsa_sfmc_clm_journeyhistory():
-    return """
+def query_bsa_sfmc_clm_journeyhistory(desde=None):
+    filtro = f"data_envio > TIMESTAMP '{desde} 23:59:59.999'" if desde else "data_envio >= TIMESTAMP '2026-01-01 00:00:00.000'"
+    return f"""
     SELECT * FROM "datalake_gold"."bsa_sfmc_clm_journeyhistory"
-    WHERE data_envio >= TIMESTAMP '2026-01-01 00:00:00.000'
+    WHERE {filtro}
     """
