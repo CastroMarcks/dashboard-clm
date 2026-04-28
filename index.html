@@ -769,7 +769,8 @@ var THRESHOLDS = {
   entrega: {good:80, warn:60},
   leitura: {good:30, warn:10},
   falha:   {good:3,  warn:8},
-  click:   {good:5,  warn:2}
+  click:   {good:5,  warn:2},
+  weights: {entrega:0.40, leitura:0.25, falha_inv:0.25, click:0.10}
 };
 var CORES_BU={'ERP':'#1a56db','Conta Digital':'#d97706','Envios':'#7c3aed','Ecommerce':'#db2777','Outros':'#6b7280'};
 var TAG_BU={'ERP':'t-erp','Conta Digital':'t-conta','Envios':'t-envios','Ecommerce':'t-ecommerce','Outros':'t-outros'};
