@@ -34,12 +34,12 @@ body{font-family:'Inter',sans-serif;background:#f0ede8;color:#1a1a1a;min-height:
 
 /* MULTI-SELECT */
 .multi-wrap{position:relative}
-.multi-trigger{width:100%;font-size:12px;padding:6px 10px;border:1px solid #e5e7eb;border-radius:8px;background:#f9fafb;color:#333;font-family:inherit;cursor:pointer;display:flex;justify-content:space-between;align-items:center;text-align:left;min-height:30px;min-width:200px}
+.multi-trigger{position:relative;width:100%;font-size:12px;padding:6px 26px 6px 10px;border:1px solid #e5e7eb;border-radius:8px;background:#f9fafb;color:#333;font-family:inherit;cursor:pointer;display:block;text-align:left;min-height:30px;min-width:130px;line-height:1.4}
 .multi-trigger:hover{border-color:#d1d5db}
 .multi-trigger.active{border-color:#1a56db;background:#fff}
-.multi-label{font-size:12px;color:#333;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;flex:1}
+.multi-label{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px;color:#333}
 .multi-label.empty{color:#999}
-.multi-caret{font-size:9px;color:#666;margin-left:6px}
+.multi-caret{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:9px;color:#666;pointer-events:none}
 .multi-panel{position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:50;padding:8px;display:flex;flex-direction:column;min-width:320px;max-width:480px}
 .multi-panel[hidden]{display:none}
 .multi-search-mini{font-size:12px;padding:6px 10px;border:1px solid #e5e7eb;border-radius:6px;width:100%;margin-bottom:6px;background:#fff;min-width:0}
@@ -653,16 +653,16 @@ tr:hover td{background:#fafbff}
     </div>
 
     <div class="full-card">
-      <div class="card-title">Top 10 jornadas em <b>volume de falhas</b> <span>failed absoluto · base completa</span></div>
-      <div class="card-subtitle">Jornadas que mais geram falhas em numero absoluto — priorize saneamento dessas. Volume manda mais que taxa: 5% falha em 1M e mais critico que 50% em 1k.</div>
+      <div class="card-title">Top 10 Jornadas · Volume de Falhas <span>falhas absolutas · base completa</span></div>
+      <div class="card-subtitle">Jornadas com maior numero absoluto de falhas — priorize saneamento dessas. Volume importa mais que taxa: 5% em 1M e mais critico que 50% em 1k.</div>
       <table><thead><tr>
         <th>#</th><th>Jornada</th><th>BU</th><th>Canal</th><th>Volume total</th><th>Falhas</th><th>Taxa falha</th>
       </tr></thead><tbody id="tblTopFalhas"></tbody></table>
     </div>
 
     <div class="full-card">
-      <div class="card-title">Jornadas recorrentes <b>sem Grupo Controle</b> <span id="semCtrlSub">ultimos 30 dias</span></div>
-      <div class="card-subtitle">Recorrentes que rodaram nos ultimos 30 dias mas nao tem holdout configurado — sem isso nao da pra medir lift. Avaliar se faz sentido ativar controle.</div>
+      <div class="card-title">Jornadas Recorrentes sem Grupo Controle <span id="semCtrlSub">ultimos 30 dias</span></div>
+      <div class="card-subtitle">Recorrentes ativas nos ultimos 30 dias sem holdout configurado — sem grupo controle nao e possivel medir lift. Avalie se faz sentido ativar.</div>
       <table><thead><tr>
         <th>#</th><th>Jornada</th><th>BU</th><th>Canal</th><th>Objetivo</th><th>Volume (30d)</th>
       </tr></thead><tbody id="tblSemCtrl"></tbody></table>

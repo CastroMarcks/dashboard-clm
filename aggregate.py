@@ -157,8 +157,14 @@ def health_score(k):
     f = max(0.0, min(100.0, 100 - k['taxa_falha'] * 4))
     c = max(0.0, min(100.0, k['taxa_click'] * 10))
     score = round(e * w['entrega'] + l * w['leitura'] + f * w['falha_inv'] + c * w['click'])
-    label = 'Saudavel' if score >= 75 else 'Atencao' if score >= 55 else 'Critico'
-    color = '#059669' if score >= 75 else '#d97706' if score >= 55 else '#dc2626'
+    if score >= 80:
+        label, color = 'Otimo',   '#059669'
+    elif score >= 60:
+        label, color = 'Bom',     '#16a34a'
+    elif score >= 50:
+        label, color = 'Atencao', '#d97706'
+    else:
+        label, color = 'Critico', '#dc2626'
     return {'score': score, 'label': label, 'color': color}
 
 
@@ -495,7 +501,7 @@ def build_insights(filtered, dia_30d):
         a = agg(rows)
         if a['total'] >= 2:
             metrica_rank.append({'name': name, 'val': a['taxa_leitura'], 'total': a['total']})
-    metrica_rank.sort(key=lambda x: x['taxa_leitura'], reverse=True)
+    metrica_rank.sort(key=lambda x: x['val'], reverse=True)
 
     scatter = []
     for name, rows in by_obj.items():
@@ -541,7 +547,7 @@ def build_jornadas_section(data, filtered, f, mom):
 
     deltas = get_jornada_deltas(jornadas, filtered, mom)
 
-    saudaveis, atencao, criticas = [], [], []
+    saudaveis, atencao, criticas, all_computed = [], [], [], []
     for j in jornadas:
         t  = j['del'] + j['rd'] + j['cl'] + j['fl'] + j['snt']
         tf = _r1(j['fl'] / t * 100) if t else 0.0
@@ -556,6 +562,7 @@ def build_jornadas_section(data, filtered, f, mom):
                  '_tem_lei': tem_lei, '_health_badge': health_badge,
                  '_health_label': health_label,
                  '_delta_leitura': deltas.get(j['j'])}
+        all_computed.append(entry)
         if tf > T['falha']['warn'] or j['j'] in atencao_set:
             criticas.append(entry)
         elif tf > T['falha']['good'] or (tem_lei and tl is not None and tl < T['leitura']['warn']):
@@ -564,7 +571,7 @@ def build_jornadas_section(data, filtered, f, mom):
             saudaveis.append(entry)
 
     return {
-        'jornadas':       jornadas[:30],
+        'jornadas':       all_computed[:30],
         'saudaveis':      saudaveis,
         'atencao':        atencao,
         'criticas':       criticas,
