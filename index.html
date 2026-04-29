@@ -1400,9 +1400,15 @@ function initFilters(){
       pill.className='ai-pill';
       pill.textContent='🎯 Aplicar filtros sugeridos';
       pill.addEventListener('click',function(){
-        applyF(action.filters);
-        pill.textContent='✅ Filtros aplicados';
-        pill.className='ai-pill done';
+        var res=applyF(action.filters);
+        if(res.naoEncontrados&&res.naoEncontrados.length>0){
+          pill.textContent='⚠️ Não encontrado: '+res.naoEncontrados.join(', ');
+          pill.style.color='#d97706';pill.style.background='#fffbeb';pill.style.borderColor='#fcd34d';
+        }else{
+          pill.textContent='✅ Filtros aplicados';
+          pill.className='ai-pill done';
+        }
+        pill.style.cursor='default';
       });
       m.querySelector('.ai-bot-body').appendChild(pill);
     }
@@ -1426,6 +1432,12 @@ function initFilters(){
   }
   function hideDots(){var d=document.getElementById('aiDots');if(d)d.remove();}
 
+  function _getJornadas(){
+    if(typeof CROSS==='undefined'||!CROSS)return[];
+    var s={};CROSS.forEach(function(r){if(r.j)s[r.j]=true;});
+    return Object.keys(s).sort();
+  }
+
   function buildCtx(){
     var c={};
     if(typeof AGG!=='undefined'&&AGG){
@@ -1436,16 +1448,25 @@ function initFilters(){
       if(AGG.canais_data&&AGG.canais_data.canais)c.canais=AGG.canais_data.canais.map(function(x){return{canal:x.canal,entrega:x.agg.taxa_entrega,leitura:x.agg.taxa_leitura,falha:x.agg.taxa_falha,total:x.agg.total};});
     }
     if(typeof D!=='undefined'&&D&&D.filtros){
-      c.disponivel={bus:D.filtros.bus,canais:D.filtros.canais,periodo:D.filtros.dia_min+' a '+D.filtros.dia_max};
+      var jornadas=_getJornadas();
+      c.disponivel={
+        bus:D.filtros.bus,
+        canais:D.filtros.canais,
+        objetivos:D.filtros.objetivos,
+        periodo:D.filtros.dia_min+' a '+D.filtros.dia_max,
+        jornadas_disponiveis:jornadas,
+        total_jornadas:jornadas.length
+      };
     }
     if(typeof getFilters==='function'){
       var f=getFilters();
-      c.filtros_ativos={dataIni:f.dataIni,dataFim:f.dataFim,bu:f.bu||'todas',canal:f.canal||'todos',objetivo:f.objetivo||'todos'};
+      var jSel=f.jornadas?Array.from(f.jornadas):[];
+      c.filtros_ativos={dataIni:f.dataIni,dataFim:f.dataFim,bu:f.bu||'',canal:f.canal||'',objetivo:f.objetivo||'',jornadas_selecionadas:jSel};
     }
     return c;
   }
 
-  var SYS='Você é um especialista sênior em CLM (Customer Lifecycle Management) da Olist, com domínio em marketing automation via SFMC e análise de performance de jornadas de comunicação.\n\nDashboard: Performance CRM — journey history (bsa_sfmc_clm_journeyhistory).\nCanais: email, sms, whats (WhatsApp). Métricas:\n- taxa_entrega: bom ≥80%, alerta <60%\n- taxa_leitura: bom ≥30%, alerta <10%\n- taxa_click (só email): bom ≥5%, alerta <2%\n- taxa_falha: bom ≤3%, alerta >8%\nHealth Score 0-100: Ótimo≥80, Bom≥60, Atenção≥50, Crítico<50.\nBUs: ERP, Conta Digital, Envios, Ecommerce, Outros.\n\nSEMPRE responda em JSON válido com exatamente esta estrutura:\n{"text":"sua resposta em português, use **negrito** para destaques","action":null}\n\nQuando o usuário pedir para filtrar ou focar em algo, use action:\n{"text":"...","action":{"type":"filter","filters":{"bu":"ERP","canal":"email"}}}\n\nFiltros aceitos (todos opcionais): bu, canal, objetivo, metrica, flag, dataIni (YYYY-MM-DD), dataFim (YYYY-MM-DD).\nValores canal: sms, email, whats. Seja direto, use dados do contexto, foque em insights acionáveis.';
+  var SYS='Você é um especialista sênior em CLM (Customer Lifecycle Management) da Olist, com domínio em marketing automation via SFMC e análise de performance de jornadas de comunicação.\n\nDashboard: Performance CRM — journey history (bsa_sfmc_clm_journeyhistory).\nCanais: email, sms, whats (WhatsApp). Métricas:\n- taxa_entrega: bom ≥80%, alerta <60%\n- taxa_leitura: bom ≥30%, alerta <10%\n- taxa_click (só email): bom ≥5%, alerta <2%\n- taxa_falha: bom ≤3%, alerta >8%\nHealth Score 0-100: Ótimo≥80, Bom≥60, Atenção≥50, Crítico<50.\nBUs: ERP, Conta Digital, Envios, Ecommerce, Outros.\n\nSEMPRE responda em JSON válido com exatamente esta estrutura:\n{"text":"sua resposta em português, use **negrito** para destaques","action":null}\n\nQuando o usuário pedir para filtrar, use action. Para jornadas, consulte OBRIGATORIAMENTE o campo ctx.disponivel.jornadas_disponiveis e use APENAS nomes que existam nessa lista. Se a jornada pedida não existir, informe no campo text e NÃO inclua jornadas no filtro.\n\n{"text":"...","action":{"type":"filter","filters":{"bu":"ERP","canal":"email","jornadas":["Nome Exato da Jornada"]}}}\n\nFiltros aceitos (todos opcionais): bu, canal, objetivo, metrica, flag, dataIni (YYYY-MM-DD), dataFim (YYYY-MM-DD), jornadas (array com nomes EXATOS da lista disponivel).\nValores canal: sms, email, whats. Seja direto, use dados do contexto, foque em insights acionáveis.';
 
   async function send(){
     if(busy)return;
@@ -1503,15 +1524,40 @@ function initFilters(){
   }
 
   function applyF(filters){
-    if(!filters)return;
-    if(filters.bu!==undefined)document.getElementById('fBu').value=filters.bu;
-    if(filters.canal!==undefined)document.getElementById('fCanal').value=filters.canal;
-    if(filters.objetivo!==undefined)document.getElementById('fObjetivo').value=filters.objetivo;
-    if(filters.metrica!==undefined)document.getElementById('fMetrica').value=filters.metrica;
-    if(filters.flag!==undefined)document.getElementById('fFlag').value=filters.flag;
-    if(filters.dataIni)document.getElementById('fDataIni').value=filters.dataIni;
-    if(filters.dataFim)document.getElementById('fDataFim').value=filters.dataFim;
+    if(!filters)return[];
+    var aplicados=[],naoEncontrados=[];
+
+    var simples={bu:'fBu',canal:'fCanal',objetivo:'fObjetivo',metrica:'fMetrica',flag:'fFlag'};
+    Object.keys(simples).forEach(function(k){
+      if(filters[k]!==undefined){
+        var el=document.getElementById(simples[k]);
+        if(el){el.value=filters[k];aplicados.push(k+': '+filters[k]);}
+      }
+    });
+    if(filters.dataIni){document.getElementById('fDataIni').value=filters.dataIni;aplicados.push('dataIni: '+filters.dataIni);}
+    if(filters.dataFim){document.getElementById('fDataFim').value=filters.dataFim;aplicados.push('dataFim: '+filters.dataFim);}
+
+    if(filters.jornadas&&filters.jornadas.length&&typeof MS_JORNADA!=='undefined'&&MS_JORNADA){
+      var disponiveis=_getJornadas();
+      var dispLower=disponiveis.map(function(j){return j.toLowerCase();});
+      var encontradas=[];
+      filters.jornadas.forEach(function(nome){
+        var nomeLow=nome.toLowerCase();
+        var idx=dispLower.indexOf(nomeLow);
+        if(idx>=0){encontradas.push(disponiveis[idx]);return;}
+        // busca parcial
+        var parcial=disponiveis.filter(function(j){return j.toLowerCase().indexOf(nomeLow)>=0;});
+        if(parcial.length>0){encontradas=encontradas.concat(parcial);}
+        else{naoEncontrados.push(nome);}
+      });
+      if(encontradas.length>0){
+        MS_JORNADA.setSelected(new Set(encontradas));
+        aplicados.push('jornadas: '+encontradas.join(', '));
+      }
+    }
+
     if(typeof applyFilters==='function')applyFilters();
+    return{aplicados:aplicados,naoEncontrados:naoEncontrados};
   }
 
   sd.addEventListener('click',send);
