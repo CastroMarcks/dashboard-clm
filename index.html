@@ -377,6 +377,63 @@ tr:hover td{background:#fafbff}
 }
 </style>
 <style>
+/* ---- AI Agent Chat Panel ---- */
+#aiBtn{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#1a56db,#06b6d4);border:none;color:#fff;font-size:22px;cursor:pointer;box-shadow:0 4px 16px rgba(26,86,219,.4);z-index:10000;display:flex;align-items:center;justify-content:center;transition:.2s}
+#aiBtn:hover{transform:scale(1.07);box-shadow:0 6px 20px rgba(26,86,219,.5)}
+#aiBtn.open{background:linear-gradient(135deg,#374151,#1f2937)}
+#aiPanel{position:fixed;right:0;top:0;bottom:0;width:380px;max-width:95vw;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.14);z-index:9998;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+#aiPanel.open{transform:translateX(0)}
+.ai-header{background:linear-gradient(135deg,#1a56db,#06b6d4);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.ai-header-icon{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.ai-header-info{flex:1;min-width:0}
+.ai-header-name{font-size:13px;font-weight:700}
+.ai-header-sub{font-size:10px;opacity:.85;margin-top:1px}
+.ai-header-acts{display:flex;gap:5px}
+.ai-ico-btn{background:rgba(255,255,255,.15);border:none;color:#fff;width:27px;height:27px;border-radius:7px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;line-height:1}
+.ai-ico-btn:hover{background:rgba(255,255,255,.28)}
+.ai-cfg{background:#f0f4ff;border-bottom:1px solid #e0e7ff;padding:11px 14px;flex-shrink:0}
+.ai-cfg label{font-size:9px;font-weight:700;letter-spacing:.07em;color:#555;text-transform:uppercase;display:block;margin-bottom:5px}
+.ai-key-row{display:flex;gap:6px}
+.ai-key-in{flex:1;font-size:11px;padding:6px 9px;border:1px solid #cbd5e1;border-radius:7px;background:#fff;font-family:inherit;min-width:0}
+.ai-key-in:focus{outline:none;border-color:#1a56db}
+.ai-key-ok{font-size:11px;font-weight:600;padding:6px 11px;background:#1a56db;color:#fff;border:none;border-radius:7px;cursor:pointer;white-space:nowrap}
+.ai-key-ok:hover{background:#1e40af}
+.ai-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:9px}
+.ai-msg{max-width:86%;display:flex;flex-direction:column;gap:3px}
+.ai-msg.user{align-self:flex-end}
+.ai-msg.bot{align-self:flex-start}
+.ai-bubble{padding:8px 11px;border-radius:11px;font-size:12px;line-height:1.55}
+.ai-msg.user .ai-bubble{background:#1a56db;color:#fff;border-radius:11px 11px 3px 11px}
+.ai-msg.bot .ai-bubble{background:#f1f5f9;color:#1a1a1a;border-radius:11px 11px 11px 3px}
+.ai-ts{font-size:9px;color:#bbb}
+.ai-msg.user .ai-ts{align-self:flex-end}
+.ai-msg.bot .ai-ts{align-self:flex-start}
+.ai-pill{font-size:10px;color:#1a56db;background:#eff6ff;border:1px solid #bfdbfe;padding:3px 9px;border-radius:10px;margin-top:3px;align-self:flex-start;cursor:pointer;display:inline-block}
+.ai-pill:hover{background:#dbeafe}
+.ai-pill.done{color:#059669;background:#f0fdf4;border-color:#86efac;cursor:default}
+.ai-dots{align-self:flex-start;display:flex;gap:4px;padding:9px 12px;background:#f1f5f9;border-radius:11px 11px 11px 3px}
+.ai-dots span{width:7px;height:7px;border-radius:50%;background:#94a3b8;animation:ai-bop .8s infinite}
+.ai-dots span:nth-child(2){animation-delay:.16s}
+.ai-dots span:nth-child(3){animation-delay:.32s}
+@keyframes ai-bop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.ai-foot{border-top:1px solid #f0f0f0;padding:10px 12px;flex-shrink:0;display:flex;gap:7px;align-items:flex-end}
+.ai-ta{flex:1;font-size:12px;padding:7px 11px;border:1.5px solid #e2e8f0;border-radius:9px;resize:none;font-family:inherit;max-height:90px;outline:none;line-height:1.4}
+.ai-ta:focus{border-color:#1a56db;box-shadow:0 0 0 2px rgba(26,86,219,.1)}
+.ai-send-btn{width:34px;height:34px;border-radius:8px;background:#1a56db;border:none;color:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-send-btn:hover{background:#1e40af}
+.ai-send-btn:disabled{background:#cbd5e1;cursor:not-allowed}
+.ai-welcome{text-align:center;padding:18px 8px}
+.ai-welcome .wi{font-size:26px;margin-bottom:7px}
+.ai-welcome h4{font-size:13px;font-weight:700;color:#111;margin-bottom:5px}
+.ai-welcome p{font-size:11px;line-height:1.6;color:#666}
+.ai-qchips{display:flex;flex-wrap:wrap;gap:4px;margin-top:9px;justify-content:center}
+.ai-qchip{font-size:10px;padding:4px 9px;border-radius:10px;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;cursor:pointer}
+.ai-qchip:hover{background:#dbeafe}
+.ai-nokey{text-align:center;padding:24px 16px}
+.ai-nokey .wi{font-size:28px;margin-bottom:7px}
+.ai-nokey p{font-size:11px;line-height:1.55;color:#666}
+</style>
+<style>
   /* ---- Password gate ---- */
   #pwGate{position:fixed;inset:0;background:#0f172a;display:flex;align-items:center;justify-content:center;z-index:9999;font-family:Inter,system-ui,sans-serif}
   #pwGate.hidden{display:none}
@@ -761,6 +818,35 @@ tr:hover td{background:#fafbff}
   </div>
 
   <p class="rodape">Dados: bsa_sfmc_clm_journeyhistory · Processado via Python/Athena</p>
+</div>
+
+<!-- =================== AI AGENT =================== -->
+<button id="aiBtn" title="Agente CLM — Especialista em dados">🤖</button>
+
+<div id="aiPanel">
+  <div class="ai-header">
+    <div class="ai-header-icon">🤖</div>
+    <div class="ai-header-info">
+      <div class="ai-header-name">Agente CLM</div>
+      <div class="ai-header-sub">Especialista em performance de jornadas</div>
+    </div>
+    <div class="ai-header-acts">
+      <button class="ai-ico-btn" id="aiCfgBtn" title="Configurar API Key">⚙</button>
+      <button class="ai-ico-btn" id="aiCloseBtn" title="Fechar">✕</button>
+    </div>
+  </div>
+  <div class="ai-cfg" id="aiCfg" style="display:none">
+    <label>Chave Gemini API (salva localmente)</label>
+    <div class="ai-key-row">
+      <input type="password" class="ai-key-in" id="aiKeyIn" placeholder="AIzaSy...">
+      <button class="ai-key-ok" id="aiKeySv">Salvar</button>
+    </div>
+  </div>
+  <div class="ai-msgs" id="aiMsgs"></div>
+  <div class="ai-foot">
+    <textarea class="ai-ta" id="aiTa" rows="1" placeholder="Pergunte sobre os dados CLM..."></textarea>
+    <button class="ai-send-btn" id="aiSd" title="Enviar (Enter)">&#10148;</button>
+  </div>
 </div>
 
 <script>
@@ -1226,6 +1312,197 @@ function initFilters(){
   document.getElementById('chipPeriodo').textContent=formatDataBr(f.dia_min)+' a '+formatDataBr(f.dia_max);
   document.getElementById('histRange').textContent='Dados de '+formatDataBr(f.dia_min)+' a '+formatDataBr(f.dia_max);
 }
+
+// =================== AI AGENT ===================
+(function(){
+  var LS_KEY='clm_gemini_key';
+  var MODEL='gemini-2.0-flash-lite';
+  var HIST=[];
+  var busy=false;
+
+  var btn=document.getElementById('aiBtn');
+  var panel=document.getElementById('aiPanel');
+  var closeBtn=document.getElementById('aiCloseBtn');
+  var cfgBtn=document.getElementById('aiCfgBtn');
+  var cfg=document.getElementById('aiCfg');
+  var keyIn=document.getElementById('aiKeyIn');
+  var keySv=document.getElementById('aiKeySv');
+  var msgsEl=document.getElementById('aiMsgs');
+  var ta=document.getElementById('aiTa');
+  var sd=document.getElementById('aiSd');
+
+  function getKey(){return localStorage.getItem(LS_KEY)||'';}
+  function saveKey(k){localStorage.setItem(LS_KEY,k.trim());}
+
+  function openPanel(){
+    panel.classList.add('open');btn.classList.add('open');
+    if(!msgsEl.children.length)renderWelcome();
+  }
+  function closePanel(){panel.classList.remove('open');btn.classList.remove('open');}
+
+  btn.addEventListener('click',function(){panel.classList.contains('open')?closePanel():openPanel();});
+  closeBtn.addEventListener('click',closePanel);
+
+  cfgBtn.addEventListener('click',function(){
+    var vis=cfg.style.display!=='none';
+    cfg.style.display=vis?'none':'block';
+    if(!vis)keyIn.value=getKey();
+  });
+
+  keySv.addEventListener('click',function(){
+    var k=keyIn.value.trim();
+    if(!k)return;
+    saveKey(k);
+    cfg.style.display='none';
+    addBotMsg('✅ Chave salva! Pode começar a perguntar sobre os dados CLM.');
+  });
+
+  var QUICK_Q=['Qual canal tem melhor leitura?','Como está o health score?','Filtre apenas email','Quais jornadas com falha alta?','Resumo geral da operação'];
+
+  function renderWelcome(){
+    var k=getKey();
+    if(!k){
+      msgsEl.innerHTML='<div class="ai-nokey"><div class="wi">🔑</div><p>Configure sua chave da API Gemini gratuita clicando em ⚙ acima para começar a usar o agente.</p></div>';
+      return;
+    }
+    var d=document.createElement('div');
+    d.className='ai-welcome';
+    d.innerHTML='<div class="wi">🤖</div><h4>Agente CLM</h4><p>Especialista em performance de jornadas. Analiso métricas, comparo canais e posso aplicar filtros no dashboard.</p><div class="ai-qchips">'+
+      QUICK_Q.map(function(q){return'<span class="ai-qchip">'+q+'</span>';}).join('')+'</div>';
+    msgsEl.appendChild(d);
+    d.querySelectorAll('.ai-qchip').forEach(function(c){
+      c.addEventListener('click',function(){ta.value=this.textContent;send();});
+    });
+  }
+
+  function ts(){var n=new Date();return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}
+
+  function addBotMsg(text,action){
+    var m=document.createElement('div');
+    m.className='ai-msg bot';
+    var safe=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>');
+    m.innerHTML='<div class="ai-bubble">'+safe+'</div><div class="ai-ts">'+ts()+'</div>';
+    if(action&&action.type==='filter'&&action.filters){
+      var pill=document.createElement('span');
+      pill.className='ai-pill';
+      pill.textContent='🎯 Aplicar filtros sugeridos';
+      pill.addEventListener('click',function(){
+        applyF(action.filters);
+        pill.textContent='✅ Filtros aplicados';
+        pill.className='ai-pill done';
+      });
+      m.appendChild(pill);
+    }
+    msgsEl.appendChild(m);
+    msgsEl.scrollTop=msgsEl.scrollHeight;
+  }
+
+  function addUserMsg(text){
+    var m=document.createElement('div');
+    m.className='ai-msg user';
+    m.innerHTML='<div class="ai-bubble">'+text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div><div class="ai-ts">'+ts()+'</div>';
+    msgsEl.appendChild(m);
+    msgsEl.scrollTop=msgsEl.scrollHeight;
+  }
+
+  function showDots(){
+    var d=document.createElement('div');
+    d.className='ai-dots';d.id='aiDots';
+    d.innerHTML='<span></span><span></span><span></span>';
+    msgsEl.appendChild(d);msgsEl.scrollTop=msgsEl.scrollHeight;
+  }
+  function hideDots(){var d=document.getElementById('aiDots');if(d)d.remove();}
+
+  function buildCtx(){
+    var c={};
+    if(typeof AGG!=='undefined'&&AGG){
+      var k=AGG.kpis||{};
+      c.kpis={total:k.total,taxa_entrega:k.taxa_entrega,taxa_leitura:k.taxa_leitura,taxa_click:k.taxa_click,taxa_falha:k.taxa_falha};
+      if(AGG.health)c.health={score:AGG.health.score,label:AGG.health.label};
+      if(AGG.alertas)c.alertas=(AGG.alertas||[]).slice(0,4).map(function(a){return(a.txt||'').replace(/<[^>]+>/g,'');});
+      if(AGG.canais_data&&AGG.canais_data.canais)c.canais=AGG.canais_data.canais.map(function(x){return{canal:x.canal,entrega:x.agg.taxa_entrega,leitura:x.agg.taxa_leitura,falha:x.agg.taxa_falha,total:x.agg.total};});
+    }
+    if(typeof D!=='undefined'&&D&&D.filtros){
+      c.disponivel={bus:D.filtros.bus,canais:D.filtros.canais,periodo:D.filtros.dia_min+' a '+D.filtros.dia_max};
+    }
+    if(typeof getFilters==='function'){
+      var f=getFilters();
+      c.filtros_ativos={dataIni:f.dataIni,dataFim:f.dataFim,bu:f.bu||'todas',canal:f.canal||'todos',objetivo:f.objetivo||'todos'};
+    }
+    return c;
+  }
+
+  var SYS='Você é um especialista sênior em CLM (Customer Lifecycle Management) da Olist, com domínio em marketing automation via SFMC e análise de performance de jornadas de comunicação.\n\nDashboard: Performance CRM — journey history (bsa_sfmc_clm_journeyhistory).\nCanais: email, sms, whats (WhatsApp). Métricas:\n- taxa_entrega: bom ≥80%, alerta <60%\n- taxa_leitura: bom ≥30%, alerta <10%\n- taxa_click (só email): bom ≥5%, alerta <2%\n- taxa_falha: bom ≤3%, alerta >8%\nHealth Score 0-100: Ótimo≥80, Bom≥60, Atenção≥50, Crítico<50.\nBUs: ERP, Conta Digital, Envios, Ecommerce, Outros.\n\nSEMPRE responda em JSON válido com exatamente esta estrutura:\n{"text":"sua resposta em português, use **negrito** para destaques","action":null}\n\nQuando o usuário pedir para filtrar ou focar em algo, use action:\n{"text":"...","action":{"type":"filter","filters":{"bu":"ERP","canal":"email"}}}\n\nFiltros aceitos (todos opcionais): bu, canal, objetivo, metrica, flag, dataIni (YYYY-MM-DD), dataFim (YYYY-MM-DD).\nValores canal: sms, email, whats. Seja direto, use dados do contexto, foque em insights acionáveis.';
+
+  async function send(){
+    if(busy)return;
+    var key=getKey();
+    if(!key){
+      cfg.style.display='block';keyIn.focus();
+      addBotMsg('🔑 Configure sua chave Gemini no ⚙ para usar o agente.');
+      return;
+    }
+    var txt=ta.value.trim();
+    if(!txt)return;
+    ta.value='';ta.style.height='auto';
+    addUserMsg(txt);
+
+    var ctx=buildCtx();
+    var userPart='Contexto atual do dashboard:\n'+JSON.stringify(ctx)+'\n\nPergunta: '+txt;
+    HIST.push({role:'user',parts:[{text:userPart}]});
+
+    busy=true;sd.disabled=true;showDots();
+
+    try{
+      var res=await fetch(
+        'https://generativelanguage.googleapis.com/v1beta/models/'+MODEL+':generateContent?key='+key,
+        {method:'POST',headers:{'Content-Type':'application/json'},
+         body:JSON.stringify({
+           system_instruction:{parts:[{text:SYS}]},
+           contents:HIST,
+           generationConfig:{temperature:0.25,maxOutputTokens:700}
+         })}
+      );
+      var data=await res.json();
+      hideDots();
+      if(!res.ok){
+        var em=(data.error&&data.error.message)||'Erro desconhecido';
+        addBotMsg('❌ Erro na API: '+em);
+        HIST.pop();
+      }else{
+        var raw=data.candidates[0].content.parts[0].text||'';
+        HIST.push({role:'model',parts:[{text:raw}]});
+        var parsed;
+        try{
+          var clean=raw.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+          parsed=JSON.parse(clean);
+        }catch(e){parsed={text:raw,action:null};}
+        addBotMsg(parsed.text||raw,parsed.action);
+      }
+    }catch(e){
+      hideDots();
+      addBotMsg('❌ Erro de conexão: '+e.message);
+      HIST.pop();
+    }
+    busy=false;sd.disabled=false;
+  }
+
+  function applyF(filters){
+    if(!filters)return;
+    if(filters.bu!==undefined)document.getElementById('fBu').value=filters.bu;
+    if(filters.canal!==undefined)document.getElementById('fCanal').value=filters.canal;
+    if(filters.objetivo!==undefined)document.getElementById('fObjetivo').value=filters.objetivo;
+    if(filters.metrica!==undefined)document.getElementById('fMetrica').value=filters.metrica;
+    if(filters.flag!==undefined)document.getElementById('fFlag').value=filters.flag;
+    if(filters.dataIni)document.getElementById('fDataIni').value=filters.dataIni;
+    if(filters.dataFim)document.getElementById('fDataFim').value=filters.dataFim;
+    if(typeof applyFilters==='function')applyFilters();
+  }
+
+  sd.addEventListener('click',send);
+  ta.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
+  ta.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,90)+'px';});
+})();
 
 </script>
 </body>
