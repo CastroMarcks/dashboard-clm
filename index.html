@@ -1315,6 +1315,7 @@ function initFilters(){
 
 // =================== AI AGENT ===================
 (function(){
+  var DEFAULT_KEY='AIzaSyCuYGyO6D6y6VVvicJzeSCPemhmZHKelmY';
   var LS_KEY='clm_gemini_key';
   var MODEL='gemini-2.0-flash-lite';
   var HIST=[];
@@ -1331,7 +1332,7 @@ function initFilters(){
   var ta=document.getElementById('aiTa');
   var sd=document.getElementById('aiSd');
 
-  function getKey(){return localStorage.getItem(LS_KEY)||'';}
+  function getKey(){return localStorage.getItem(LS_KEY)||DEFAULT_KEY;}
   function saveKey(k){localStorage.setItem(LS_KEY,k.trim());}
 
   function openPanel(){
