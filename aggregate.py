@@ -572,6 +572,7 @@ def build_jornadas_section(data, filtered, f, mom):
 
     return {
         'jornadas':       all_computed[:30],
+        'jornadas_all':   all_computed,
         'saudaveis':      saudaveis,
         'atencao':        atencao,
         'criticas':       criticas,
