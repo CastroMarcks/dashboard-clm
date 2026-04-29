@@ -31,7 +31,7 @@ _data_cache: dict | None = None   # in-memory cache of data.json
 _raw_lock = threading.Lock()
 _raw_df   = None   # lazy-loaded pandas DataFrame of raw dados.csv
 
-RAW_COLS = ['id', 'contato', 'lead_id', 'data_envio', 'nome_jornada', 'nome_atividade',
+RAW_COLS = ['id', 'contato', 'data_envio', 'nome_jornada', 'nome_atividade',
             'canal', 'status', 'id_empresa', 'flag_pontual', 'objetivo',
             'bu', 'campanha', 'metrica', 'date_partition']
 BU_MAP   = {'ERP': 'ERP', 'Conta': 'Conta Digital', 'Envios': 'Envios',
