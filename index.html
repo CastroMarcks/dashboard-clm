@@ -1222,7 +1222,7 @@ function renderSemControle(lista){var tbody=document.getElementById('tblSemCtrl'
 
 // ---- EXPLORER ----
 var EXP={page:0,total:0,pageSize:500,loading:false,filteredRows:[]};
-var EXP_COLS_SERVER=['#','ID','Contato','Data','Jornada','Atividade','Canal','Status','Empresa','BU','Objetivo','Metrica','Flag','Campanha'];
+var EXP_COLS_SERVER=['#','ID','Contato','Lead ID','Data','Jornada','Atividade','Canal','Status','Empresa','BU','Objetivo','Metrica','Flag','Campanha'];
 var EXP_COLS_STATIC=['#','Data','Jornada','Atividade','Canal','BU','Status','Objetivo','Metrica','Flag','Volume'];
 var STATUS_LBL={'delivered':'Entregue','read':'Lido','click':'Click','failed':'Falhou','sent':'Enviado'};
 var STATUS_CLS={'delivered':'ok','read':'ok','click':'ok','failed':'danger','sent':'warn'};
@@ -1265,6 +1265,7 @@ function explorerRenderServer(records,page){
     html+='<tr><td style="color:#aaa;font-size:10px">'+(base+i+1)+'</td>'
       +'<td style="font-size:10px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#555" title="'+escHtml(r.id||'')+'">'+escHtml(idShort)+'</td>'
       +'<td style="font-size:11px">'+escHtml(r.contato||'')+'</td>'
+      +'<td style="font-size:11px">'+escHtml(r.lead_id||'')+'</td>'
       +'<td style="font-size:11px;white-space:nowrap">'+escHtml((r.data_envio||'').substring(0,10))+'</td>'
       +'<td style="font-size:11px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escHtml(r.nome_jornada||'')+'">'+escHtml(r.nome_jornada||'')+'</td>'
       +'<td style="font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escHtml(r.nome_atividade||'')+'">'+escHtml(r.nome_atividade||'')+'</td>'
