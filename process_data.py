@@ -233,6 +233,7 @@ def process(df: pd.DataFrame, out_path: str = 'data.json') -> dict:
     canais = sorted(df['canal'].unique().tolist())
     objetivos = sorted(df['objetivo'].dropna().unique().tolist())
     metricas = sorted(df['metrica'].dropna().unique().tolist())
+    campanhas = sorted(df['campanha'].dropna().unique().tolist()) if 'campanha' in df.columns else []
 
     data = {
         'cross': cross,
@@ -265,6 +266,7 @@ def process(df: pd.DataFrame, out_path: str = 'data.json') -> dict:
             'canais': canais,
             'objetivos': objetivos,
             'metricas': metricas,
+            'campanhas': campanhas,
         }
     }
 
