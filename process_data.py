@@ -274,7 +274,43 @@ def process(df: pd.DataFrame, out_path: str = 'data.json') -> dict:
         json.dump(data, f, ensure_ascii=False)
 
     print(f"data.json gerado! ({len(json.dumps(data, ensure_ascii=False))} bytes, {len(cross)} linhas cross-tab)")
+
+    # export_data.json — cross com id_empresa agrupado por mes (para export estatico GitHub Pages)
+    export_path = out_path.replace('data.json', 'export_data.json') if 'data.json' in out_path else out_path + '.export'
+    _gerar_export_data(df, export_path)
+
     return data
+
+
+def _gerar_export_data(df: pd.DataFrame, out_path: str):
+    """Gera export_data.json.gz com cross por empresa/jornada/canal/status para export estatico."""
+    import gzip
+    gz_path = out_path.replace('export_data.json', 'export_data.json.gz')
+    if 'id_empresa' not in df.columns:
+        print('[export] id_empresa nao encontrado, export_data.json.gz nao gerado.')
+        return
+    df = df.copy()
+    df['id_empresa'] = df['id_empresa'].fillna('').astype(str)
+    df['nome_jornada'] = df['nome_jornada'].fillna('').astype(str)
+    # Agrupa por empresa+jornada+canal+status (todo historico, sem granularidade temporal)
+    # bu/objetivo como atributo do grupo (mode), nao chave — evita explosao de linhas
+    rows_list = []
+    for (empresa, jornada, canal, status), g in df.groupby(['id_empresa', 'nome_jornada', 'canal', 'status']):
+        rows_list.append({
+            'e': empresa,
+            'j': jornada[:80],
+            'c': canal,
+            's': status,
+            'b': g['bu'].mode().iloc[0] if len(g) else '',
+            'o': str(g['objetivo'].mode().iloc[0]) if g['objetivo'].notna().any() else '',
+            'n': len(g),
+        })
+    raw = json.dumps({'rows': rows_list}, ensure_ascii=False).encode('utf-8')
+    with gzip.open(gz_path, 'wb', compresslevel=9) as f:
+        f.write(raw)
+    import os
+    sz = os.path.getsize(gz_path)
+    print(f"export_data.json.gz gerado! ({sz/1024/1024:.1f} MB, {len(rows_list):,} linhas)")
 
 
 if __name__ == '__main__':

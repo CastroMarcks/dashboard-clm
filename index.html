@@ -768,7 +768,7 @@ body.ai-open .wrap{max-width:100%}
         </div>
       </div>
       <div id="explorerStaticMsg" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;font-size:12px;color:#1e40af;margin-bottom:12px">
-        ℹ️ <strong>Modo GitHub Pages:</strong> exibindo dados agrupados (jornada + atividade + canal + status + dia). Para registros individuais com <code>id</code> e <code>contato</code>, execute <code>python server.py</code> localmente.
+        ℹ️ <strong>Modo GitHub Pages:</strong> exibindo dados agrupados por dia, empresa, jornada, atividade, canal e status. Para registros individuais com <code>id</code> e <code>contato</code>, execute <code>python server.py</code> localmente.
       </div>
       <div class="explorer-filters" id="explorerFilters">
         <div class="explorer-filter">
@@ -814,6 +814,10 @@ body.ai-open .wrap{max-width:100%}
         <div class="explorer-filter">
           <label>Campanha</label>
           <select id="expCampanha"><option value="">Todas</option></select>
+        </div>
+        <div class="explorer-filter">
+          <label>ID Empresa</label>
+          <input type="text" id="expEmpresa" placeholder="ID da empresa...">
         </div>
         <div class="explorer-filter" style="align-self:flex-end">
           <button class="export-btn" id="btnExpSearch" style="height:30px">🔍 Buscar</button>
@@ -1223,13 +1227,13 @@ function renderSemControle(lista){var tbody=document.getElementById('tblSemCtrl'
 // ---- EXPLORER ----
 var EXP={page:0,total:0,pageSize:500,loading:false,filteredRows:[]};
 var EXP_COLS_SERVER=['#','ID','Contato','Data','Jornada','Atividade','Canal','Status','Empresa','BU','Objetivo','Metrica','Flag','Campanha'];
-var EXP_COLS_STATIC=['#','Data','Jornada','Atividade','Canal','BU','Status','Objetivo','Metrica','Flag','Volume'];
+var EXP_COLS_STATIC=['#','Data','ID Empresa','Jornada','Atividade','Canal','BU','Status','Objetivo','Metrica','Flag','Volume'];
 var STATUS_LBL={'delivered':'Entregue','read':'Lido','click':'Click','failed':'Falhou','sent':'Enviado'};
 var STATUS_CLS={'delivered':'ok','read':'ok','click':'ok','failed':'danger','sent':'warn'};
 function escHtml(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function expGetFilters(){
   var v=function(id){return(document.getElementById(id)||{}).value||'';};
-  return{dataIni:v('expDataIni'),dataFim:v('expDataFim'),jornada:v('expJornada').toLowerCase(),atividade:v('expAtiv').toLowerCase(),bu:v('expBu'),canal:v('expCanal'),status:v('expStatus'),objetivo:v('expObj'),metrica:v('expMet'),flag:v('expFlag'),campanha:v('expCampanha')};
+  return{dataIni:v('expDataIni'),dataFim:v('expDataFim'),jornada:v('expJornada').toLowerCase(),atividade:v('expAtiv').toLowerCase(),bu:v('expBu'),canal:v('expCanal'),status:v('expStatus'),objetivo:v('expObj'),metrica:v('expMet'),flag:v('expFlag'),campanha:v('expCampanha'),empresa:v('expEmpresa').toLowerCase()};
 }
 function expBuildParams(extra){
   var f=expGetFilters(),p=new URLSearchParams();
@@ -1238,6 +1242,7 @@ function expBuildParams(extra){
   if(f.bu)p.set('bu',f.bu);if(f.canal)p.set('canal',f.canal);if(f.status)p.set('status',f.status);
   if(f.objetivo)p.set('objetivo',f.objetivo);if(f.metrica)p.set('metrica',f.metrica);
   if(f.flag)p.set('flag',f.flag);if(f.campanha)p.set('campanha',f.campanha);
+  if(f.empresa)p.set('empresa',f.empresa);
   if(extra)Object.keys(extra).forEach(function(k){p.set(k,extra[k]);});
   return p;
 }
@@ -1292,6 +1297,7 @@ function explorerFilterStatic(){
     if(f.bu&&r.bu!==f.bu)return false;if(f.canal&&r.canal!==f.canal)return false;
     if(f.status&&r.status!==f.status)return false;if(f.objetivo&&r.objetivo!==f.objetivo)return false;
     if(f.metrica&&r.metrica!==f.metrica)return false;if(f.flag&&r.flag_pontual!==f.flag)return false;
+    if(f.empresa&&(!r.e||r.e.toLowerCase().indexOf(f.empresa)<0))return false;
     return true;
   });
   EXP.total=EXP.filteredRows.length;EXP.page=0;explorerRenderStatic();
@@ -1306,6 +1312,7 @@ function explorerRenderStatic(){
     var stLbl=STATUS_LBL[r.status]||r.status||'',stCls=STATUS_CLS[r.status]||'';
     html+='<tr><td style="color:#aaa;font-size:10px">'+(start+i+1)+'</td>'
       +'<td style="font-size:11px;white-space:nowrap">'+escHtml(r.dia||'')+'</td>'
+      +'<td style="font-size:11px">'+escHtml(r.e||'')+'</td>'
       +'<td style="font-size:11px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escHtml(r.j||'')+'">'+escHtml(r.j||'')+'</td>'
       +'<td style="font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escHtml(r.a||'')+'">'+escHtml(r.a||'')+'</td>'
       +'<td>'+(CANAL_ICON[r.canal]||'')+' '+(CANAL_LABEL[r.canal]||escHtml(r.canal||''))+'</td>'
@@ -1319,12 +1326,42 @@ function explorerRenderStatic(){
   });
   tbody.innerHTML=html;explorerPager();
 }
-function explorerExportStatic(){
-  var rows=EXP.filteredRows;
-  var lines=['Data,Jornada,Atividade,Canal,BU,Status,Objetivo,Metrica,Flag,Volume'];
-  rows.forEach(function(r){var row=[r.dia,r.j,r.a,r.canal,r.bu,r.status,r.objetivo,r.metrica,r.flag_pontual,r.n];lines.push(row.map(function(v){var s=String(v==null?'':v);if(/[,"\n]/.test(s))s='"'+s.replace(/"/g,'""')+'"';return s;}).join(','));});
-  var blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
-  var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='dados_clm_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);
+var _exportDataCache=null;
+async function explorerExportStatic(){
+  var btn=document.getElementById('btnExportCSV');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Carregando...';}
+  try{
+    if(!_exportDataCache){
+      var resp=await fetch('export_data.json.gz');
+      if(!resp.ok)throw new Error('export_data.json.gz nao encontrado (HTTP '+resp.status+')');
+      var ds=new DecompressionStream('gzip');
+      var decompResp=new Response(resp.body.pipeThrough(ds));
+      var text=await decompResp.text();
+      _exportDataCache=JSON.parse(text).rows||[];
+    }
+    var f=expGetFilters();
+    var filtered=_exportDataCache.filter(function(r){
+      if(f.jornada&&(!r.j||r.j.toLowerCase().indexOf(f.jornada)<0))return false;
+      if(f.canal&&r.c!==f.canal)return false;
+      if(f.bu&&r.b!==f.bu)return false;
+      if(f.status&&r.s!==f.status)return false;
+      if(f.objetivo&&r.o!==f.objetivo)return false;
+      if(f.empresa&&(!r.e||r.e.toLowerCase().indexOf(f.empresa)<0))return false;
+      return true;
+    });
+    if(!filtered.length){alert('Nenhum dado encontrado para os filtros selecionados.');return;}
+    var csvEsc=function(v){var s=String(v==null?'':v);if(/[,"\n]/.test(s))s='"'+s.replace(/"/g,'""')+'"';return s;};
+    var lines=['ID Empresa,Jornada,Canal,BU,Status,Objetivo,Volume'];
+    filtered.forEach(function(r){lines.push([r.e,r.j,r.c,r.b,r.s,r.o,r.n].map(csvEsc).join(','));});
+    var blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
+    var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;
+    a.download='dados_clm_empresa_'+new Date().toISOString().slice(0,10)+'.csv';
+    a.click();URL.revokeObjectURL(url);
+  }catch(err){
+    alert('Erro ao exportar: '+err.message);
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='⬇ Exportar CSV';}
+  }
 }
 
 // ---- pager compartilhado ----
@@ -1355,7 +1392,7 @@ function initExplorer(){
   if(ini&&!ini.value&&f.dataIni)ini.value=f.dataIni;if(fim&&!fim.value&&f.dataFim)fim.value=f.dataFim;
   document.getElementById('btnExpSearch').onclick=function(){EXP.page=0;IS_STATIC?explorerFilterStatic():explorerFetchServer();};
   document.getElementById('btnExportCSV').onclick=function(){IS_STATIC?explorerExportStatic():explorerExportServer();};
-  ['expJornada','expAtiv'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('keydown',function(e){if(e.key==='Enter'){EXP.page=0;IS_STATIC?explorerFilterStatic():explorerFetchServer();}});});
+  ['expJornada','expAtiv','expEmpresa'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('keydown',function(e){if(e.key==='Enter'){EXP.page=0;IS_STATIC?explorerFilterStatic():explorerFetchServer();}});});
   IS_STATIC?explorerFilterStatic():explorerFetchServer();
 }
 

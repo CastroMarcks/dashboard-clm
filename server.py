@@ -186,6 +186,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         campanha  = qget('campanha')
         jornada   = qget('jornada').strip().lower()
         atividade = qget('atividade').strip().lower()
+        empresa   = qget('empresa').strip().lower()
 
         if data_ini:
             mask &= df['_dia'] >= data_ini
@@ -209,6 +210,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             mask &= df['nome_jornada'].str.lower().str.contains(jornada, na=False, regex=False)
         if atividade and 'nome_atividade' in df.columns:
             mask &= df['nome_atividade'].str.lower().str.contains(atividade, na=False, regex=False)
+        if empresa and 'id_empresa' in df.columns:
+            mask &= df['id_empresa'].str.lower().str.contains(empresa, na=False, regex=False)
 
         filtered = df[mask]
         total = len(filtered)
