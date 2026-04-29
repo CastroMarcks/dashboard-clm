@@ -838,7 +838,7 @@ tr:hover td{background:#fafbff}
   <div class="ai-cfg" id="aiCfg" style="display:none">
     <label>Chave Gemini API (salva localmente)</label>
     <div class="ai-key-row">
-      <input type="password" class="ai-key-in" id="aiKeyIn" placeholder="AIzaSy...">
+      <input type="password" class="ai-key-in" id="aiKeyIn" placeholder="gsk_...">
       <button class="ai-key-ok" id="aiKeySv">Salvar</button>
     </div>
   </div>
@@ -1315,9 +1315,9 @@ function initFilters(){
 
 // =================== AI AGENT ===================
 (function(){
-  var DEFAULT_KEY='AIzaSyCuYGyO6D6y6VVvicJzeSCPemhmZHKelmY';
-  var LS_KEY='clm_gemini_key';
-  var MODEL='gemini-2.0-flash';
+  var DEFAULT_KEY='';
+  var LS_KEY='clm_groq_key';
+  var MODEL='llama-3.3-70b-versatile';
   var HIST=[];
   var busy=false;
 
@@ -1450,18 +1450,20 @@ function initFilters(){
 
     var ctx=buildCtx();
     var userPart='Contexto atual do dashboard:\n'+JSON.stringify(ctx)+'\n\nPergunta: '+txt;
-    HIST.push({role:'user',parts:[{text:userPart}]});
+    HIST.push({role:'user',content:userPart});
 
     busy=true;sd.disabled=true;showDots();
 
     try{
       var res=await fetch(
-        'https://generativelanguage.googleapis.com/v1beta/models/'+MODEL+':generateContent?key='+key,
-        {method:'POST',headers:{'Content-Type':'application/json'},
+        'https://api.groq.com/openai/v1/chat/completions',
+        {method:'POST',
+         headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
          body:JSON.stringify({
-           system_instruction:{parts:[{text:SYS}]},
-           contents:HIST,
-           generationConfig:{temperature:0.25,maxOutputTokens:700}
+           model:MODEL,
+           messages:[{role:'system',content:SYS}].concat(HIST),
+           temperature:0.25,
+           max_tokens:700
          })}
       );
       var data=await res.json();
@@ -1471,8 +1473,8 @@ function initFilters(){
         addBotMsg('❌ Erro na API: '+em);
         HIST.pop();
       }else{
-        var raw=data.candidates[0].content.parts[0].text||'';
-        HIST.push({role:'model',parts:[{text:raw}]});
+        var raw=data.choices[0].message.content||'';
+        HIST.push({role:'assistant',content:raw});
         var parsed;
         try{
           var clean=raw.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
