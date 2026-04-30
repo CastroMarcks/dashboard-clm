@@ -1225,7 +1225,7 @@ function renderTopFalhas(lista){var tbody=document.getElementById('tblTopFalhas'
 function renderSemControle(lista){var tbody=document.getElementById('tblSemCtrl');if(!tbody)return;tbody.innerHTML='';document.getElementById('semCtrlSub').textContent='ultimos 30 dias · '+lista.length+' jornadas sem holdout';if(!lista.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;padding:14px">Todas as jornadas recorrentes dos ultimos 30 dias possuem Grupo Controle.</td></tr>';return;}lista.slice(0,40).forEach(function(j,i){var tagCls=TAG_BU[j.b]||'t-outros';tbody.innerHTML+='<tr title="'+j.j+'"><td style="color:#aaa;font-size:11px">'+(i+1)+'</td><td style="font-weight:500;font-size:11px;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+j.j+'</td><td><span class="prod-tag '+tagCls+'">'+j.b+'</span></td><td>'+(CANAL_ICON[j.c]||'')+' '+(CANAL_LABEL[j.c]||j.c)+'</td><td style="font-size:11px">'+(j.o||'—')+'</td><td>'+num(j.n)+'</td></tr>';});}
 
 // ---- EXPLORER ----
-var EXP={page:0,total:0,pageSize:500,loading:false,filteredRows:[]};
+var EXP={page:0,total:0,pageSize:30,loading:false,filteredRows:[]};
 var EXP_COLS_SERVER=['#','ID','Contato','Data','Jornada','Atividade','Canal','Status','Empresa','BU','Objetivo','Metrica','Flag','Campanha'];
 var EXP_COLS_STATIC=['#','Data','ID Empresa','Jornada','Atividade','Canal','BU','Status','Objetivo','Metrica','Flag','Volume'];
 var STATUS_LBL={'delivered':'Entregue','read':'Lido','click':'Click','failed':'Falhou','sent':'Enviado'};
@@ -1305,7 +1305,7 @@ function explorerFilterStatic(){
 function explorerRenderStatic(){
   var tbody=document.getElementById('tblExplorerBody');if(!tbody)return;
   var count=document.getElementById('explorerCount');if(count)count.textContent=EXP.total.toLocaleString('pt-BR')+' registros agrupados';
-  var ps=500,start=EXP.page*ps,slice=EXP.filteredRows.slice(start,start+ps);
+  var ps=30,start=EXP.page*ps,slice=EXP.filteredRows.slice(start,start+ps);
   if(!slice.length){tbody.innerHTML='<tr><td colspan="'+EXP_COLS_STATIC.length+'" style="text-align:center;color:#888;padding:20px">Nenhum registro encontrado.</td></tr>';explorerPager();return;}
   var html='';
   slice.forEach(function(r,i){
@@ -1367,7 +1367,7 @@ async function explorerExportStatic(){
 // ---- pager compartilhado ----
 function explorerPager(){
   var pager=document.getElementById('explorerPager');if(!pager)return;
-  var ps=IS_STATIC?500:EXP.pageSize,pages=Math.ceil(EXP.total/ps),p=EXP.page;
+  var ps=EXP.pageSize,pages=Math.ceil(EXP.total/ps),p=EXP.page;
   if(pages<=1){pager.innerHTML='';return;}
   var html='<button class="pager-btn" id="pagerPrev" '+(p===0?'disabled':'')+'>&laquo; Anterior</button>';
   html+='<span class="pager-info">Pagina '+(p+1)+' de '+pages+'</span>';
