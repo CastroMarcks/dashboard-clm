@@ -1332,8 +1332,8 @@ async function explorerExportStatic(){
   if(btn){btn.disabled=true;btn.textContent='⏳ Carregando...';}
   try{
     if(!_exportDataCache){
-      var resp=await fetch('export_data.json.gz');
-      if(!resp.ok)throw new Error('export_data.json.gz nao encontrado (HTTP '+resp.status+')');
+      var resp=await fetch('export_data.bin');
+      if(!resp.ok)throw new Error('export_data.bin nao encontrado (HTTP '+resp.status+')');
       var ds=new DecompressionStream('gzip');
       var decompResp=new Response(resp.body.pipeThrough(ds));
       var text=await decompResp.text();

@@ -283,9 +283,9 @@ def process(df: pd.DataFrame, out_path: str = 'data.json') -> dict:
 
 
 def _gerar_export_data(df: pd.DataFrame, out_path: str):
-    """Gera export_data.json.gz com cross por empresa/jornada/canal/status para export estatico."""
+    """Gera export_data.bin (gzip) com cross por empresa/jornada/canal/status para export estatico."""
     import gzip
-    gz_path = out_path.replace('export_data.json', 'export_data.json.gz')
+    gz_path = out_path.replace('export_data.json', 'export_data.bin')
     if 'id_empresa' not in df.columns:
         print('[export] id_empresa nao encontrado, export_data.json.gz nao gerado.')
         return
@@ -310,7 +310,7 @@ def _gerar_export_data(df: pd.DataFrame, out_path: str):
         f.write(raw)
     import os
     sz = os.path.getsize(gz_path)
-    print(f"export_data.json.gz gerado! ({sz/1024/1024:.1f} MB, {len(rows_list):,} linhas)")
+    print(f"export_data.bin gerado! ({sz/1024/1024:.1f} MB, {len(rows_list):,} linhas)")
 
 
 if __name__ == '__main__':
