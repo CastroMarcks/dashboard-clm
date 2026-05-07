@@ -941,7 +941,7 @@ body.ai-open .wrap{max-width:100%}
   <!-- =================== INSIGHTS =================== -->
   <div id="sec-insights" class="page-section" data-print-title="Insights & Padroes">
     <p class="section-label" style="margin-bottom:14px">Alertas e oportunidades detectados automaticamente</p>
-    <div id="alertas7dDiv" style="margin-bottom:18px"></div>
+
     <div class="full-card" style="margin-bottom:18px">
       <div class="card-title">Cobertura de Grupo Controle <span>lift e holdout</span></div>
       <div id="liftPanelContent"></div>
@@ -1629,7 +1629,7 @@ function initExplorer(){
 // ---- RENDER INSIGHTS ----
 function renderInsights(){
   var ins=AGG.insights||{};
-  renderAlertas7d();renderLiftPanel();
+  renderLiftPanel();
   var ic=document.getElementById('insightCards');ic.innerHTML='';
   var cards=ins.cards||[];
   cards.forEach(function(card){
