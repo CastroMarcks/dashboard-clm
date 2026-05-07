@@ -149,6 +149,56 @@ tr:hover td{background:#fafbff}
 .tag-d{background:#fee2e2;color:#991b1b}
 .tag-i{background:#dbeafe;color:#1e40af}
 
+/* 3-layer insight cards */
+.insight-card .ic-layer-wrap{margin-top:10px;border-top:1px solid rgba(0,0,0,.06);padding-top:10px;display:flex;flex-direction:column;gap:8px}
+.insight-card .ic-layer{display:flex;flex-direction:column;gap:2px}
+.insight-card .ic-layer-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;opacity:.5}
+.insight-card .ic-layer-body{font-size:11px;color:#333;line-height:1.5}
+.ic-correcao{border-radius:6px;padding:6px 8px;font-size:11px;line-height:1.5;margin-top:2px}
+.insight-card.success .ic-correcao{background:#f0fdf4;color:#065f46}
+.insight-card.info .ic-correcao{background:#eff6ff;color:#1e40af}
+.insight-card.warning .ic-correcao{background:#fffbeb;color:#92400e}
+.insight-card.danger .ic-correcao{background:#fff1f2;color:#9f1239}
+
+/* Alertas Criticos tab */
+.alerta-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.alerta-card{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.07);border-left:4px solid #ccc;display:flex;align-items:flex-start;gap:12px}
+.alerta-card.sev-critico{border-left-color:#dc2626;background:#fff9f9}
+.alerta-card.sev-atencao{border-left-color:#d97706;background:#fffdf5}
+.alerta-card.sev-informativo{border-left-color:#1a56db;background:#f8faff}
+.alerta-ico{font-size:20px;min-width:24px;margin-top:1px}
+.alerta-body{flex:1}
+.alerta-title{font-size:13px;font-weight:700;color:#111;margin-bottom:3px}
+.alerta-desc{font-size:11px;color:#555;line-height:1.5}
+.alerta-meta{font-size:10px;color:#888;margin-top:4px}
+.sev-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-left:6px}
+.sev-badge.sev-critico{background:#fee2e2;color:#991b1b}
+.sev-badge.sev-atencao{background:#fef3c7;color:#92400e}
+.sev-badge.sev-informativo{background:#dbeafe;color:#1e40af}
+.alertas-resumo{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.alertas-resumo-box{padding:12px 20px;border-radius:8px;text-align:center;min-width:80px}
+.alertas-resumo-num{font-size:26px;font-weight:800;line-height:1}
+.alertas-resumo-label{font-size:10px;font-weight:700;margin-top:2px}
+
+/* Engajamento tab */
+.eng-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:640px){.eng-kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.eng-dist-bar{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:11px}
+.eng-dist-bar:last-child{border:none}
+.eng-dist-label{min-width:110px;color:#555;font-weight:500}
+.eng-dist-track{flex:1;height:18px;background:#f0ede8;border-radius:4px;overflow:hidden}
+.eng-dist-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:600;color:#fff;min-width:fit-content}
+.eng-dist-val{min-width:55px;text-align:right;color:#444;font-weight:600}
+.freq-seg-list{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.freq-seg{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:8px}
+.freq-seg.seg-baixo{background:#fff1f2;border-left:3px solid #dc2626}
+.freq-seg.seg-medio{background:#fefce8;border-left:3px solid #d97706}
+.freq-seg.seg-alto{background:#f0fdf4;border-left:3px solid #059669}
+.freq-seg-ico{font-size:20px;min-width:24px;margin-top:1px}
+.freq-seg-info{flex:1}
+.freq-seg-name{font-size:12px;font-weight:700;color:#111;margin-bottom:3px}
+.freq-seg-desc{font-size:11px;color:#555;line-height:1.5}
+
 .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
 .badge-ok{background:#d1fae5;color:#065f46}
 .badge-warn{background:#fef3c7;color:#92400e}
@@ -606,6 +656,8 @@ body.ai-open .wrap{max-width:100%}
     <button class="nav-item" data-sec="jornadas" title="Tabela completa de jornadas com filtros e saúde">🚀 Jornadas</button>
     <button class="nav-item" data-sec="insights" title="Alertas automáticos, padrões, melhor janela de envio">💡 Insights</button>
     <button class="nav-item" data-sec="volume" title="Evolução mensal, tendência, anomalias, heatmap">📅 Historico de Disparos</button>
+    <button class="nav-item" data-sec="alertas" title="Alertas criticos por severidade — falha, entrega, leitura, bounce">🚨 Alertas Criticos</button>
+    <button class="nav-item" data-sec="engajamento" title="Frequencia de comunicacao por empresa, segmentacao e tendencia">👥 Engajamento</button>
   </div>
 
   <!-- =================== VISAO GERAL =================== -->
@@ -988,6 +1040,57 @@ body.ai-open .wrap{max-width:100%}
     </div>
   </div>
 
+  <!-- =================== ALERTAS CRITICOS =================== -->
+  <div id="sec-alertas" class="page-section" data-print-title="Alertas Criticos">
+    <p class="section-label" style="margin-bottom:6px">Alertas Criticos</p>
+    <p class="card-subtitle">Monitoramento automatico — atualizado a cada aplicacao de filtros.</p>
+
+    <div class="full-card">
+      <div class="card-title">Resumo por Severidade</div>
+      <div id="alertasResumoDiv"></div>
+    </div>
+
+    <div class="full-card">
+      <div class="card-title">Falhas por Jornada <span>ultimos 7 dias · taxa de falha &gt; 8%</span></div>
+      <div id="alertasJornadasDiv"></div>
+    </div>
+
+    <div class="full-card">
+      <div class="card-title">KPIs fora do limite <span>entrega, leitura, falha</span></div>
+      <div id="alertasMetricasDiv"></div>
+    </div>
+
+    <div class="full-card">
+      <div class="card-title">Canais com problema <span>abaixo do benchmark de entrega</span></div>
+      <div id="alertasCanaisDiv"></div>
+    </div>
+  </div>
+
+  <!-- =================== ENGAJAMENTO =================== -->
+  <div id="sec-engajamento" class="page-section" data-print-title="Engajamento por Empresa">
+    <p class="section-label" style="margin-bottom:6px">Analise de Engajamento</p>
+    <p class="card-subtitle">Frequencia de comunicacao por empresa, segmentacao e correlacao engajamento x frequencia.</p>
+
+    <div class="eng-kpi-grid" id="engKpisDiv"></div>
+
+    <div class="full-card">
+      <div class="card-title">Distribuicao de Frequencia <span>empresas por numero de comunicacoes recebidas no periodo</span></div>
+      <div id="engDistDiv"><div style="font-size:11px;color:#888;padding:10px">Clique em "Carregar" abaixo para calcular a distribuicao por empresa.</div></div>
+    </div>
+
+    <div class="full-card">
+      <div class="card-title">Segmentacao por Frequencia <span>perfil de engajamento por faixa</span></div>
+      <div id="engSegDiv"><div style="font-size:11px;color:#888;padding:10px">Disponivel apos carregar os dados.</div></div>
+    </div>
+
+    <div class="full-card">
+      <div class="card-title">Top Empresas por Frequencia <span>mais comunicacoes recebidas</span></div>
+      <div class="card-subtitle">Analisa empresa x canal x leitura. Requer carregar o arquivo de exportacao (~8 MB).</div>
+      <button id="btnLoadEng" class="export-btn" style="margin-top:8px;width:100%">📊 Carregar dados de engajamento</button>
+      <div id="engTopDiv" style="margin-top:12px"></div>
+    </div>
+  </div>
+
   <p class="rodape">Dados: bsa_sfmc_clm_journeyhistory · Processado via Python/Athena</p>
 </div>
 
@@ -1096,7 +1199,64 @@ function computeAggregateJS(data,f){
   function buildSemanal(rows){var bySem={};rows.forEach(function(r){var wk=weekStartStr(r.dia);if(!bySem[wk])bySem[wk]=[];bySem[wk].push(r);});var semanas=Object.keys(bySem).sort();return semanas.map(function(wk){var a=aggRows(bySem[wk]);return{semana:wk,n:a.total,entrega:a.taxa_entrega,leitura:a.taxa_leitura,click:a.taxa_click,falha:a.taxa_falha};});}
   function buildAlertas7dJS(rows){var dias=rows.map(function(r){return r.dia;}).sort();if(!dias.length)return[];var maxDia=dias[dias.length-1];var maxDt=new Date(maxDia+'T12:00:00Z');var dia7=new Date(maxDt.getTime()-7*24*3600*1000).toISOString().slice(0,10);var rows7=rows.filter(function(r){return r.dia>=dia7;});var byJ={};rows7.forEach(function(r){if(!r.j)return;if(!byJ[r.j])byJ[r.j]={rows:[],canal:r.canal,bu:r.bu};byJ[r.j].rows.push(r);byJ[r.j].canal=r.canal;byJ[r.j].bu=r.bu;});var alertas=[];Object.keys(byJ).forEach(function(j){var item=byJ[j],a=aggRows(item.rows);if(a.total<50)return;if(a.taxa_falha>8)alertas.push({j:j,n:a.total,fl:a.failed||0,taxa_falha:a.taxa_falha,b:item.bu,c:item.canal});});alertas.sort(function(a,b){return b.taxa_falha-a.taxa_falha;});return alertas;}
   function buildSaudeBu(rows){var g=grpBy(rows,'bu'),res=[];Object.keys(g).forEach(function(bu){res.push({bu:bu,agg:aggRows(g[bu])});});res.sort(function(x,y){return y.agg.total-x.agg.total;});return res;}
-  function buildInsights(rows,rows30){var byCanal=grpBy(rows30,'canal'),byFlag=grpBy(rows30,'flag_pontual'),byMet=grpBy(rows30,'metrica'),byObj=grpBy(rows30,'objetivo'),k30=aggRows(rows30),ins=[],padroes=[],bcl=null;Object.keys(byCanal).forEach(function(c){var a=aggRows(byCanal[c]);if(a.total_lei>=5&&(!bcl||a.taxa_leitura>bcl.agg.taxa_leitura))bcl={name:c,agg:a};});if(bcl)ins.push({type:'info',icon:'📧',title:'Melhor canal',body:bcl.name+' lidera leitura com '+bcl.agg.taxa_leitura+'%.',tag:'Destaque',tagCls:'tag-i'});var rec=aggRows(byFlag['Recorrente']||[]),pon=aggRows(byFlag['Pontual']||[]);if(rec.total>=5&&pon.total>=5)ins.push({type:'warning',icon:'🔄',title:'Recorrente vs Pontual',body:'Recorrentes: '+rec.taxa_leitura+'% vs Pontuais: '+pon.taxa_leitura+'%.',tag:'Comparativo',tagCls:'tag-w'});if(k30.taxa_falha>T.falha.warn)ins.push({type:'danger',icon:'⚠️',title:'Taxa de Falha Alta',body:'Falha em '+k30.taxa_falha+'% — acima de '+T.falha.warn+'%.',tag:'Urgente',tagCls:'tag-d'});if(bcl)padroes.push({ico:'📱',txt:'<strong>'+bcl.name+' lidera leitura</strong> com '+bcl.agg.taxa_leitura+'% no periodo.'});if(rec.total>0&&rec.taxa_leitura>10)padroes.push({ico:'🔁',txt:'<strong>Jornadas recorrentes:</strong> '+rec.taxa_leitura+'% de leitura.'});if(k30.taxa_falha>T.falha.warn)padroes.push({ico:'⚠️',txt:'<strong>Taxa de falha acima de '+T.falha.warn+'%:</strong> '+k30.taxa_falha+'%.'});else padroes.push({ico:'✅',txt:'<strong>Taxa de falha controlada:</strong> '+k30.taxa_falha+'%.'});var metrica_rank=[];Object.keys(byMet).forEach(function(m){var a=aggRows(byMet[m]);if(a.total>=2)metrica_rank.push({name:m,val:a.taxa_leitura,total:a.total});});metrica_rank.sort(function(a,b){return b.val-a.val;});var scatter=[];Object.keys(byObj).forEach(function(o){var a=aggRows(byObj[o]);if(a.total>=5)scatter.push({name:o,total:a.total,leit:a.taxa_leitura,ent:a.taxa_entrega,fal:a.taxa_falha});});return{cards:ins,padroes:padroes,metrica_rank:metrica_rank.slice(0,8),scatter:scatter};}
+  function buildInsights(rows,rows30){
+    var byCanal=grpBy(rows30,'canal'),byFlag=grpBy(rows30,'flag_pontual'),byMet=grpBy(rows30,'metrica'),byObj=grpBy(rows30,'objetivo'),byCanal_all=grpBy(rows,'canal');
+    var k30=aggRows(rows30),kAll=aggRows(rows),ins=[],padroes=[];
+    var r1=function(a,b){return b?Math.round(a/b*1000)/10:0;};
+    // --- Canal com melhor e pior leitura ---
+    var canalStats=[];Object.keys(byCanal).forEach(function(c){var a=aggRows(byCanal[c]);if(a.total_lei>=10)canalStats.push({name:c,agg:a});});canalStats.sort(function(a,b){return b.agg.taxa_leitura-a.agg.taxa_leitura;});
+    var bcl=canalStats[0]||null,wcl=canalStats[canalStats.length-1]||null;
+    // --- Recorrente vs Pontual ---
+    var rec=aggRows(byFlag['Recorrente']||[]),pon=aggRows(byFlag['Pontual']||[]);
+    var recVspon=(rec.total>=20&&pon.total>=20)?(rec.taxa_leitura-pon.taxa_leitura):null;
+    // --- Canal com alta falha ---
+    var canalFalha=null;Object.keys(byCanal_all).forEach(function(c){var a=aggRows(byCanal_all[c]);if(a.total>=50&&a.taxa_falha>T.falha.warn){if(!canalFalha||a.taxa_falha>canalFalha.agg.taxa_falha)canalFalha={name:c,agg:a};}});
+    // --- Canal com entrega critica ---
+    var canalEntCrit=null;canalStats.forEach(function(item){if(item.agg.taxa_entrega<T.entrega.warn){if(!canalEntCrit||item.agg.taxa_entrega<canalEntCrit.agg.taxa_entrega)canalEntCrit=item;}});
+    // --- Objetivo com melhor e pior performance ---
+    var objStats=[];Object.keys(byObj).forEach(function(o){var a=aggRows(byObj[o]);if(a.total>=20)objStats.push({name:o,agg:a});});objStats.sort(function(a,b){return b.agg.taxa_leitura-a.agg.taxa_leitura;});
+    var bestObj=objStats[0]||null,worstObj=objStats[objStats.length-1]||null;
+    // --- MoM leitura ---
+    var byMes=grpBy(rows,'mes'),meses=Object.keys(byMes).sort();
+    var momLeiDelta=null,momFalhaDelta=null;
+    if(meses.length>=2){var cm=meses[meses.length-1],pm=meses[meses.length-2];var kc=aggRows(byMes[cm]),kp=aggRows(byMes[pm]);momLeiDelta=Math.round((kc.taxa_leitura-kp.taxa_leitura)*10)/10;momFalhaDelta=Math.round((kc.taxa_falha-kp.taxa_falha)*10)/10;}
+
+    // === CARD 1: Taxa de falha geral ===
+    if(kAll.taxa_falha>T.falha.warn){ins.push({type:'danger',icon:'🔴',title:'Taxa de falha critica: '+kAll.taxa_falha+'%',o_que:'A taxa de falha esta em <b>'+kAll.taxa_falha+'%</b>, acima do limite critico de '+T.falha.warn+'%. Isso representa '+Math.round(kAll.failed)+' envios nao entregues.',por_que:'Falhas acima de '+T.falha.warn+'% impactam a reputacao do remetente, podem levar ao bloqueio de dominio e reduzem o alcance efetivo das jornadas.',correcao:'Higienizar a base de contatos removendo emails invalidos e numeros descadastrados. Verificar configuracao de SPF/DKIM para email e qualidade da lista para SMS/WhatsApp.',tag:'Urgente',tagCls:'tag-d'});}
+    else if(kAll.taxa_falha>T.falha.good){ins.push({type:'warning',icon:'🟡',title:'Taxa de falha elevada: '+kAll.taxa_falha+'%',o_que:'A taxa de falha esta em <b>'+kAll.taxa_falha+'%</b>, acima do alvo de '+T.falha.good+'% mas abaixo do limite critico.',por_que:'Falha persistente acima do ideal indica deterioracao gradual da base. Sem correcao, pode escalar para nivel critico e afetar reputacao do dominio.',correcao:'Monitorar por jornada e canal. Priorizar limpeza das listas mais antigas. Verificar se ha concentracao de falhas em BU especifica.',tag:'Atencao',tagCls:'tag-w'});}
+    else{ins.push({type:'success',icon:'✅',title:'Taxa de falha controlada: '+kAll.taxa_falha+'%',o_que:'A taxa de falha esta em <b>'+kAll.taxa_falha+'%</b>, dentro do limite ideal (≤'+T.falha.good+'%).',por_que:'Base de contatos saudavel garante maior alcance e protege a reputacao do remetente, maximizando a entregabilidade futura.',correcao:'Manter o processo de higienizacao periodica. Monitorar por jornada para capturar picos localizados cedo.',tag:'Saudavel',tagCls:'tag-s'});}
+
+    // === CARD 2: Melhor canal de leitura ===
+    if(bcl){ins.push({type:'info',icon:'📊',title:'Canal lider: '+bcl.name+' ('+bcl.agg.taxa_leitura+'% leitura)',o_que:'O canal <b>'+bcl.name+'</b> lidera com taxa de leitura de <b>'+bcl.agg.taxa_leitura+'%</b> em '+bcl.agg.total+' envios nos ultimos 30 dias.'+(wcl&&wcl.name!==bcl.name?' Pior: '+wcl.name+' com '+wcl.agg.taxa_leitura+'%.':''),por_que:'Canais com alta leitura indicam maior afinidade da audiencia com aquele meio. Investir mais nesse canal pode aumentar o ROI geral das jornadas.',correcao:'Avaliar se e possivel migrar jornadas com baixo engajamento para o canal lider. Comparar custo-beneficio por canal antes de realocar volume.',tag:'Destaque',tagCls:'tag-i'});}
+
+    // === CARD 3: Recorrente vs Pontual ===
+    if(recVspon!==null){var rType=recVspon>0?'success':recVspon>-3?'info':'warning';var rTag=recVspon>0?{t:'tag-s',l:'Recorrentes lideram'}:recVspon>-3?{t:'tag-i',l:'Equilibrado'}:{t:'tag-w',l:'Pontuais lideram'};ins.push({type:rType,icon:'🔄',title:'Recorrente ('+rec.taxa_leitura+'%) vs Pontual ('+pon.taxa_leitura+'%)',o_que:'Jornadas recorrentes tem <b>'+rec.taxa_leitura+'%</b> de leitura vs <b>'+pon.taxa_leitura+'%</b> nas pontuais. Diferenca: '+(recVspon>=0?'+':'')+recVspon+' p.p.',por_que:recVspon>0?'Jornadas recorrentes constroem habito de leitura na audiencia, gerando engajamento mais previsivel e menor custo de aquisicao de atencao.':'Jornadas pontuais tem maior novidade e urgencia, o que eleva temporariamente a leitura. Risco: fadiga se a base receber muitas pontuais seguidas.',correcao:recVspon>0?'Aumentar a cobertura de jornadas recorrentes. Revisar cadencia das pontuais para evitar sobreposicao com recorrentes.':'Avaliar se as jornadas recorrentes tem cadencia adequada. Testar novos assuntos e CTAs para aumentar abertura.',tag:rTag.l,tagCls:rTag.t});}
+
+    // === CARD 4: Canal com falha critica ===
+    if(canalFalha){ins.push({type:'danger',icon:'📡',title:'Canal '+canalFalha.name+': falha critica ('+canalFalha.agg.taxa_falha+'%)',o_que:'O canal <b>'+canalFalha.name+'</b> esta com taxa de falha de <b>'+canalFalha.agg.taxa_falha+'%</b> ('+Math.round(canalFalha.agg.failed)+' falhas em '+canalFalha.agg.total+' envios).',por_que:'Falha concentrada em um canal especifico pode indicar problema tecnico, lista desatualizada ou bloqueio por parte do provedor — impactando toda a operacao desse canal.',correcao:'Auditar a lista do canal '+canalFalha.name+'. Verificar logs de erro por tipo de falha (hard vs soft bounce). Pausar temporariamente as jornadas com maior taxa ate resolver a causa raiz.',tag:'Urgente',tagCls:'tag-d'});}
+
+    // === CARD 5: MoM leitura ===
+    if(momLeiDelta!==null&&meses.length>=2){var mType=momLeiDelta>=1?'success':momLeiDelta>=-1?'info':'warning';var mTag=momLeiDelta>=1?{t:'tag-s',l:'Leitura crescendo'}:momLeiDelta>=-1?{t:'tag-i',l:'Estavel'}:{t:'tag-w',l:'Leitura caindo'};ins.push({type:mType,icon:'📈',title:'Leitura '+(momLeiDelta>=0?'+':'')+momLeiDelta+'p.p. vs mes anterior',o_que:'A taxa de leitura '+(momLeiDelta>=0?'subiu':'caiu')+' <b>'+(momLeiDelta>=0?'+':'')+momLeiDelta+'p.p.</b> em relacao ao mes anterior.'+( momFalhaDelta!==null?' Falha: '+(momFalhaDelta>=0?'+':'')+momFalhaDelta+'p.p.':''),por_que:momLeiDelta>=1?'Crescimento de leitura indica que as jornadas estao mais relevantes para a audiencia — conteudo, horario ou segmentacao melhoraram.':momLeiDelta>=-1?'Leitura estavel. A audiencia esta respondendo de forma consistente as comunicacoes.':'Queda de leitura pode sinalizar fadiga de audiencia, deteroracao do conteudo ou problemas de entregabilidade.',correcao:momLeiDelta>=1?'Identificar quais jornadas ou canais puxaram a melhora e replicar as praticas nas demais.':momLeiDelta>=-1?'Manter a estrategia atual. Testar variacoes de assunto para identificar oportunidade de crescimento.':'Revisar assuntos e horarios de envio. Avaliar se ha sobreposicao excessiva de comunicacoes para a mesma base.',tag:mTag.l,tagCls:mTag.t});}
+
+    // === CARD 6: Objetivo com melhor engajamento ===
+    if(bestObj&&objStats.length>=2){ins.push({type:'info',icon:'🎯',title:'Objetivo destaque: '+bestObj.name+' ('+bestObj.agg.taxa_leitura+'%)',o_que:'O objetivo <b>'+bestObj.name+'</b> tem a melhor taxa de leitura (<b>'+bestObj.agg.taxa_leitura+'%</b>) em '+bestObj.agg.total+' envios.'+(worstObj&&worstObj.name!==bestObj.name?' Pior objetivo: '+worstObj.name+' com '+worstObj.agg.taxa_leitura+'%.':''),por_que:'Objetivos com alta leitura indicam que a audiencia reconhece o valor da comunicacao. Isso guia decisoes sobre quais tipos de jornada priorizar.',correcao:'Analisar o que diferencia as jornadas do objetivo "'+bestObj.name+'" (segmentacao, horario, conteudo) e aplicar aprendizados nas demais. Revisar objetivos com leitura abaixo de '+T.leitura.warn+'%.',tag:'Destaque',tagCls:'tag-i'});}
+
+    // === CARD 7: Entrega geral ===
+    if(kAll.taxa_entrega<T.entrega.warn){ins.push({type:'danger',icon:'📭',title:'Entrega critica: '+kAll.taxa_entrega+'%',o_que:'A taxa de entrega esta em <b>'+kAll.taxa_entrega+'%</b>, abaixo do limite critico de '+T.entrega.warn+'%. Mais de '+(100-kAll.taxa_entrega)+'% dos envios nao chegam ao destinatario.',por_que:'Baixa entrega nulifica o investimento nas jornadas — sem entrega, nenhuma leitura ou clique e possivel. Pode sinalizar problemas graves de dominio ou blocklist.',correcao:'Verificar imediatamente configuracoes de SPF, DKIM e DMARC para email. Para SMS/WhatsApp, checar aprovacao de templates e status do remetente. Acionar time tecnico de infra.',tag:'Urgente',tagCls:'tag-d'});}
+    else if(kAll.taxa_entrega<T.entrega.good){ins.push({type:'warning',icon:'📬',title:'Entrega abaixo do ideal: '+kAll.taxa_entrega+'%',o_que:'A taxa de entrega esta em <b>'+kAll.taxa_entrega+'%</b>, abaixo do alvo de '+T.entrega.good+'%. Significa que '+(100-kAll.taxa_entrega)+'% dos envios nao chegam.',por_que:'Entrega abaixo do alvo reduz o alcance efetivo e pode piorar progressivamente se a reputacao do remetente se deteriorar.',correcao:'Revisar configuracoes de autenticacao do dominio de envio. Reduzir volume de envios para listas com maior taxa de bounce enquanto a causa e investigada.',tag:'Atencao',tagCls:'tag-w'});}
+
+    // padroes
+    if(bcl)padroes.push({ico:'📊',txt:'<strong>'+bcl.name+' lidera leitura</strong> com '+bcl.agg.taxa_leitura+'% nos ultimos 30 dias.'});
+    if(rec.total>0)padroes.push({ico:'🔁',txt:'<strong>Jornadas recorrentes:</strong> '+rec.taxa_leitura+'% de leitura · Volume: '+Math.round(rec.total)+' envios.'});
+    if(kAll.taxa_falha>T.falha.warn)padroes.push({ico:'⚠️',txt:'<strong>Taxa de falha critica ('+kAll.taxa_falha+'%):</strong> acima de '+T.falha.warn+'% — higienizacao urgente.'});
+    else padroes.push({ico:'✅',txt:'<strong>Taxa de falha controlada ('+kAll.taxa_falha+'%):</strong> base saudavel, manter monitoramento.'});
+    if(momLeiDelta!==null)padroes.push({ico:momLeiDelta>=0?'📈':'📉',txt:'<strong>Leitura MoM: '+(momLeiDelta>=0?'+':'')+momLeiDelta+'p.p.</strong> em relacao ao mes anterior.'});
+    if(bestObj)padroes.push({ico:'🎯',txt:'<strong>Objetivo destaque: '+bestObj.name+'</strong> — '+bestObj.agg.taxa_leitura+'% de leitura.'});
+
+    var metrica_rank=[];Object.keys(byMet).forEach(function(m){var a=aggRows(byMet[m]);if(a.total>=2)metrica_rank.push({name:m,val:a.taxa_leitura,total:a.total});});metrica_rank.sort(function(a,b){return b.val-a.val;});
+    var scatter=[];Object.keys(byObj).forEach(function(o){var a=aggRows(byObj[o]);if(a.total>=5)scatter.push({name:o,total:a.total,leit:a.taxa_leitura,ent:a.taxa_entrega,fal:a.taxa_falha});});
+    return{cards:ins,padroes:padroes,metrica_rank:metrica_rank.slice(0,8),scatter:scatter};
+  }
   function buildJornadasSection(){var top=data.jornadas||[],jornadas=top.filter(function(j){if(f.bu&&j.b!==f.bu)return false;if(f.canal&&j.c!==f.canal)return false;return true;});var saudaveis=[],atencao=[],criticas=[],all=[];jornadas.forEach(function(j){var t=j.del+j.rd+j.cl+j.fl+j.snt,r1=function(a,b){return b?Math.round(a/b*1000)/10:0;},tf=r1(j.fl,t),tem_lei=!!CANAIS_LEI[j.c],tl=tem_lei?r1(j.rd+j.cl,t):null,te=r1(j.snt+j.del+j.rd+j.cl,t),badge=tf<=T.falha.good?'badge-ok':tf<=T.falha.warn?'badge-warn':'badge-danger',label=tf<=T.falha.good?'Saudavel':tf<=T.falha.warn?'Atencao':'Critico',entry=Object.assign({},j,{_t:t,_tf:tf,_tl:tl,_te:te,_tem_lei:tem_lei,_health_badge:badge,_health_label:label,_delta_leitura:null});all.push(entry);if(tf>T.falha.warn)criticas.push(entry);else if(tf>T.falha.good||(tem_lei&&tl!==null&&tl<T.leitura.warn))atencao.push(entry);else saudaveis.push(entry);});return{jornadas:all.slice(0,30),jornadas_all:all,saudaveis:saudaveis,atencao:atencao,criticas:criticas,atencao_set:{},top_falhas:data.top_falhas||[],sem_controle:data.jornadas_sem_controle_30d||[]};}
   function getJornadasAtivas(rows){var s={};rows.forEach(function(r){if(r.j)s[r.j]=true;});return Object.keys(s).length;}
   var filtered=filterCross(cross),rows30=filtered.filter(function(r){return r.dia>=dia30d;}),k=aggRows(filtered),k30=aggRows(rows30.length>0?rows30:filtered),mom=buildMom(filtered),tl=buildTimeline(filtered);
@@ -1161,11 +1321,13 @@ function renderCurrentTab(){
     var el=document.getElementById('sec-'+sec);var emptyId='empty-'+sec;
     if(!document.getElementById(emptyId)){var empty=document.createElement('div');empty.id=emptyId;empty.className='empty-state';empty.innerHTML='<div class="ico">📭</div><h3>Sem dados no filtro atual</h3><p>Nenhuma atividade encontrada para os filtros selecionados.<br>Tente ampliar o periodo ou remover alguns filtros para ver resultados.</p>';el.insertBefore(empty,el.firstChild);}
   } else {var ex=document.getElementById('empty-'+sec);if(ex)ex.remove();}
-  if(sec==='perf')    renderPerf();
-  if(sec==='canais')  renderCanais();
-  if(sec==='jornadas')renderJornadas();
-  if(sec==='insights')renderInsights();
-  if(sec==='volume')  renderTimeline();
+  if(sec==='perf')       renderPerf();
+  if(sec==='canais')     renderCanais();
+  if(sec==='jornadas')   renderJornadas();
+  if(sec==='insights')   renderInsights();
+  if(sec==='volume')     renderTimeline();
+  if(sec==='alertas')    renderAlertas();
+  if(sec==='engajamento')renderEngajamento();
 }
 
 // ---- BAR LIST HELPER ----
@@ -1470,7 +1632,19 @@ function renderInsights(){
   renderAlertas7d();renderLiftPanel();
   var ic=document.getElementById('insightCards');ic.innerHTML='';
   var cards=ins.cards||[];
-  cards.forEach(function(card){ic.innerHTML+='<div class="insight-card '+card.type+'"><div class="insight-icon">'+card.icon+'</div><div class="insight-title">'+card.title+'</div><div class="insight-body">'+card.body+'</div><span class="insight-tag '+card.tagCls+'">'+card.tag+'</span></div>';});
+  cards.forEach(function(card){
+    var layersHtml='';
+    if(card.o_que||card.por_que||card.correcao){
+      layersHtml='<div class="ic-layer-wrap">';
+      if(card.o_que)layersHtml+='<div class="ic-layer"><div class="ic-layer-label">O que esta acontecendo</div><div class="ic-layer-body">'+card.o_que+'</div></div>';
+      if(card.por_que)layersHtml+='<div class="ic-layer"><div class="ic-layer-label">Por que importa</div><div class="ic-layer-body">'+card.por_que+'</div></div>';
+      if(card.correcao)layersHtml+='<div class="ic-layer"><div class="ic-correcao">💡 '+card.correcao+'</div></div>';
+      layersHtml+='</div>';
+    } else if(card.body){
+      layersHtml='<div class="insight-body">'+card.body+'</div>';
+    }
+    ic.innerHTML+='<div class="insight-card '+card.type+'"><div class="insight-icon">'+card.icon+'</div><div class="insight-title">'+card.title+'</div>'+layersHtml+'<span class="insight-tag '+card.tagCls+'">'+card.tag+'</span></div>';
+  });
   if(!cards.length)ic.innerHTML='<div class="insight-card info"><div class="insight-icon">ℹ️</div><div class="insight-title">Sem dados suficientes</div><div class="insight-body">Ajuste os filtros para ter pelo menos 5 atividades em cada grupo.</div></div>';
   renderJanelaEnvio();
   var pl=document.getElementById('padroesList');pl.innerHTML='';
@@ -1741,6 +1915,151 @@ function renderSemanal(){
   });
   html+='</tbody></table></div>';
   el.innerHTML=html;
+}
+
+// ---- RENDER ALERTAS CRITICOS TAB ----
+function renderAlertas(){
+  if(!AGG)return;
+  var k=AGG.kpis,T=THRESHOLDS,afd=AGG.alertas_falha_7d||[],canais=(AGG.canais&&AGG.canais.canais)||[];
+  var sevOrder={critico:0,atencao:1,informativo:2};
+  function makeCard(sev,ico,title,desc,meta){return{sev:sev,ico:ico,title:title,desc:desc,meta:meta};}
+  var kpiAlerts=[];
+  if(k.taxa_falha>T.falha.warn)kpiAlerts.push(makeCard('critico','🔴','Taxa de falha critica: '+pct(k.taxa_falha),'A taxa de falha esta em <b>'+pct(k.taxa_falha)+'</b>, acima do limite critico de '+T.falha.warn+'%. Implica em envios nao entregues e risco de reputacao do remetente.','Limite critico: '+T.falha.warn+'% · Atual: '+pct(k.taxa_falha)));
+  else if(k.taxa_falha>T.falha.good)kpiAlerts.push(makeCard('atencao','🟡','Taxa de falha elevada: '+pct(k.taxa_falha),'A taxa de falha esta em <b>'+pct(k.taxa_falha)+'</b>, acima do alvo ideal de '+T.falha.good+'%. Monitorar tendencia antes que escale.','Alvo: ≤'+T.falha.good+'% · Atual: '+pct(k.taxa_falha)));
+  else kpiAlerts.push(makeCard('informativo','✅','Taxa de falha controlada: '+pct(k.taxa_falha),'Base saudavel — falha dentro do limite ideal de ≤'+T.falha.good+'%.','Alvo: ≤'+T.falha.good+'% · Atual: '+pct(k.taxa_falha)));
+  if(k.taxa_entrega<T.entrega.warn)kpiAlerts.push(makeCard('critico','📭','Entrega critica: '+pct(k.taxa_entrega),'Taxa de entrega em <b>'+pct(k.taxa_entrega)+'</b>, abaixo do limite critico de '+T.entrega.warn+'%. Alto risco de nao-entrega sistematica e blocklist.','Alvo: ≥'+T.entrega.warn+'% · Atual: '+pct(k.taxa_entrega)));
+  else if(k.taxa_entrega<T.entrega.good)kpiAlerts.push(makeCard('atencao','📬','Entrega abaixo do ideal: '+pct(k.taxa_entrega),'Entrega em <b>'+pct(k.taxa_entrega)+'</b>, abaixo do alvo de '+T.entrega.good+'%. Verificar configuracoes de dominio/remetente.','Alvo: ≥'+T.entrega.good+'% · Atual: '+pct(k.taxa_entrega)));
+  if(k.taxa_leitura<T.leitura.warn)kpiAlerts.push(makeCard('atencao','📖','Leitura baixa: '+pct(k.taxa_leitura),'Taxa de leitura em <b>'+pct(k.taxa_leitura)+'</b>. Possivel fadiga de audiencia, assuntos pouco atrativos ou horario inadequado.','Alvo: ≥'+T.leitura.warn+'% · Atual: '+pct(k.taxa_leitura)));
+  if(k.taxa_click<T.click.warn)kpiAlerts.push(makeCard('atencao','🖱️','Click rate baixo: '+pct(k.taxa_click),'Taxa de clique em <b>'+pct(k.taxa_click)+'</b>. CTAs podem estar pouco visíveis ou pouco relevantes para a audiencia.','Alvo: ≥'+T.click.warn+'% · Atual: '+pct(k.taxa_click)));
+  kpiAlerts.sort(function(a,b){return sevOrder[a.sev]-sevOrder[b.sev];});
+  var canalAlerts=[];
+  canais.forEach(function(item){var a=item.agg;if(a.taxa_entrega<T.entrega.warn)canalAlerts.push(makeCard('critico','📡','Canal '+item.canal+': entrega critica ('+pct(a.taxa_entrega)+')','O canal <b>'+item.canal+'</b> esta com <b>'+pct(a.taxa_entrega)+'</b> de entrega — abaixo do limite critico.','Volume: '+num(a.total)+' · Falha: '+pct(a.taxa_falha)));else if(a.taxa_entrega<T.entrega.good)canalAlerts.push(makeCard('atencao','📡','Canal '+item.canal+': entrega abaixo do ideal ('+pct(a.taxa_entrega)+')','Canal <b>'+item.canal+'</b> com entrega em <b>'+pct(a.taxa_entrega)+'</b>, abaixo do alvo de '+T.entrega.good+'%.','Volume: '+num(a.total)+' · Falha: '+pct(a.taxa_falha)));});
+  canalAlerts.sort(function(a,b){return sevOrder[a.sev]-sevOrder[b.sev];});
+  var totCrit=kpiAlerts.filter(function(a){return a.sev==='critico';}).length+afd.length+canalAlerts.filter(function(a){return a.sev==='critico';}).length;
+  var totAten=kpiAlerts.filter(function(a){return a.sev==='atencao';}).length+canalAlerts.filter(function(a){return a.sev==='atencao';}).length;
+  var totInfo=kpiAlerts.filter(function(a){return a.sev==='informativo';}).length;
+  var resDiv=document.getElementById('alertasResumoDiv');
+  resDiv.innerHTML='<div class="alertas-resumo">'
+    +'<div class="alertas-resumo-box" style="background:#fee2e2"><div class="alertas-resumo-num" style="color:#dc2626">'+totCrit+'</div><div class="alertas-resumo-label" style="color:#991b1b">CRITICO</div></div>'
+    +'<div class="alertas-resumo-box" style="background:#fef3c7"><div class="alertas-resumo-num" style="color:#d97706">'+totAten+'</div><div class="alertas-resumo-label" style="color:#92400e">ATENCAO</div></div>'
+    +'<div class="alertas-resumo-box" style="background:#dbeafe"><div class="alertas-resumo-num" style="color:#1a56db">'+totInfo+'</div><div class="alertas-resumo-label" style="color:#1e40af">INFORMATIVO</div></div>'
+    +'</div>';
+  function renderAlertaList(elId,cards){
+    var el=document.getElementById(elId);if(!el)return;
+    if(!cards.length){el.innerHTML='<div style="font-size:11px;color:#059669;padding:10px">✅ Nenhum alerta nesta categoria.</div>';return;}
+    var html='<div class="alerta-list">';
+    cards.forEach(function(a){html+='<div class="alerta-card sev-'+a.sev+'"><div class="alerta-ico">'+a.ico+'</div><div class="alerta-body"><div class="alerta-title">'+a.title+'<span class="sev-badge sev-'+a.sev+'">'+a.sev.toUpperCase()+'</span></div><div class="alerta-desc">'+a.desc+'</div><div class="alerta-meta">'+a.meta+'</div></div></div>';});
+    html+='</div>';el.innerHTML=html;
+  }
+  var jCards=afd.map(function(a){return makeCard('critico','🚨','Falha critica: '+a.j,'Taxa de falha: <b>'+pct(a.taxa_falha)+'</b> em <b>'+num(a.n)+'</b> envios ('+num(a.fl)+' falhos). Canal: '+(a.c||'')+'<span class="prod-tag '+(TAG_BU[a.b]||'t-outros')+'" style="margin-left:6px">'+escHtml(a.b||'')+'</span>','Dados dos ultimos 7 dias · jornada: '+escHtml(a.j));});
+  renderAlertaList('alertasJornadasDiv',jCards);
+  renderAlertaList('alertasMetricasDiv',kpiAlerts);
+  renderAlertaList('alertasCanaisDiv',canalAlerts);
+}
+
+// ---- RENDER ENGAJAMENTO TAB ----
+var _engLoading=false;
+function renderEngajamento(){
+  if(!AGG)return;
+  var k=AGG.kpis;
+  var engDiv=document.getElementById('engKpisDiv');
+  if(engDiv){
+    var ja=AGG.jornadas_ativas||0;
+    engDiv.innerHTML=''
+      +'<div class="kpi-card"><div class="kpi-label">Total Atividades</div><div class="kpi-val">'+num(k.total)+'</div><div class="kpi-sub">no periodo filtrado</div></div>'
+      +'<div class="kpi-card"><div class="kpi-label">Jornadas Ativas</div><div class="kpi-val">'+num(ja)+'</div><div class="kpi-sub">com disparos</div></div>'
+      +'<div class="kpi-card"><div class="kpi-label">Leitura Media</div><div class="kpi-val">'+pct(k.taxa_leitura)+'</div><div class="kpi-sub">do periodo</div></div>'
+      +'<div class="kpi-card"><div class="kpi-label">Taxa de Falha</div><div class="kpi-val">'+pct(k.taxa_falha)+'</div><div class="kpi-sub">do periodo</div></div>';
+  }
+  var btn=document.getElementById('btnLoadEng');
+  if(btn)btn.onclick=function(){loadEngajamento();};
+}
+async function loadEngajamento(){
+  if(_engLoading)return;
+  _engLoading=true;
+  var btn=document.getElementById('btnLoadEng');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Carregando...';}
+  try{
+    if(!_exportDataCache){
+      var resp=await fetch('export_data.bin');
+      if(!resp.ok)throw new Error('export_data.bin nao encontrado (HTTP '+resp.status+')');
+      var ds=new DecompressionStream('gzip');
+      var decompResp=new Response(resp.body.pipeThrough(ds));
+      var text=await decompResp.text();
+      _exportDataCache=JSON.parse(text).rows||[];
+    }
+    var f=getFilters();
+    var rows2=_exportDataCache.filter(function(r){
+      if(f.bu&&r.b!==f.bu)return false;
+      if(f.canal&&r.c!==f.canal)return false;
+      if(f.objetivo&&r.o!==f.objetivo)return false;
+      return true;
+    });
+    var empMap={};
+    rows2.forEach(function(r){
+      if(!r.e)return;
+      if(!empMap[r.e])empMap[r.e]={total:0,lidos:0,falhos:0,canais:{}};
+      var n=r.n||1;
+      empMap[r.e].total+=n;
+      if(r.s==='read'||r.s==='click')empMap[r.e].lidos+=n;
+      if(r.s==='failed')empMap[r.e].falhos+=n;
+      empMap[r.e].canais[r.c]=(empMap[r.e].canais[r.c]||0)+n;
+    });
+    var empresas=Object.keys(empMap).map(function(e){var d=empMap[e];var lei=d.total?Math.round(d.lidos/d.total*1000)/10:0;return{e:e,total:d.total,lidos:d.lidos,falhos:d.falhos,taxa_leitura:lei,canais:d.canais};});
+    empresas.sort(function(a,b){return b.total-a.total;});
+    var totalEmps=empresas.length||1;
+    var media=empresas.reduce(function(s,e){return s+e.total;},0)/totalEmps;
+    var dist={'1':0,'2-5':0,'6-10':0,'11-20':0,'21+':0};
+    empresas.forEach(function(e){if(e.total===1)dist['1']++;else if(e.total<=5)dist['2-5']++;else if(e.total<=10)dist['6-10']++;else if(e.total<=20)dist['11-20']++;else dist['21+']++;});
+    var DIST_CORES={'1':'#6b7280','2-5':'#1a56db','6-10':'#059669','11-20':'#d97706','21+':'#dc2626'};
+    var DIST_LABELS={'1':'1 comunicacao','2-5':'2 a 5','6-10':'6 a 10','11-20':'11 a 20','21+':'21 ou mais'};
+    var distHtml='';
+    ['1','2-5','6-10','11-20','21+'].forEach(function(faixa){var n=dist[faixa],p2=totalEmps?Math.round(n/totalEmps*1000)/10:0,w=Math.max(2,Math.round(p2));distHtml+='<div class="eng-dist-bar"><span class="eng-dist-label">'+DIST_LABELS[faixa]+'</span><div class="eng-dist-track"><div class="eng-dist-fill" style="width:'+w+'%;background:'+DIST_CORES[faixa]+'">'+n+'</div></div><span class="eng-dist-val">'+p2+'%</span></div>';});
+    var distDiv=document.getElementById('engDistDiv');if(distDiv)distDiv.innerHTML=distHtml||'<div style="font-size:11px;color:#aaa">Sem dados</div>';
+    var baixo=empresas.filter(function(e){return e.total<media*0.5;}),medio=empresas.filter(function(e){return e.total>=media*0.5&&e.total<=media*1.5;}),alto=empresas.filter(function(e){return e.total>media*1.5;});
+    var lBaixo=baixo.length?Math.round(baixo.reduce(function(s,e){return s+e.taxa_leitura;},0)/baixo.length*10)/10:0;
+    var lMedio=medio.length?Math.round(medio.reduce(function(s,e){return s+e.taxa_leitura;},0)/medio.length*10)/10:0;
+    var lAlto=alto.length?Math.round(alto.reduce(function(s,e){return s+e.taxa_leitura;},0)/alto.length*10)/10:0;
+    var segHtml='<div style="font-size:11px;color:#666;margin-bottom:8px">Media de comunicacoes por empresa: <b>'+Math.round(media*10)/10+'</b> · Total de empresas: <b>'+num(totalEmps)+'</b></div>'
+      +'<div class="freq-seg-list">'
+      +'<div class="freq-seg seg-baixo"><div class="freq-seg-ico">🔵</div><div class="freq-seg-info"><div class="freq-seg-name">Baixa Frequencia — abaixo de 50% da media</div><div class="freq-seg-desc"><b>'+num(baixo.length)+'</b> empresas · leitura media: <b>'+pct(lBaixo)+'</b><br>Pouco expostas. Avaliar se sao elegíveis a mais jornadas ou se estao segmentadas corretamente.</div></div></div>'
+      +'<div class="freq-seg seg-medio"><div class="freq-seg-ico">🟡</div><div class="freq-seg-info"><div class="freq-seg-name">Frequencia Media — entre 50% e 150% da media</div><div class="freq-seg-desc"><b>'+num(medio.length)+'</b> empresas · leitura media: <b>'+pct(lMedio)+'</b><br>Perfil balanceado. Manter cadencia e monitorar queda de engajamento.</div></div></div>'
+      +'<div class="freq-seg seg-alto"><div class="freq-seg-ico">🔴</div><div class="freq-seg-info"><div class="freq-seg-name">Alta Frequencia — acima de 150% da media</div><div class="freq-seg-desc"><b>'+num(alto.length)+'</b> empresas · leitura media: <b>'+pct(lAlto)+'</b><br>'+(lAlto<lMedio?'⚠️ Leitura abaixo da media — possivel fadiga de audiencia. Avaliar reducao de frequencia.':'✅ Leitura saudavel mesmo com alta frequencia — perfil altamente engajado.')+'</div></div></div>'
+      +'</div>';
+    var segDiv=document.getElementById('engSegDiv');if(segDiv)segDiv.innerHTML=segHtml;
+    var top20=empresas.slice(0,20);
+    var topDiv=document.getElementById('engTopDiv');
+    if(!topDiv)return;
+    if(!top20.length){topDiv.innerHTML='<div style="font-size:11px;color:#aaa">Sem dados.</div>';return;}
+    var topHtml='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">'
+      +'<thead><tr style="background:#f9f9f7;border-bottom:2px solid #e5e7eb">'
+      +'<th style="text-align:left;padding:6px 8px;color:#555">#</th>'
+      +'<th style="text-align:left;padding:6px 8px;color:#555">Empresa</th>'
+      +'<th style="text-align:right;padding:6px 8px;color:#555">Comunicacoes</th>'
+      +'<th style="text-align:right;padding:6px 8px;color:#555">Lidos</th>'
+      +'<th style="text-align:right;padding:6px 8px;color:#555">Leitura</th>'
+      +'<th style="text-align:right;padding:6px 8px;color:#555">Falhas</th>'
+      +'</tr></thead><tbody>';
+    top20.forEach(function(e,i){
+      var bg=i%2===0?'#fff':'#fafaf8';
+      var lCls=e.taxa_leitura>=THRESHOLDS.leitura.good?'color:#059669;font-weight:700':e.taxa_leitura>=THRESHOLDS.leitura.warn?'color:#d97706;font-weight:700':'color:#dc2626;font-weight:700';
+      topHtml+='<tr style="background:'+bg+'">'
+        +'<td style="padding:5px 8px;color:#aaa;font-size:10px">'+(i+1)+'</td>'
+        +'<td style="padding:5px 8px;color:#333;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escHtml(e.e)+'">'+escHtml(e.e)+'</td>'
+        +'<td style="text-align:right;padding:5px 8px;font-weight:600">'+num(e.total)+'</td>'
+        +'<td style="text-align:right;padding:5px 8px">'+num(e.lidos)+'</td>'
+        +'<td style="text-align:right;padding:5px 8px;'+lCls+'">'+pct(e.taxa_leitura)+'</td>'
+        +'<td style="text-align:right;padding:5px 8px;color:#dc2626">'+num(e.falhos)+'</td>'
+        +'</tr>';
+    });
+    topHtml+='</tbody></table></div>';
+    topDiv.innerHTML=topHtml;
+    if(btn){btn.disabled=false;btn.textContent='🔄 Recarregar';}
+  }catch(err){
+    var topDiv2=document.getElementById('engTopDiv');
+    if(topDiv2)topDiv2.innerHTML='<div style="font-size:11px;color:#dc2626;padding:8px">Erro: '+err.message+'</div>';
+    if(btn){btn.disabled=false;btn.textContent='📊 Tentar novamente';}
+  }finally{_engLoading=false;}
 }
 
 // ---- EXPORT CSV (filtro local do CROSS — sem agregacao) ----
