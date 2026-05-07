@@ -411,10 +411,28 @@ def build_canais(filtered):
         a = agg(rows)
         flag_arr.append({'flag': fl, 'agg': a})
 
+    # Canal x Objetivo (para comparativo)
+    co_groups: dict[str, list] = {}
+    for r in filtered:
+        obj = r.get('objetivo', '') or ''
+        if not obj:
+            continue
+        key = f"{r['canal']}||{obj}"
+        co_groups.setdefault(key, []).append(r)
+    co_arr = []
+    for key, rows in co_groups.items():
+        canal, obj = key.split('||', 1)
+        a = agg(rows)
+        if a['total'] < 5:
+            continue
+        co_arr.append({'canal': canal, 'objetivo': obj, 'agg': a})
+    co_arr.sort(key=lambda x: x['agg']['total'], reverse=True)
+
     return {
-        'canais':   result,
-        'bu_canal': bc_arr,
-        'flags':    flag_arr,
+        'canais':        result,
+        'bu_canal':      bc_arr,
+        'flags':         flag_arr,
+        'canal_objetivo': co_arr,
     }
 
 
@@ -510,11 +528,28 @@ def build_insights(filtered, dia_30d):
             scatter.append({'name': name, 'total': a['total'], 'leit': a['taxa_leitura'],
                             'ent': a['taxa_entrega'], 'fal': a['taxa_falha']})
 
+    # Alertas de falha por jornada (30 dias)
+    by_jornada = _group_by(rows30, 'j')
+    alertas_jornada = []
+    for j, jrows in by_jornada.items():
+        if not j.strip():
+            continue
+        a = agg(jrows)
+        if a['total'] < 50:
+            continue
+        if a['taxa_falha'] > T['falha']['warn']:
+            alertas_jornada.append({
+                'j': j, 'n': a['total'], 'fl': a['failed'],
+                'taxa_falha': a['taxa_falha'],
+            })
+    alertas_jornada.sort(key=lambda x: x['taxa_falha'], reverse=True)
+
     return {
-        'cards':        insights,
-        'padroes':      padroes,
-        'metrica_rank': metrica_rank[:8],
-        'scatter':      scatter,
+        'cards':           insights,
+        'padroes':         padroes,
+        'metrica_rank':    metrica_rank[:8],
+        'scatter':         scatter,
+        'alertas_jornada': alertas_jornada[:10],
     }
 
 
@@ -586,21 +621,57 @@ def build_jornadas_section(data, filtered, f, mom):
 # Grupo controle (filtered by mes/bu)
 # ---------------------------------------------------------------------------
 
-def build_grupo_controle(grupo_controle_raw, kpis, f):
+def build_grupo_controle(grupo_controle_raw, kpis, f, jornadas_com_controle_lista=None, jornadas_section=None):
     mes_ini = f.get('mesIni', '')
     mes_fim = f.get('mesFim', '')
     bu      = f.get('bu', '')
 
     total = 0
+    by_bu: dict[str, int] = {}
     for r in grupo_controle_raw:
         if mes_ini and r['mes'] < mes_ini: continue
         if mes_fim and r['mes'] > mes_fim: continue
         if bu and r['bu'] != bu: continue
         total += r['n']
+        by_bu[r['bu']] = by_bu.get(r['bu'], 0) + r['n']
 
     base = kpis['total'] + total
     pct  = _r1(total / base * 100) if base else 0.0
-    return {'total': total, 'holdout_pct': pct}
+
+    # BU breakdown: controle + total disparos por BU
+    kpis_by_bu: dict[str, int] = {}
+    if jornadas_section:
+        for j in jornadas_section.get('jornadas_all', []):
+            bu_key = j.get('b', '')
+            kpis_by_bu[bu_key] = kpis_by_bu.get(bu_key, 0) + (j.get('n') or 0)
+    por_bu_list = []
+    for bu_key, ctrl in by_bu.items():
+        disparos = kpis_by_bu.get(bu_key, 0)
+        por_bu_list.append({'bu': bu_key, 'controle': ctrl, 'total': ctrl + disparos})
+    por_bu_list.sort(key=lambda x: x['controle'], reverse=True)
+
+    # Cobertura: quantas jornadas ativas tem grupo controle
+    lista = set(jornadas_com_controle_lista or [])
+    ativas = set()
+    if jornadas_section:
+        for j in jornadas_section.get('jornadas_all', []):
+            ativas.add(j['j'])
+    n_ativas = len(ativas)
+    n_com_ctrl = len(lista & ativas) if ativas else len(lista)
+    cobertura_pct = _r1(n_com_ctrl / n_ativas * 100) if n_ativas else 0.0
+
+    # Lift estimado: so disponivel se kpis tem taxa_leitura e ha holdout
+    lift_disponivel = total > 0 and kpis.get('taxa_leitura', 0) > 0
+
+    return {
+        'total':           total,
+        'holdout_pct':     pct,
+        'por_bu':          por_bu_list,
+        'n_com_controle':  n_com_ctrl,
+        'n_ativas':        n_ativas,
+        'cobertura_pct':   cobertura_pct,
+        'lift_disponivel': lift_disponivel,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -633,7 +704,11 @@ def compute_aggregate(data, filters):
     canais_data   = build_canais(filtered)
     insights_data = build_insights(filtered, dia_30d)
     jornadas_data = build_jornadas_section(data, filtered, f, mom)
-    gc_data       = build_grupo_controle(data.get('grupo_controle', []), kpis, f)
+    gc_data       = build_grupo_controle(
+        data.get('grupo_controle', []), kpis, f,
+        data.get('jornadas_com_controle_lista', []),
+        jornadas_data,
+    )
 
     # Jornadas ativas no periodo
     jorns_ativas_set = set()
@@ -682,7 +757,10 @@ def compute_aggregate(data, filters):
         'timeline':        timeline,
         'projecao':        proj,
         'saude_bu':        saude_bu,
-        'insights':        insights_data,
-        'dia_30d':         dia_30d,
-        'thresholds':      THRESHOLDS,
+        'insights':           insights_data,
+        'dia_30d':            dia_30d,
+        'thresholds':         THRESHOLDS,
+        'semana_totais':      data.get('semana_totais', []),
+        'alertas_falha_7d':   data.get('alertas_falha_7d', []),
+        'jornadas_com_controle_lista': data.get('jornadas_com_controle_lista', []),
     }

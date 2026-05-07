@@ -222,6 +222,48 @@ def process(df: pd.DataFrame, out_path: str = 'data.json') -> dict:
         })
     jornadas_sem_controle.sort(key=lambda x: x['n'], reverse=True)
 
+    # 5c. Evolucao semanal (mesma estrutura de mes_totais mas por semana ISO)
+    df['semana'] = df['data_envio'].dt.to_period('W').apply(lambda p: p.start_time.strftime('%Y-%m-%d'))
+    semana_totais = []
+    for semana, g in df.groupby('semana'):
+        sc = g['status'].value_counts().to_dict()
+        t = len(g)
+        t_email = int((g['canal'] == 'email').sum())
+        t_lei = int(g['canal'].isin(CANAIS_COM_LEITURA).sum())
+        snt2 = sc.get('sent', 0); del2 = sc.get('delivered', 0)
+        rd2 = sc.get('read', 0); cl2 = sc.get('click', 0); fl2 = sc.get('failed', 0)
+        semana_totais.append({
+            'semana': semana, 'n': t,
+            'entrega': round((snt2 + del2 + rd2 + cl2) / t * 100, 1) if t else 0.0,
+            'leitura': round((rd2 + cl2) / t_lei * 100, 1) if t_lei else 0.0,
+            'click':   round(cl2 / t_email * 100, 1) if t_email else 0.0,
+            'falha':   round(fl2 / t * 100, 1) if t else 0.0,
+        })
+    semana_totais.sort(key=lambda x: x['semana'])
+
+    # 5d. Alertas de falha por jornada (ultimos 7 dias)
+    FALHA_THRESHOLD = 8.0
+    dia_7_dt = dia_max_dt - pd.Timedelta(days=7)
+    df_7 = df[df['data_envio'] >= dia_7_dt]
+    alertas_falha_7d = []
+    for jornada, g in df_7.groupby('nome_jornada'):
+        if not jornada.strip():
+            continue
+        n = len(g)
+        if n < 50:
+            continue
+        sc = g['status'].value_counts().to_dict()
+        fl = int(sc.get('failed', 0))
+        taxa = round(fl / n * 100, 1)
+        if taxa > FALHA_THRESHOLD:
+            alertas_falha_7d.append({
+                'j': jornada[:80], 'n': n, 'fl': fl,
+                'taxa_falha': taxa,
+                'b': g['bu'].mode().iloc[0],
+                'c': g['canal'].mode().iloc[0],
+            })
+    alertas_falha_7d.sort(key=lambda x: x['taxa_falha'], reverse=True)
+
     # 6. Jornadas ativas por mes
     jornadas_ativas_mes = df.groupby('mes')['nome_jornada'].nunique().to_dict()
 
@@ -251,6 +293,9 @@ def process(df: pd.DataFrame, out_path: str = 'data.json') -> dict:
         'grupo_controle_total': controle_total,
         'jornadas_sem_controle_30d': jornadas_sem_controle,
         'jornadas_com_controle_total': len(jornadas_com_controle),
+        'jornadas_com_controle_lista': sorted(list(jornadas_com_controle)),
+        'semana_totais': semana_totais,
+        'alertas_falha_7d': alertas_falha_7d,
         'dia_30d': dia_30,
         'observacoes': {
             'grupo_controle': 'Grupo Controle e usado apenas em algumas comunicacoes — nao cobre todas as jornadas.',
