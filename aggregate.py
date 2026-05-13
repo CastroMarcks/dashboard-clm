@@ -222,7 +222,11 @@ def group_agg(rows, key, metric):
     groups = _group_by(rows, key)
     result = []
     for name, grp in groups.items():
+        if not name:
+            continue
         a = agg(grp)
+        if a['total'] < 2:
+            continue
         result.append({'name': name, 'val': a[metric], 'total': a['total']})
     result.sort(key=lambda x: x['total'], reverse=True)
     return result
@@ -330,6 +334,7 @@ def build_projections(timeline):
         'entrega':  project_next([t['taxa_entrega'] for t in recent]),
         'leitura':  project_next([t['taxa_leitura'] for t in recent]),
         'falha':    project_next([t['taxa_falha']   for t in recent]),
+        'click':    project_next([t['taxa_click']   for t in recent]),
     }
 
 
@@ -462,9 +467,13 @@ def build_insights(filtered, dia_30d):
         return arr[0]
 
     def best_canal_lei():
-        arr = [{'name': c, 'agg': agg(rows)}
-               for c, rows in by_canal.items()
-               if c in CANAIS_COM_LEITURA and agg(rows)['total'] >= 5]
+        arr = []
+        for c, rows in by_canal.items():
+            if c not in CANAIS_COM_LEITURA:
+                continue
+            a = agg(rows)
+            if a['total'] >= 5:
+                arr.append({'name': c, 'agg': a})
         if not arr:
             return None
         arr.sort(key=lambda x: x['agg']['taxa_leitura'], reverse=True)
@@ -606,7 +615,7 @@ def build_jornadas_section(data, filtered, f, mom):
             saudaveis.append(entry)
 
     return {
-        'jornadas':       all_computed[:30],
+        'jornadas':       all_computed[:100],
         'jornadas_all':   all_computed,
         'saudaveis':      saudaveis,
         'atencao':        atencao,
@@ -717,9 +726,6 @@ def compute_aggregate(data, filters):
         if f['mesFim'] and r['mes'] > f['mesFim']: continue
         jorns_ativas_set.add(r['j'])
     jornadas_ativas = len(jorns_ativas_set)
-
-    # Timeline MoM (for volume tab)
-    vol_mom = build_mom(filtered)
 
     # Group bars data
     por_bu      = group_agg(filtered, 'bu',        'taxa_entrega')

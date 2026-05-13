@@ -743,10 +743,10 @@ body.ai-open .wrap{max-width:100%}
         <div class="kpi-val" id="kJornadasAtivas" style="color:#7c3aed"></div>
         <div class="kpi-sub">no periodo filtrado</div>
       </div>
-      <div class="kpi-card" title="Jornadas que caíram 2+ meses consecutivos em leitura.">
+      <div class="kpi-card" title="Jornadas com taxa de falha acima de 3% ou taxa de leitura abaixo de 10%. Calculado sobre todas as jornadas ativas no periodo.">
         <div class="kpi-label">🔻 Jornadas em Atencao</div>
         <div class="kpi-val" id="kJornadasAtencao" style="color:#dc2626"></div>
-        <div class="kpi-sub">queda 2+ meses</div>
+        <div class="kpi-sub">falha elevada ou baixa leitura</div>
       </div>
       <div class="kpi-card" title="Usuarios na reserva do grupo controle (nao recebem o disparo). Base usada para medir lift/incrementalidade. NOTA: Grupo Controle e usado apenas em algumas comunicacoes.">
         <div class="kpi-label">🧪 Grupo de Controle</div>
@@ -1018,6 +1018,22 @@ body.ai-open .wrap{max-width:100%}
     </div>
 
     <div class="full-card">
+      <div class="card-title">Taxa de falha mensal <span>% + tendencia</span></div>
+      <div style="position:relative">
+        <div class="timeline-bar" id="tlFalha" style="height:140px"></div>
+        <svg class="tl-svg" id="tlFalhaTrend"></svg>
+      </div>
+    </div>
+
+    <div class="full-card">
+      <div class="card-title">Taxa de click mensal <span>% email + tendencia</span></div>
+      <div style="position:relative">
+        <div class="timeline-bar" id="tlClick" style="height:140px"></div>
+        <svg class="tl-svg" id="tlClickTrend"></svg>
+      </div>
+    </div>
+
+    <div class="full-card">
       <div class="card-title">Projecao do Proximo Mes <span>baseado em tendencia historica</span></div>
       <div class="card-subtitle">Regressao linear sobre os ultimos meses do periodo filtrado. Faixa de confianca = ±1 desvio padrao dos residuos.</div>
       <div class="proj-grid" id="projGrid"></div>
@@ -1260,8 +1276,8 @@ function computeAggregateJS(data,f){
   function buildJornadasSection(){var top=data.jornadas||[],jornadas=top.filter(function(j){if(f.bu&&j.b!==f.bu)return false;if(f.canal&&j.c!==f.canal)return false;return true;});var saudaveis=[],atencao=[],criticas=[],all=[];jornadas.forEach(function(j){var t=j.del+j.rd+j.cl+j.fl+j.snt,r1=function(a,b){return b?Math.round(a/b*1000)/10:0;},tf=r1(j.fl,t),tem_lei=!!CANAIS_LEI[j.c],tl=tem_lei?r1(j.rd+j.cl,t):null,te=r1(j.snt+j.del+j.rd+j.cl,t),badge=tf<=T.falha.good?'badge-ok':tf<=T.falha.warn?'badge-warn':'badge-danger',label=tf<=T.falha.good?'Saudavel':tf<=T.falha.warn?'Atencao':'Critico',entry=Object.assign({},j,{_t:t,_tf:tf,_tl:tl,_te:te,_tem_lei:tem_lei,_health_badge:badge,_health_label:label,_delta_leitura:null});all.push(entry);if(tf>T.falha.warn)criticas.push(entry);else if(tf>T.falha.good||(tem_lei&&tl!==null&&tl<T.leitura.warn))atencao.push(entry);else saudaveis.push(entry);});return{jornadas:all.slice(0,30),jornadas_all:all,saudaveis:saudaveis,atencao:atencao,criticas:criticas,atencao_set:{},top_falhas:data.top_falhas||[],sem_controle:data.jornadas_sem_controle_30d||[]};}
   function getJornadasAtivas(rows){var s={};rows.forEach(function(r){if(r.j)s[r.j]=true;});return Object.keys(s).length;}
   var filtered=filterCross(cross),rows30=filtered.filter(function(r){return r.dia>=dia30d;}),k=aggRows(filtered),k30=aggRows(rows30.length>0?rows30:filtered),mom=buildMom(filtered),tl=buildTimeline(filtered);
-  var listaCtrl=data.jornadas_com_controle_lista||[];var ctrlSet=new Set(listaCtrl);var ativasSet2=new Set();filtered.forEach(function(r){if(r.j)ativasSet2.add(r.j);});var nAtivasGC=ativasSet2.size;var nComGC=0;ctrlSet.forEach(function(j){if(ativasSet2.has(j))nComGC++;});var cobGC=nAtivasGC?Math.round(nComGC/nAtivasGC*1000)/10:0;var gcTotal=data.grupo_controle_total||0;var gcBase=gcTotal+k.total;var gcHoldoutPct=gcBase?Math.round(gcTotal/gcBase*1000)/10:0;var gcRaw=data.grupo_controle||[];var gcByBu={};var byBuTotals={};filtered.forEach(function(r){if(!byBuTotals[r.bu])byBuTotals[r.bu]=0;byBuTotals[r.bu]+=r.n;});gcRaw.forEach(function(r){if(!gcByBu[r.bu])gcByBu[r.bu]={bu:r.bu,controle:0};gcByBu[r.bu].controle+=r.n;});var gcPorBu=[];Object.keys(gcByBu).forEach(function(bu){gcPorBu.push({bu:bu,controle:gcByBu[bu].controle,total:gcByBu[bu].controle+(byBuTotals[bu]||0)});});gcPorBu.sort(function(a,b){return b.controle-a.controle;});
-  return{kpis:k,mom:mom,health:hscore(k30),alertas:buildAlertas(k30),por_bu:buildGrouped(filtered,'bu','taxa_entrega'),por_objetivo:buildGrouped(filtered,'objetivo','taxa_leitura'),por_metrica:buildGrouped(filtered,'metrica','taxa_leitura'),por_status:buildPorStatus(filtered),canais:buildCanais(filtered),jornadas_ativas:getJornadasAtivas(filtered),jornadas_atencao:[],jornadas_section:buildJornadasSection(),grupo_controle:{total:gcTotal,holdout_pct:gcHoldoutPct,ratio:0,por_bu:gcPorBu,n_com_controle:nComGC,n_ativas:nAtivasGC,cobertura_pct:cobGC,lift_disponivel:gcTotal>0&&k30.taxa_leitura>0},timeline:tl,projecao:buildProjections(tl),saude_bu:buildSaudeBu(filtered),insights:buildInsights(filtered,rows30.length>0?rows30:filtered),semana_totais:buildSemanal(filtered),alertas_falha_7d:buildAlertas7dJS(filtered),dia_30d:dia30d,thresholds:T};
+  var listaCtrl=data.jornadas_com_controle_lista||[];var ctrlSet=new Set(listaCtrl);var ativasSet2=new Set();filtered.forEach(function(r){if(r.j)ativasSet2.add(r.j);});var nAtivasGC=ativasSet2.size;var nComGC=0;ctrlSet.forEach(function(j){if(ativasSet2.has(j))nComGC++;});var cobGC=nAtivasGC?Math.round(nComGC/nAtivasGC*1000)/10:0;var gcTotal=data.grupo_controle_total||0;var gcBase=gcTotal+k.total;var gcHoldoutPct=gcBase?Math.round(gcTotal/gcBase*1000)/10:0;var gcRaw=data.grupo_controle||[];var gcByBu={};var byBuTotals={};filtered.forEach(function(r){if(!byBuTotals[r.bu])byBuTotals[r.bu]=0;byBuTotals[r.bu]+=r.n;});gcRaw.forEach(function(r){if(!gcByBu[r.bu])gcByBu[r.bu]={bu:r.bu,controle:0};gcByBu[r.bu].controle+=r.n;});var gcPorBu=[];Object.keys(gcByBu).forEach(function(bu){gcPorBu.push({bu:bu,controle:gcByBu[bu].controle,total:gcByBu[bu].controle+(byBuTotals[bu]||0)});});gcPorBu.sort(function(a,b){return b.controle-a.controle;});var _js;
+  return{kpis:k,mom:mom,health:hscore(k30),alertas:buildAlertas(k30),por_bu:buildGrouped(filtered,'bu','taxa_entrega'),por_objetivo:buildGrouped(filtered,'objetivo','taxa_leitura'),por_metrica:buildGrouped(filtered,'metrica','taxa_leitura'),por_status:buildPorStatus(filtered),canais:buildCanais(filtered),jornadas_ativas:getJornadasAtivas(filtered),jornadas_section:(_js=buildJornadasSection()),jornadas_atencao:_js.atencao,grupo_controle:{total:gcTotal,holdout_pct:gcHoldoutPct,ratio:0,por_bu:gcPorBu,n_com_controle:nComGC,n_ativas:nAtivasGC,cobertura_pct:cobGC,lift_disponivel:gcTotal>0&&k30.taxa_leitura>0},timeline:tl,projecao:buildProjections(tl),saude_bu:buildSaudeBu(filtered),insights:buildInsights(filtered,rows30.length>0?rows30:filtered),semana_totais:buildSemanal(filtered),alertas_falha_7d:buildAlertas7dJS(filtered),dia_30d:dia30d,thresholds:T};
 }
 
 // ---- FETCH AGGREGATE FROM SERVER ----
@@ -1712,6 +1728,10 @@ function renderTimeline(){
   renderTl('timelineDiv','timelineTrend',tlData,'total',maxVol,'#1a56db',true);
   renderTl('tlEntrega','tlEntregaTrend',tlData,'taxa_entrega',100,'#059669',false);
   renderTl('tlLeitura','tlLeituraTrend',tlData,'taxa_leitura',100,'#7c3aed',false);
+  var maxFalha=Math.max(10,Math.max.apply(null,tlData.map(function(t){return t.taxa_falha||0;}))*1.3||10);
+  renderTl('tlFalha','tlFalhaTrend',tlData,'taxa_falha',maxFalha,'#dc2626',false);
+  var maxClick=Math.max(5,Math.max.apply(null,tlData.map(function(t){return t.taxa_click||0;}))*1.3||5);
+  renderTl('tlClick','tlClickTrend',tlData,'taxa_click',maxClick,'#d97706',false);
   var hd=document.getElementById('heatmapDiv'),f=getFilters();
   var mesesHm=((D&&D.filtros&&D.filtros.meses)||[]).filter(function(m){if(f.dataIni&&m<f.dataIni.substring(0,7))return false;if(f.dataFim&&m>f.dataFim.substring(0,7))return false;return true;});
   if(!mesesHm.length){hd.innerHTML='<div class="empty-state" style="padding:16px"><p style="font-size:11px">Sem dados no periodo.</p></div>';}
@@ -1765,7 +1785,7 @@ function renderFunilJornada(){
   var all=(AGG.jornadas_section&&AGG.jornadas_section.jornadas_all)||[];
   var prev=sel.value;
   sel.innerHTML='<option value="">-- Selecione uma jornada --</option>';
-  all.slice(0,80).forEach(function(j){var opt=document.createElement('option');opt.value=j.j;opt.textContent=j.j.substring(0,65)+(j.j.length>65?'…':'');sel.appendChild(opt);});
+  all.slice(0,200).forEach(function(j){var opt=document.createElement('option');opt.value=j.j;opt.textContent=j.j.substring(0,65)+(j.j.length>65?'…':'');sel.appendChild(opt);});
   if(prev&&all.some(function(j){return j.j===prev;}))sel.value=prev;
   sel.onchange=function(){renderFunilDiv(sel.value,all);};
   renderFunilDiv(sel.value,all);
