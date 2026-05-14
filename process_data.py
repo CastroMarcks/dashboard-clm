@@ -4,7 +4,7 @@ import json
 
 def process(df: pd.DataFrame, out_path: str = 'data.json') -> dict:
     df = df.copy()
-    df['data_envio'] = pd.to_datetime(df['data_envio'])
+    df['data_envio'] = pd.to_datetime(df['data_envio'], format='mixed')
     df['dia'] = df['data_envio'].dt.strftime('%Y-%m-%d')
     df['mes'] = df['data_envio'].dt.strftime('%Y-%m')
     df['dia_semana'] = df['data_envio'].dt.dayofweek
