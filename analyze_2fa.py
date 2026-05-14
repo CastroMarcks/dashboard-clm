@@ -68,7 +68,7 @@ def main():
         m['dia'] = dia
         timeline_dia.append(m)
 
-    # Before/after
+    # Before/after pelo disparo (12/05)
     g_before = grupo[grupo['dia'] < DISPARO]
     g_after  = grupo[grupo['dia'] >= DISPARO]
 
@@ -81,6 +81,13 @@ def main():
     lf['dia_conf'] = lf['time_dt'].dt.strftime('%Y-%m-%d')
     confs = lf.groupby('dia_conf').size().reset_index(name='n')
     confirmacoes = [{'dia': r['dia_conf'], 'n': int(r['n'])} for _, r in confs.iterrows()]
+
+    # Before/after pela data individual de confirmação de cada lead
+    conf_map = lf.set_index(lf['lead_id'].astype(str))['dia_conf'].to_dict()
+    grupo['dia_conf_lead'] = grupo['id_empresa'].map(conf_map)
+    g_pre_conf  = grupo[grupo.apply(lambda r: bool(r['dia_conf_lead']) and r['dia'] <  r['dia_conf_lead'], axis=1)]
+    g_pos_conf  = grupo[grupo.apply(lambda r: bool(r['dia_conf_lead']) and r['dia'] >= r['dia_conf_lead'], axis=1)]
+    print(f'[2fa]  pré-confirmacao: {len(g_pre_conf):,} | pós-confirmacao: {len(g_pos_conf):,}')
 
     # Status das versões 2FA
     col_a = 'A. Uniques of [Onboarding] sucesso confirmar 2FA'
@@ -99,6 +106,8 @@ def main():
         'before':         metricas(g_before),
         'before_30d':     metricas(g_30d),
         'after':          metricas(g_after),
+        'pre_conf':       metricas(g_pre_conf),
+        'pos_conf':       metricas(g_pos_conf),
         'timeline_semanal': timeline_sem,
         'timeline_diaria':  timeline_dia,
         'confirmacoes':   confirmacoes,
@@ -111,7 +120,9 @@ def main():
     print(f'[ok]   {OUT} gerado')
     print(f'       before total: {out["before"]["total"]:,}  leitura {out["before"]["tx_lei"]}%  falha {out["before"]["tx_fal"]}%')
     print(f'       before 30d:   {out["before_30d"]["total"]:,}  leitura {out["before_30d"]["tx_lei"]}%  falha {out["before_30d"]["tx_fal"]}%')
-    print(f'       after:        {out["after"]["total"]:,}  (dados ainda chegando)')
+    print(f'       after disparo:{out["after"]["total"]:,}  (dados ainda chegando)')
+    print(f'       pré-conf:     {out["pre_conf"]["total"]:,}  leitura {out["pre_conf"]["tx_lei"]}%  falha {out["pre_conf"]["tx_fal"]}%')
+    print(f'       pós-conf:     {out["pos_conf"]["total"]:,}  leitura {out["pos_conf"]["tx_lei"]}%  falha {out["pos_conf"]["tx_fal"]}%')
 
 
 if __name__ == '__main__':

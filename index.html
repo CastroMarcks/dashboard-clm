@@ -2208,14 +2208,14 @@ function render2fa(){
   var hasAfter=d.after&&d.after.total>0;
   if(hasAfter){var badge=document.getElementById('tfa2StatusBadge');badge.style.background='#d1fae5';badge.style.color='#065f46';badge.textContent='✅ Dados pós-disparo disponíveis';}
 
-  var b=d.before,b30=d.before_30d,af=d.after;
+  var b=d.before,b30=d.before_30d,af=d.after,pc=d.pre_conf||{tx_lei:0,tx_fal:0,tx_ent:0,total:0},pp=d.pos_conf||{tx_lei:0,tx_fal:0,tx_ent:0,total:0};
   var kEl=document.getElementById('tfa2Kpis');
   kEl.innerHTML=''
     +'<div class="kpi-card"><div class="kpi-label">👥 Base 2FA</div><div class="kpi-val" style="color:#1a56db">'+num(d.total_leads)+'</div><div class="kpi-sub">empresas impactadas</div></div>'
-    +'<div class="kpi-card" title="Taxa de leitura historica de todo o período de dados"><div class="kpi-label">👁 Leitura Hist.</div><div class="kpi-val '+cls(b.tx_lei,30,10)+'">'+pct(b.tx_lei)+'</div><div class="kpi-sub">'+num(b.total)+' msgs (hist.)</div></div>'
-    +'<div class="kpi-card" title="Ultimos 30 dias antes do disparo 12/05"><div class="kpi-label">👁 Leitura 30d pré</div><div class="kpi-val '+cls(b30.tx_lei,30,10)+'">'+pct(b30.tx_lei)+'</div><div class="kpi-sub">'+num(b30.total)+' msgs (30d)</div></div>'
-    +'<div class="kpi-card" title="Ultimos 30 dias antes do disparo 12/05"><div class="kpi-label">⚠️ Falha 30d pré</div><div class="kpi-val '+clsInv(b30.tx_fal,3,8)+'">'+pct(b30.tx_fal)+'</div><div class="kpi-sub">baseline pré-disparo</div></div>'
-    +(hasAfter?'<div class="kpi-card"><div class="kpi-label">👁 Leitura pós</div><div class="kpi-val '+cls(af.tx_lei,30,10)+'">'+pct(af.tx_lei)+'</div><div class="kpi-sub">'+num(af.total)+' msgs</div></div>':'');
+    +'<div class="kpi-card" title="Taxa de leitura historica de todo o período de dados (pré-disparo)"><div class="kpi-label">👁 Leitura pré-conf.</div><div class="kpi-val '+cls(pc.tx_lei,30,10)+'">'+pct(pc.tx_lei)+'</div><div class="kpi-sub">'+num(pc.total)+' msgs antes 2FA</div></div>'
+    +'<div class="kpi-card" title="Taxa de leitura após o lead confirmar 2FA individualmente"><div class="kpi-label">👁 Leitura pós-conf.</div><div class="kpi-val '+cls(pp.tx_lei,30,10)+'">'+pct(pp.tx_lei)+'</div><div class="kpi-sub">'+num(pp.total)+' msgs após 2FA</div></div>'
+    +'<div class="kpi-card" title="Variação de leitura: pós-confirmação vs pré-confirmação"><div class="kpi-label">📈 Delta leitura</div><div class="kpi-val '+(pp.tx_lei-pc.tx_lei>=0?'metric-good':'metric-bad')+'" style="font-size:20px">'+(pp.tx_lei-pc.tx_lei>=0?'+':'')+pct(Math.round((pp.tx_lei-pc.tx_lei)*10)/10)+'</div><div class="kpi-sub">pós vs pré confirmação</div></div>'
+    +(hasAfter?'<div class="kpi-card"><div class="kpi-label">👁 Leitura pós-12/05</div><div class="kpi-val '+cls(af.tx_lei,30,10)+'">'+pct(af.tx_lei)+'</div><div class="kpi-sub">'+num(af.total)+' msgs (pós disparo)</div></div>':'<div class="kpi-card" style="border:1px dashed #d1d5db;background:#f9fafb"><div class="kpi-label" style="color:#9ca3af">👁 Leitura pós-12/05</div><div class="kpi-val" style="color:#d1d5db;font-size:18px">—</div><div class="kpi-sub" style="color:#9ca3af">aguardando próx. envio</div></div>');
 
   var tl=d.timeline_semanal||[];
   var DISPARO='2026-05-12';
@@ -2242,6 +2242,9 @@ function render2fa(){
       +'</div>';
   });
 
+  function deltaCell(a,b,isInv){var d=Math.round((a-b)*10)/10;if(!d)return '<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb;color:#9ca3af">—</td>';var pos=isInv?d<0:d>0;return '<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb;font-weight:600;color:'+(pos?'#059669':'#dc2626')+'">'+(d>0?'+':'')+d+'pp</td>';}
+  var deltaLei=Math.round((pp.tx_lei-pc.tx_lei)*10)/10;
+  var deltaFal=Math.round((pp.tx_fal-pc.tx_fal)*10)/10;
   var tbody='<table style="width:100%;border-collapse:collapse;font-size:12px">'
     +'<thead><tr>'
     +'<th style="text-align:left;padding:8px;border-bottom:2px solid #e5e7eb;background:#f9fafb">Periodo</th>'
@@ -2250,27 +2253,45 @@ function render2fa(){
     +'<th style="text-align:right;padding:8px;border-bottom:2px solid #e5e7eb;background:#f9fafb">Entrega</th>'
     +'<th style="text-align:right;padding:8px;border-bottom:2px solid #e5e7eb;background:#f9fafb">Falha</th>'
     +'</tr></thead><tbody>'
+    // — bloco pré/pós confirmação (dados reais disponíveis agora)
+    +'<tr><td colspan="5" style="padding:6px 8px;background:#f3f4f6;font-size:10px;font-weight:600;color:#6b7280;letter-spacing:.05em;text-transform:uppercase">Antes vs Depois da Confirmação 2FA (data individual por lead)</td></tr>'
+    +'<tr style="background:#fafafa">'
+    +'<td style="padding:8px;border-bottom:1px solid #e5e7eb">⬅️ Pré-confirmação 2FA</td>'
+    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb">'+num(pc.total)+'</td>'
+    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+cls(pc.tx_lei,30,10)+'">'+pct(pc.tx_lei)+'</td>'
+    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+cls(pc.tx_ent,80,60)+'">'+pct(pc.tx_ent)+'</td>'
+    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+clsInv(pc.tx_fal,3,8)+'">'+pct(pc.tx_fal)+'</td>'
+    +'</tr>'
+    +'<tr style="background:#f0fdf4">'
+    +'<td style="padding:8px;border-bottom:1px solid #e5e7eb">➡️ Pós-confirmação 2FA</td>'
+    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb">'+num(pp.total)+'</td>'
+    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+cls(pp.tx_lei,30,10)+'">'+pct(pp.tx_lei)+'</td>'
+    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+cls(pp.tx_ent,80,60)+'">'+pct(pp.tx_ent)+'</td>'
+    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+clsInv(pp.tx_fal,3,8)+'">'+pct(pp.tx_fal)+'</td>'
+    +'</tr>'
+    +'<tr style="background:#ecfdf5;font-weight:600">'
+    +'<td style="padding:8px;border-bottom:2px solid #d1fae5;font-size:11px;color:#065f46">Δ Variação</td>'
+    +'<td style="text-align:right;padding:8px;border-bottom:2px solid #d1fae5;color:#9ca3af">—</td>'
+    +deltaCell(pp.tx_lei,pc.tx_lei,false)
+    +deltaCell(pp.tx_ent,pc.tx_ent,false)
+    +deltaCell(pp.tx_fal,pc.tx_fal,true)
+    +'</tr>'
+    // — bloco pré/pós disparo 12/05
+    +'<tr><td colspan="5" style="padding:6px 8px;background:#f3f4f6;font-size:10px;font-weight:600;color:#6b7280;letter-spacing:.05em;text-transform:uppercase">Antes vs Depois do Disparo 12/05 (data de corte fixa)</td></tr>'
     +'<tr style="background:#eff6ff">'
-    +'<td style="padding:8px;border-bottom:1px solid #e5e7eb">📊 Historico total (pré-12/05)</td>'
+    +'<td style="padding:8px;border-bottom:1px solid #e5e7eb">⬅️ Pré-disparo (até 11/05)</td>'
     +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb">'+num(b.total)+'</td>'
     +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+cls(b.tx_lei,30,10)+'">'+pct(b.tx_lei)+'</td>'
     +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+cls(b.tx_ent,80,60)+'">'+pct(b.tx_ent)+'</td>'
     +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+clsInv(b.tx_fal,3,8)+'">'+pct(b.tx_fal)+'</td>'
     +'</tr>'
-    +'<tr style="background:#fefce8">'
-    +'<td style="padding:8px;border-bottom:1px solid #e5e7eb">📅 Últimos 30d pré-disparo</td>'
-    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb">'+num(b30.total)+'</td>'
-    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+cls(b30.tx_lei,30,10)+'">'+pct(b30.tx_lei)+'</td>'
-    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+cls(b30.tx_ent,80,60)+'">'+pct(b30.tx_ent)+'</td>'
-    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+clsInv(b30.tx_fal,3,8)+'">'+pct(b30.tx_fal)+'</td>'
-    +'</tr>'
     +(hasAfter
-      ?'<tr style="background:#f0fdf4"><td style="padding:8px">✅ Após disparo (12/05+)</td>'
+      ?'<tr style="background:#f0fdf4"><td style="padding:8px">➡️ Pós-disparo (12/05+)</td>'
         +'<td style="text-align:right;padding:8px">'+num(af.total)+'</td>'
         +'<td style="text-align:right;padding:8px" class="'+cls(af.tx_lei,30,10)+'">'+pct(af.tx_lei)+'</td>'
         +'<td style="text-align:right;padding:8px" class="'+cls(af.tx_ent,80,60)+'">'+pct(af.tx_ent)+'</td>'
         +'<td style="text-align:right;padding:8px" class="'+clsInv(af.tx_fal,3,8)+'">'+pct(af.tx_fal)+'</td></tr>'
-      :'<tr><td colspan="5" style="padding:12px;text-align:center;color:#888;font-size:11px">⏳ Dados pós-disparo (12/05+) ainda não disponíveis — reatualize o dashboard após os próximos envios do grupo.</td></tr>'
+      :'<tr><td colspan="5" style="padding:10px;text-align:center;color:#9ca3af;font-size:11px;font-style:italic">⏳ Dados pós-12/05 ainda não disponíveis — populará automaticamente no próximo refresh após novos envios ao grupo.</td></tr>'
     )
     +'</tbody></table>';
   document.getElementById('tfa2Tabela').innerHTML=tbody;
