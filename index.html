@@ -1088,6 +1088,37 @@ body.ai-open .wrap{max-width:100%}
     <p class="section-label" style="margin-bottom:6px">Analise de Engajamento</p>
     <p class="card-subtitle">Frequencia de comunicacao por empresa, segmentacao e correlacao engajamento x frequencia.</p>
 
+    <div id="engDisparoBanner" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#1e40af;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+      <span>📤 <b>Disparo Geral:</b> 14/05/2026</span>
+      <span>📱 Base completa — todos os canais ativos</span>
+      <span id="engBannerStatus" style="margin-left:auto;padding:3px 10px;border-radius:99px;background:#fef3c7;color:#92400e;font-weight:600;font-size:11px">⏳ Dados pós-14/05 chegando</span>
+    </div>
+
+    <div class="full-card">
+      <div class="card-title">Taxa de Leitura Semanal <span>% leitura (email + whats) · base filtrada · ⚡ = semana pre-disparo</span></div>
+      <div style="position:relative">
+        <div class="timeline-bar" id="engTlLeitura" style="height:140px"></div>
+        <svg class="tl-svg" id="engTlLeituraTrend"></svg>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="full-card">
+        <div class="card-title">Taxa de Falha Semanal <span>% falha · todos canais</span></div>
+        <div style="position:relative">
+          <div class="timeline-bar" id="engTlFalha" style="height:120px"></div>
+          <svg class="tl-svg" id="engTlFalhaTrend"></svg>
+        </div>
+      </div>
+      <div class="full-card">
+        <div class="card-title">Volume Semanal <span>total de disparos</span></div>
+        <div style="position:relative">
+          <div class="timeline-bar" id="engTlVol" style="height:120px"></div>
+          <svg class="tl-svg" id="engTlVolTrend"></svg>
+        </div>
+      </div>
+    </div>
+
     <div class="eng-kpi-grid" id="engKpisDiv"></div>
 
     <div class="full-card">
@@ -2036,17 +2067,80 @@ function renderAlertas(){
 
 // ---- RENDER ENGAJAMENTO TAB ----
 var _engLoading=false;
+function buildEngWeeklyTl(){
+  var f=getFilters();
+  var jSel=MS_JORNADA?MS_JORNADA.getSelected():null;
+  var aSel=MS_ATIVIDADE?MS_ATIVIDADE.getSelected():null;
+  var rows=CROSS.filter(function(r){
+    if(f.dataIni&&r.dia<f.dataIni)return false;
+    if(f.dataFim&&r.dia>f.dataFim)return false;
+    if(f.bu&&r.bu!==f.bu)return false;
+    if(f.canal&&r.canal!==f.canal)return false;
+    if(f.objetivo&&r.objetivo!==f.objetivo)return false;
+    if(f.metrica&&r.metrica!==f.metrica)return false;
+    if(f.flag&&r.flag_pontual!==f.flag)return false;
+    if(jSel&&jSel.size>0&&!jSel.has(r.j))return false;
+    if(aSel&&aSel.size>0&&!aSel.has(r.a))return false;
+    return true;
+  });
+  var byWeek={};
+  rows.forEach(function(r){
+    var d=new Date(r.dia+'T00:00:00');
+    var day=d.getDay();
+    var diff=day===0?-6:1-day;
+    var mon=new Date(d.getTime());mon.setDate(mon.getDate()+diff);
+    var wk=mon.toISOString().substring(0,10);
+    if(!byWeek[wk])byWeek[wk]={total:0,rd:0,fl:0,snt:0,dl:0,tl_n:0};
+    var g=byWeek[wk];
+    g.total+=r.n;
+    if(r.canal==='email'||r.canal==='whats')g.tl_n+=r.n;
+    if(r.status==='read'||r.status==='click')g.rd+=r.n;
+    else if(r.status==='failed')g.fl+=r.n;
+    else if(r.status==='sent')g.snt+=r.n;
+    else if(r.status==='delivered')g.dl+=r.n;
+  });
+  var r1=function(a,b){return b?Math.round(a/b*1000)/10:0;};
+  return Object.keys(byWeek).sort().map(function(wk){
+    var g=byWeek[wk];
+    return{semana:wk,mes:wk.substring(2),total:g.total,tx_lei:r1(g.rd,g.tl_n||g.total),tx_fal:r1(g.fl,g.total),tx_ent:r1(g.snt+g.dl+g.rd,g.total)};
+  });
+}
 function renderEngajamento(){
   if(!AGG)return;
   var k=AGG.kpis;
+  var DISPARO_GERAL='2026-05-14';
+
+  // --- gráficos semanais ---
+  var wtl=buildEngWeeklyTl();
+  var maxVol=Math.max.apply(null,wtl.map(function(t){return t.total;}))||1;
+  var maxFal=Math.max(10,Math.max.apply(null,wtl.map(function(t){return t.tx_fal||0;}))*1.2);
+  renderTfaBar('engTlLeitura','engTlLeituraTrend',wtl,'tx_lei',100,'#7c3aed',DISPARO_GERAL);
+  renderTfaBar('engTlFalha','engTlFalhaTrend',wtl,'tx_fal',maxFal,'#dc2626',DISPARO_GERAL);
+  renderTfaBar('engTlVol','engTlVolTrend',wtl,'total',maxVol,'#1a56db',DISPARO_GERAL);
+  // atualiza badge se já tem dados pós-disparo
+  var temPos=wtl.some(function(t){return t.semana>DISPARO_GERAL;});
+  var badge=document.getElementById('engBannerStatus');
+  if(badge&&temPos){badge.style.background='#d1fae5';badge.style.color='#065f46';badge.textContent='✅ Dados pós-disparo disponíveis';}
+
+  // --- KPIs ---
   var engDiv=document.getElementById('engKpisDiv');
   if(engDiv){
     var ja=AGG.jornadas_ativas||0;
+    // before/after 14/05 a partir da weekly timeline
+    var preTl=wtl.filter(function(t){return t.semana<DISPARO_GERAL;});
+    var posTl=wtl.filter(function(t){return t.semana>=DISPARO_GERAL;});
+    var avgLeiPre=preTl.length?r1(preTl.reduce(function(s,t){return s+t.tx_lei;},0)/preTl.length):0;
+    var avgLeiPos=posTl.length?r1(posTl.reduce(function(s,t){return s+t.tx_lei;},0)/posTl.length):null;
+    var deltaLei=avgLeiPos!==null?Math.round((avgLeiPos-avgLeiPre)*10)/10:null;
     engDiv.innerHTML=''
       +'<div class="kpi-card"><div class="kpi-label">Total Atividades</div><div class="kpi-val">'+num(k.total)+'</div><div class="kpi-sub">no periodo filtrado</div></div>'
       +'<div class="kpi-card"><div class="kpi-label">Jornadas Ativas</div><div class="kpi-val">'+num(ja)+'</div><div class="kpi-sub">com disparos</div></div>'
-      +'<div class="kpi-card"><div class="kpi-label">Leitura Media</div><div class="kpi-val">'+pct(k.taxa_leitura)+'</div><div class="kpi-sub">do periodo</div></div>'
-      +'<div class="kpi-card"><div class="kpi-label">Taxa de Falha</div><div class="kpi-val">'+pct(k.taxa_falha)+'</div><div class="kpi-sub">do periodo</div></div>';
+      +'<div class="kpi-card" title="Media semanal de leitura nas semanas anteriores a 14/05"><div class="kpi-label">👁 Leitura pré-14/05</div><div class="kpi-val '+cls(avgLeiPre,30,10)+'">'+pct(avgLeiPre)+'</div><div class="kpi-sub">media semanal</div></div>'
+      +(avgLeiPos!==null
+        ?'<div class="kpi-card" title="Media semanal de leitura apos 14/05"><div class="kpi-label">👁 Leitura pós-14/05</div><div class="kpi-val '+cls(avgLeiPos,30,10)+'">'+pct(avgLeiPos)+'</div><div class="kpi-sub">media semanal</div></div>'
+         +'<div class="kpi-card"><div class="kpi-label">📈 Delta leitura</div><div class="kpi-val" style="color:'+(deltaLei>=0?'#059669':'#dc2626')+';font-size:20px">'+(deltaLei>=0?'+':'')+pct(deltaLei)+'</div><div class="kpi-sub">pós vs pré 14/05</div></div>'
+        :'<div class="kpi-card" style="border:1px dashed #d1d5db;background:#f9fafb"><div class="kpi-label" style="color:#9ca3af">👁 Leitura pós-14/05</div><div class="kpi-val" style="color:#d1d5db;font-size:18px">—</div><div class="kpi-sub" style="color:#9ca3af">aguardando dados</div></div>'
+      );
   }
   var btn=document.getElementById('btnLoadEng');
   if(btn)btn.onclick=function(){loadEngajamento();};
@@ -2296,21 +2390,26 @@ function render2fa(){
     +'</tbody></table>';
   document.getElementById('tfa2Tabela').innerHTML=tbody;
 }
-function renderTfaBar(barId,svgId,data,key,maxVal,cor){
+function renderTfaBar(barId,svgId,data,key,maxVal,cor,markDate){
+  // markDate (opcional): semana que contém essa data recebe marcação 📤; sem markDate marca a última barra com ⚡
   var el=document.getElementById(barId);if(!el)return;
   el.innerHTML='';
   if(!data.length){el.innerHTML='<div class="empty-state" style="padding:20px"><p>Sem dados.</p></div>';return;}
   var isVol=key==='total';
   var lastIdx=data.length-1;
+  function weekContains(wkStart,dateStr){var end=new Date(wkStart+'T00:00:00');end.setDate(end.getDate()+6);return wkStart<=dateStr&&end.toISOString().substring(0,10)>=dateStr;}
   data.forEach(function(t,idx){
     var val=t[key]||0;
     var h=Math.max(3,Math.round(val/(maxVal||1)*100));
     var semLabel=t.semana?t.semana.substring(5):t.mes;
     var display=isVol?num(val):pct(val);
-    var isLast=idx===lastIdx;
-    var borderStyle=isLast?'outline:2px solid #7c3aed;outline-offset:-2px;':'';
+    var isMarkWeek=markDate&&t.semana&&weekContains(t.semana,markDate);
+    var isLast=!markDate&&idx===lastIdx;
+    var icon=isMarkWeek?'📤':isLast?'⚡':'';
+    var iconTitle=isMarkWeek?'Semana do disparo geral ('+markDate+')':isLast?'Última semana de dados':'';
+    var borderStyle=(isMarkWeek||isLast)?'outline:2px solid '+(isMarkWeek?'#d97706':'#7c3aed')+';outline-offset:-2px;':'';
     el.innerHTML+='<div class="tl-col" title="Semana de '+(t.semana||t.mes)+': '+display+'">'
-      +(isLast?'<span style="font-size:8px;color:#7c3aed;text-align:center;display:block;line-height:1.2" title="Última semana de dados — disparo ocorreu em 12/05">⚡</span>':'<span style="font-size:8px;display:block;line-height:1.2"> </span>')
+      +'<span style="font-size:8px;text-align:center;display:block;line-height:1.2" title="'+iconTitle+'">'+icon+'</span>'
       +'<div class="tl-val">'+display+'</div>'
       +'<div class="tl-bar-wrap"><div class="tl-bar" style="height:'+h+'%;background:'+cor+';'+borderStyle+'"></div></div>'
       +'<div class="tl-label">'+(semLabel||'')+'</div>'
