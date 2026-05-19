@@ -2483,16 +2483,18 @@ function render2fa(){
   document.getElementById('tfa2Tabela').innerHTML=tbody;
 }
 function renderTfaBar(barId,svgId,data,key,maxVal,cor,markDate){
-  // markDate (opcional): semana que contém essa data recebe marcação 📤; sem markDate marca a última barra com ⚡
   var el=document.getElementById(barId);if(!el)return;
   el.innerHTML='';
   if(!data.length){el.innerHTML='<div class="empty-state" style="padding:20px"><p>Sem dados.</p></div>';return;}
   var isVol=key==='total';
   var lastIdx=data.length-1;
+  // altura do container menos área reservada para val(14px) + label(28px) + gaps(8px) + icon(14px)
+  var containerH=el.offsetHeight||140;
+  var BAR_AREA=Math.max(30,containerH-64);
   function weekContains(wkStart,dateStr){var end=new Date(wkStart+'T00:00:00');end.setDate(end.getDate()+6);return wkStart<=dateStr&&end.toISOString().substring(0,10)>=dateStr;}
   data.forEach(function(t,idx){
     var val=t[key]||0;
-    var h=Math.max(3,Math.round(val/(maxVal||1)*100));
+    var hpx=Math.max(2,Math.round(val/(maxVal||1)*BAR_AREA));
     var semLabel=t.semana?t.semana.substring(5):t.mes;
     var display=isVol?num(val):pct(val);
     var isMarkWeek=markDate&&t.semana&&weekContains(t.semana,markDate);
@@ -2501,9 +2503,11 @@ function renderTfaBar(barId,svgId,data,key,maxVal,cor,markDate){
     var iconTitle=isMarkWeek?'Semana do disparo geral ('+markDate+')':isLast?'Última semana de dados':'';
     var borderStyle=(isMarkWeek||isLast)?'outline:2px solid '+(isMarkWeek?'#d97706':'#7c3aed')+';outline-offset:-2px;':'';
     el.innerHTML+='<div class="tl-col" title="Semana de '+(t.semana||t.mes)+': '+display+'">'
-      +(icon?'<span style="font-size:8px;text-align:center;display:block;line-height:1.2;height:12px" title="'+iconTitle+'">'+icon+'</span>':'<span style="display:block;height:12px"></span>')
-      +'<div class="tl-val">'+display+'</div>'
-      +'<div class="tl-bar-wrap"><div class="tl-bar" style="height:'+h+'%;background:'+cor+';'+borderStyle+'"></div></div>'
+      +'<div style="height:14px;font-size:8px;text-align:center;line-height:14px;overflow:hidden" title="'+iconTitle+'">'+icon+'</div>'
+      +'<div class="tl-val" style="height:14px;line-height:14px;overflow:hidden;text-align:center">'+display+'</div>'
+      +'<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;width:100%">'
+        +'<div class="tl-bar" style="height:'+hpx+'px;background:'+cor+';'+borderStyle+'"></div>'
+      +'</div>'
       +'<div class="tl-label">'+(semLabel||'')+'</div>'
       +'</div>';
   });
