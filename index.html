@@ -1846,11 +1846,15 @@ function drawTrendline(svgId,data,key,maxVal){
   var svg=document.getElementById(svgId);if(!svg||data.length<2){svg.innerHTML='';return;}
   var w=svg.parentElement.offsetWidth,h=svg.parentElement.offsetHeight;
   svg.setAttribute('width',w);svg.setAttribute('height',h);svg.setAttribute('viewBox','0 0 '+w+' '+h);
-  var n=data.length,sumX=0,sumY=0,sumXY=0,sumX2=0;
-  data.forEach(function(d,i){sumX+=i;sumY+=d[key];sumXY+=i*d[key];sumX2+=i*i;});
-  var slope=(n*sumXY-sumX*sumY)/(n*sumX2-sumX*sumX);var intercept=(sumY-slope*sumX)/n;
-  var colW=w/n,padTop=10,padBot=30,chartH=h-padTop-padBot;
-  function yFor(val){return padTop+chartH-(val/(maxVal||1)*chartH);}
+  // exclui últimos pontos com valor 0 (semana incompleta) para não distorcer regressão
+  var fitData=data.slice();
+  while(fitData.length>2&&fitData[fitData.length-1][key]===0)fitData.pop();
+  var n=fitData.length,sumX=0,sumY=0,sumXY=0,sumX2=0;
+  fitData.forEach(function(d,i){sumX+=i;sumY+=d[key];sumXY+=i*d[key];sumX2+=i*i;});
+  var denom=n*sumX2-sumX*sumX;if(!denom){svg.innerHTML='';return;}
+  var slope=(n*sumXY-sumX*sumY)/denom;var intercept=(sumY-slope*sumX)/n;
+  var colW=w/data.length,padTop=10,padBot=30,chartH=h-padTop-padBot;
+  function yFor(val){var y=padTop+chartH-(val/(maxVal||1)*chartH);return Math.max(padTop,Math.min(padTop+chartH,y));}
   var pts=[];data.forEach(function(d,i){pts.push([colW*i+colW/2,yFor(intercept+slope*i)]);});
   var pathD='M '+pts[0][0]+' '+pts[0][1];for(var i=1;i<pts.length;i++)pathD+=' L '+pts[i][0]+' '+pts[i][1];
   svg.innerHTML='<path d="'+pathD+'" stroke="rgba(220,38,38,.55)" stroke-width="2" stroke-dasharray="4 4" fill="none"/><text x="'+(w-6)+'" y="'+(pts[pts.length-1][1]-4)+'" text-anchor="end" font-size="9" fill="#dc2626" font-family="Inter,sans-serif">tendencia</text>';
@@ -2128,27 +2132,7 @@ function renderEngajamento(){
   var badge=document.getElementById('engBannerStatus');
   if(badge&&temPos){badge.style.background='#d1fae5';badge.style.color='#065f46';badge.textContent='✅ Dados pós-disparo disponíveis';}
 
-  // --- KPIs ---
-  var engDiv=document.getElementById('engKpisDiv');
-  if(engDiv){
-    var ja=AGG.jornadas_ativas||0;
-    // before/after 14/05 a partir da weekly timeline
-    var preTl=wtl.filter(function(t){return t.semana<DISPARO_GERAL;});
-    var posTl=wtl.filter(function(t){return t.semana>=DISPARO_GERAL;});
-    var avgLeiPre=preTl.length?r1(preTl.reduce(function(s,t){return s+t.tx_lei;},0)/preTl.length):0;
-    var avgLeiPos=posTl.length?r1(posTl.reduce(function(s,t){return s+t.tx_lei;},0)/posTl.length):null;
-    var deltaLei=avgLeiPos!==null?Math.round((avgLeiPos-avgLeiPre)*10)/10:null;
-    engDiv.innerHTML=''
-      +'<div class="kpi-card"><div class="kpi-label">Total Atividades</div><div class="kpi-val">'+num(k.total)+'</div><div class="kpi-sub">no periodo filtrado</div></div>'
-      +'<div class="kpi-card"><div class="kpi-label">Jornadas Ativas</div><div class="kpi-val">'+num(ja)+'</div><div class="kpi-sub">com disparos</div></div>'
-      +'<div class="kpi-card" title="Media semanal de leitura nas semanas anteriores a 14/05"><div class="kpi-label">👁 Leitura pré-14/05</div><div class="kpi-val '+cls(avgLeiPre,30,10)+'">'+pct(avgLeiPre)+'</div><div class="kpi-sub">media semanal</div></div>'
-      +(avgLeiPos!==null
-        ?'<div class="kpi-card" title="Media semanal de leitura apos 14/05"><div class="kpi-label">👁 Leitura pós-14/05</div><div class="kpi-val '+cls(avgLeiPos,30,10)+'">'+pct(avgLeiPos)+'</div><div class="kpi-sub">media semanal</div></div>'
-         +'<div class="kpi-card"><div class="kpi-label">📈 Delta leitura</div><div class="kpi-val" style="color:'+(deltaLei>=0?'#059669':'#dc2626')+';font-size:20px">'+(deltaLei>=0?'+':'')+pct(deltaLei)+'</div><div class="kpi-sub">pós vs pré 14/05</div></div>'
-        :'<div class="kpi-card" style="border:1px dashed #d1d5db;background:#f9fafb"><div class="kpi-label" style="color:#9ca3af">👁 Leitura pós-14/05</div><div class="kpi-val" style="color:#d1d5db;font-size:18px">—</div><div class="kpi-sub" style="color:#9ca3af">aguardando dados</div></div>'
-      );
-  }
-  // --- comparativo pré/pós 14/05 base completa ---
+  // --- comparativo pré/pós 14/05 base completa (calculado antes dos KPIs para reuso) ---
   var CORTE=DISPARO_GERAL;
   var f2=getFilters();
   var jSel2=MS_JORNADA?MS_JORNADA.getSelected():null;
@@ -2180,6 +2164,39 @@ function renderEngajamento(){
   var preTx={lei:r2(gPre.rd,gPre.tl_n||gPre.total),fal:r2(gPre.fl,gPre.total),ent:r2(gPre.snt+gPre.dl+gPre.rd,gPre.total)};
   var posTx={lei:r2(gPos.rd,gPos.tl_n||gPos.total),fal:r2(gPos.fl,gPos.total),ent:r2(gPos.snt+gPos.dl+gPos.rd,gPos.total)};
   var hasPos=gPos.total>0;
+
+  // --- KPIs ---
+  var engDiv=document.getElementById('engKpisDiv');
+  if(engDiv){
+    var ja=AGG.jornadas_ativas||0;
+    var deltaLei=hasPos?Math.round((posTx.lei-preTx.lei)*10)/10:null;
+    engDiv.innerHTML=''
+      +'<div class="kpi-card"><div class="kpi-label">Total Atividades</div><div class="kpi-val">'+num(k.total)+'</div><div class="kpi-sub">no periodo filtrado</div></div>'
+      +'<div class="kpi-card"><div class="kpi-label">Jornadas Ativas</div><div class="kpi-val">'+num(ja)+'</div><div class="kpi-sub">com disparos</div></div>'
+      +'<div class="kpi-card" title="Taxa de leitura agregada das mensagens anteriores a 14/05"><div class="kpi-label">👁 Leitura pré-14/05</div><div class="kpi-val '+cls(preTx.lei,30,10)+'">'+pct(preTx.lei)+'</div><div class="kpi-sub">'+num(gPre.total)+' msgs</div></div>'
+      +(hasPos
+        ?'<div class="kpi-card" title="Taxa de leitura agregada das mensagens a partir de 14/05"><div class="kpi-label">👁 Leitura pós-14/05</div><div class="kpi-val '+cls(posTx.lei,30,10)+'">'+pct(posTx.lei)+'</div><div class="kpi-sub">'+num(gPos.total)+' msgs</div></div>'
+         +'<div class="kpi-card"><div class="kpi-label">📈 Delta leitura</div><div class="kpi-val" style="color:'+(deltaLei>=0?'#059669':'#dc2626')+';font-size:20px">'+(deltaLei>=0?'+':'')+pct(deltaLei)+'</div><div class="kpi-sub">pós vs pré 14/05</div></div>'
+        :'<div class="kpi-card" style="border:1px dashed #d1d5db;background:#f9fafb"><div class="kpi-label" style="color:#9ca3af">👁 Leitura pós-14/05</div><div class="kpi-val" style="color:#d1d5db;font-size:18px">—</div><div class="kpi-sub" style="color:#9ca3af">aguardando dados</div></div>'
+      );
+  }
+  // --- comparativo pré/pós 14/05 base completa ---
+  var CORTE=DISPARO_GERAL;
+  var f2=getFilters();
+  var jSel2=MS_JORNADA?MS_JORNADA.getSelected():null;
+  var aSel2=MS_ATIVIDADE?MS_ATIVIDADE.getSelected():null;
+  var rows2=CROSS.filter(function(r){
+    if(f2.dataIni&&r.dia<f2.dataIni)return false;
+    if(f2.dataFim&&r.dia>f2.dataFim)return false;
+    if(f2.bu&&r.bu!==f2.bu)return false;
+    if(f2.canal&&r.canal!==f2.canal)return false;
+    if(f2.objetivo&&r.objetivo!==f2.objetivo)return false;
+    if(f2.metrica&&r.metrica!==f2.metrica)return false;
+    if(f2.flag&&r.flag_pontual!==f2.flag)return false;
+    if(jSel2&&jSel2.size>0&&!jSel2.has(r.j))return false;
+    if(aSel2&&aSel2.size>0&&!aSel2.has(r.a))return false;
+    return true;
+  });
   function dcEng(a,b,isInv){var dv=Math.round((a-b)*10)/10;if(!dv)return '<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb;color:#9ca3af">—</td>';var pos=isInv?dv<0:dv>0;return '<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb;font-weight:600;color:'+(pos?'#059669':'#dc2626')+'">'+(dv>0?'+':'')+dv+'pp</td>';}
   var compHtml='<table style="width:100%;border-collapse:collapse;font-size:12px">'
     +'<thead><tr>'
@@ -2484,7 +2501,7 @@ function renderTfaBar(barId,svgId,data,key,maxVal,cor,markDate){
     var iconTitle=isMarkWeek?'Semana do disparo geral ('+markDate+')':isLast?'Última semana de dados':'';
     var borderStyle=(isMarkWeek||isLast)?'outline:2px solid '+(isMarkWeek?'#d97706':'#7c3aed')+';outline-offset:-2px;':'';
     el.innerHTML+='<div class="tl-col" title="Semana de '+(t.semana||t.mes)+': '+display+'">'
-      +'<span style="font-size:8px;text-align:center;display:block;line-height:1.2" title="'+iconTitle+'">'+icon+'</span>'
+      +(icon?'<span style="font-size:8px;text-align:center;display:block;line-height:1.2;height:12px" title="'+iconTitle+'">'+icon+'</span>':'<span style="display:block;height:12px"></span>')
       +'<div class="tl-val">'+display+'</div>'
       +'<div class="tl-bar-wrap"><div class="tl-bar" style="height:'+h+'%;background:'+cor+';'+borderStyle+'"></div></div>'
       +'<div class="tl-label">'+(semLabel||'')+'</div>'
