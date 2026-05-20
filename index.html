@@ -221,7 +221,7 @@ tr:hover td{background:#fafbff}
 .tl-svg{position:absolute;inset:0;pointer-events:none;z-index:2}
 .timeline-bar{display:flex;align-items:flex-end;gap:3px;height:140px;padding-top:10px;position:relative}
 .tl-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;min-width:0;position:relative}
-.tl-bar-wrap{flex:1;width:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.tl-bar-wrap{flex:1;width:100%;display:flex;flex-direction:column;justify-content:flex-end;min-height:0}
 .tl-bar{width:100%;border-radius:3px 3px 0 0;min-height:2px;transition:.3s}
 .tl-bar.anomaly{box-shadow:0 0 0 2px #dc2626}
 .tl-label{font-size:8px;color:#aaa;writing-mode:vertical-lr;transform:rotate(180deg);max-height:40px;overflow:hidden}
@@ -1842,22 +1842,25 @@ function renderTl(barId,svgId,data,key,maxVal,cor,isVolume){
   data.forEach(function(t){var val=t[key];var h=Math.max(3,Math.round(val/(maxVal||1)*100));var label=t.mes.substring(2);var display=key==='total'?num(val):pct(val);var isAnom=Math.abs(val-mean)>anomalyThresh&&data.length>3;var anomIcon=isAnom?'<span class="anomaly-marker" title="Anomalia: '+(val>mean?'pico acima':'queda abaixo')+' da media '+r1(mean)+(key==='total'?'':'%')+'">!</span>':'';el.innerHTML+='<div class="tl-col" title="'+t.mes+': '+display+'">'+anomIcon+'<div class="tl-val">'+display+'</div><div class="tl-bar-wrap"><div class="tl-bar'+(isAnom?' anomaly':'')+'" style="height:'+h+'%;background:'+cor+'"></div></div><div class="tl-label">'+label+'</div></div>';});
   drawTrendline(svgId,data,key,maxVal);
 }
-function drawTrendline(svgId,data,key,maxVal){
+function drawTrendline(svgId,data,key,maxVal,padTopOpt,padBotOpt){
   var svg=document.getElementById(svgId);if(!svg||data.length<2){svg.innerHTML='';return;}
   var w=svg.parentElement.offsetWidth,h=svg.parentElement.offsetHeight;
   svg.setAttribute('width',w);svg.setAttribute('height',h);svg.setAttribute('viewBox','0 0 '+w+' '+h);
-  // exclui últimos pontos com valor 0 (semana incompleta) para não distorcer regressão
   var fitData=data.slice();
   while(fitData.length>2&&fitData[fitData.length-1][key]===0)fitData.pop();
   var n=fitData.length,sumX=0,sumY=0,sumXY=0,sumX2=0;
   fitData.forEach(function(d,i){sumX+=i;sumY+=d[key];sumXY+=i*d[key];sumX2+=i*i;});
   var denom=n*sumX2-sumX*sumX;if(!denom){svg.innerHTML='';return;}
   var slope=(n*sumXY-sumX*sumY)/denom;var intercept=(sumY-slope*sumX)/n;
-  var colW=w/data.length,padTop=10,padBot=30,chartH=h-padTop-padBot;
+  var padTop=padTopOpt!==undefined?padTopOpt:10;
+  var padBot=padBotOpt!==undefined?padBotOpt:30;
+  var colW=w/data.length,chartH=h-padTop-padBot;
+  if(chartH<=0){svg.innerHTML='';return;}
   function yFor(val){var y=padTop+chartH-(val/(maxVal||1)*chartH);return Math.max(padTop,Math.min(padTop+chartH,y));}
   var pts=[];data.forEach(function(d,i){pts.push([colW*i+colW/2,yFor(intercept+slope*i)]);});
   var pathD='M '+pts[0][0]+' '+pts[0][1];for(var i=1;i<pts.length;i++)pathD+=' L '+pts[i][0]+' '+pts[i][1];
-  svg.innerHTML='<path d="'+pathD+'" stroke="rgba(220,38,38,.55)" stroke-width="2" stroke-dasharray="4 4" fill="none"/><text x="'+(w-6)+'" y="'+(pts[pts.length-1][1]-4)+'" text-anchor="end" font-size="9" fill="#dc2626" font-family="Inter,sans-serif">tendencia</text>';
+  var textY=Math.max(padTop+8,Math.min(padTop+chartH-2,pts[pts.length-1][1]-4));
+  svg.innerHTML='<path d="'+pathD+'" stroke="rgba(220,38,38,.55)" stroke-width="2" stroke-dasharray="4 4" fill="none"/><text x="'+(w-6)+'" y="'+textY+'" text-anchor="end" font-size="9" fill="#dc2626" font-family="Inter,sans-serif">tendencia</text>';
 }
 function renderProjection(proj){
   var grid=document.getElementById('projGrid');
@@ -2488,9 +2491,11 @@ function renderTfaBar(barId,svgId,data,key,maxVal,cor,markDate){
   if(!data.length){el.innerHTML='<div class="empty-state" style="padding:20px"><p>Sem dados.</p></div>';return;}
   var isVol=key==='total';
   var lastIdx=data.length-1;
-  // altura do container menos área reservada para val(14px) + label(28px) + gaps(8px) + icon(14px)
+  // containerH - css padding(10) - val(10) - gaps(6) - label(28) - icon abs-positioned = 72
   var containerH=el.offsetHeight||140;
-  var BAR_AREA=Math.max(30,containerH-64);
+  var BAR_AREA=Math.max(30,containerH-72);
+  // trendline: barra começa após padding(10)+val(10)+gap(2)=22 do topo do SVG; termina antes do label(28)+gap(2)=30
+  var TL_PAD_TOP=22,TL_PAD_BOT=30;
   function weekContains(wkStart,dateStr){var end=new Date(wkStart+'T00:00:00');end.setDate(end.getDate()+6);return wkStart<=dateStr&&end.toISOString().substring(0,10)>=dateStr;}
   data.forEach(function(t,idx){
     var val=t[key]||0;
@@ -2502,16 +2507,15 @@ function renderTfaBar(barId,svgId,data,key,maxVal,cor,markDate){
     var icon=isMarkWeek?'📤':isLast?'⚡':'';
     var iconTitle=isMarkWeek?'Semana do disparo geral ('+markDate+')':isLast?'Última semana de dados':'';
     var borderStyle=(isMarkWeek||isLast)?'outline:2px solid '+(isMarkWeek?'#d97706':'#7c3aed')+';outline-offset:-2px;':'';
-    el.innerHTML+='<div class="tl-col" title="Semana de '+(t.semana||t.mes)+': '+display+'">'
-      +'<div style="height:14px;font-size:8px;text-align:center;line-height:14px;overflow:hidden" title="'+iconTitle+'">'+icon+'</div>'
-      +'<div class="tl-val" style="height:14px;line-height:14px;overflow:hidden;text-align:center">'+display+'</div>'
-      +'<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;width:100%">'
-        +'<div class="tl-bar" style="height:'+hpx+'px;background:'+cor+';'+borderStyle+'"></div>'
-      +'</div>'
+    // ícone absoluto para não afetar o layout das barras
+    el.innerHTML+='<div class="tl-col" title="Semana de '+(t.semana||t.mes)+': '+display+'" style="position:relative">'
+      +(icon?'<div style="position:absolute;top:2px;left:0;right:0;text-align:center;font-size:9px;line-height:1;pointer-events:none" title="'+iconTitle+'">'+icon+'</div>':'')
+      +'<div class="tl-val">'+display+'</div>'
+      +'<div class="tl-bar-wrap" style="flex:none;height:'+BAR_AREA+'px"><div class="tl-bar" style="height:'+hpx+'px;background:'+cor+';'+borderStyle+'"></div></div>'
       +'<div class="tl-label">'+(semLabel||'')+'</div>'
       +'</div>';
   });
-  drawTrendline(svgId,data,key,maxVal);
+  drawTrendline(svgId,data,key,maxVal,TL_PAD_TOP,TL_PAD_BOT);
 }
 
 // ---- FILTER STATE ----
