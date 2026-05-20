@@ -2493,8 +2493,7 @@ function renderTfaBar(barId,svgId,data,key,maxVal,cor,markDate){
   // containerH - css padding(10) - val(10) - gaps(6) - label(28) - icon abs-positioned = 72
   var containerH=el.offsetHeight||140;
   var BAR_AREA=Math.max(30,containerH-72);
-  // trendline: barra começa após padding(10)+val(10)+gap(2)=22 do topo do SVG; termina antes do label(28)+gap(2)=30
-  var TL_PAD_TOP=22,TL_PAD_BOT=30;
+  var TL_PAD_TOP=22,TL_PAD_BOT=containerH-TL_PAD_TOP-BAR_AREA;
   function weekContains(wkStart,dateStr){var end=new Date(wkStart+'T00:00:00');end.setDate(end.getDate()+6);return wkStart<=dateStr&&end.toISOString().substring(0,10)>=dateStr;}
   data.forEach(function(t,idx){
     var val=t[key]||0;
@@ -2545,7 +2544,7 @@ function initFilters(){
   document.getElementById('btnRefresh').addEventListener('click',refreshData);
   loadDataStatus();
   document.getElementById('btnClearFilters').addEventListener('click',function(){document.getElementById('fDataIni').value=f.dia_min;document.getElementById('fDataFim').value=f.dia_max;document.getElementById('fBu').value='';document.getElementById('fCanal').value='';document.getElementById('fObjetivo').value='';document.getElementById('fMetrica').value='';document.getElementById('fFlag').value='';if(MS_JORNADA)MS_JORNADA.clear();if(MS_ATIVIDADE){MS_ATIVIDADE.clear();MS_ATIVIDADE.setItems(getAtividadesArr());}applyFilters();});
-  document.querySelector('.nav-main').addEventListener('click',function(e){var btn=e.target.closest('.nav-item');if(!btn)return;var sec=btn.dataset.sec;document.querySelectorAll('.page-section').forEach(function(el){el.classList.remove('ativo');});document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('ativo');});document.getElementById('sec-'+sec).classList.add('ativo');btn.classList.add('ativo');renderCurrentTab();});
+  document.querySelector('.nav-main').addEventListener('click',function(e){var btn=e.target.closest('.nav-item');if(!btn)return;var sec=btn.dataset.sec;document.querySelectorAll('.page-section').forEach(function(el){el.classList.remove('ativo');});document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('ativo');});document.getElementById('sec-'+sec).classList.add('ativo');btn.classList.add('ativo');requestAnimationFrame(function(){requestAnimationFrame(renderCurrentTab);});});
   document.getElementById('chipPeriodo').textContent=formatDataBr(f.dia_min)+' a '+formatDataBr(f.dia_max);
   document.getElementById('histRange').textContent='Dados de '+formatDataBr(f.dia_min)+' a '+formatDataBr(f.dia_max);
 }
