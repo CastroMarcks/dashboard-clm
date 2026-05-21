@@ -42,7 +42,7 @@ def main():
     df = pd.read_csv(CSV_DADOS, dtype=str)
     lf = pd.read_csv(CSV_2FA)
 
-    lead_ids = set(lf['lead_id'].astype(str))
+    lead_ids = set(lf['Distinct ID'].astype(str))
     print(f'[2fa]  leads na base: {len(lead_ids):,}')
 
     grupo = df[(df['id_empresa'].isin(lead_ids)) & (df['canal'] == CANAL)].copy()
@@ -83,7 +83,7 @@ def main():
     confirmacoes = [{'dia': r['dia_conf'], 'n': int(r['n'])} for _, r in confs.iterrows()]
 
     # Before/after pela data individual de confirmação de cada lead
-    conf_map = lf.set_index(lf['lead_id'].astype(str))['dia_conf'].to_dict()
+    conf_map = lf.set_index(lf['Distinct ID'].astype(str))['dia_conf'].to_dict()
     grupo['dia_conf_lead'] = grupo['id_empresa'].map(conf_map)
     g_pre_conf  = grupo[grupo.apply(lambda r: bool(r['dia_conf_lead']) and r['dia'] <  r['dia_conf_lead'], axis=1)]
     g_pos_conf  = grupo[grupo.apply(lambda r: bool(r['dia_conf_lead']) and r['dia'] >= r['dia_conf_lead'], axis=1)]
