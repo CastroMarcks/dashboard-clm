@@ -219,7 +219,7 @@ tr:hover td{background:#fafbff}
 /* Timeline with SVG overlay */
 .tl-container{position:relative;margin-bottom:14px}
 .tl-svg{position:absolute;inset:0;pointer-events:none;z-index:2}
-.timeline-bar{display:flex;align-items:flex-end;gap:3px;height:140px;padding-top:10px;position:relative}
+.timeline-bar{display:flex;align-items:flex-end;gap:3px;height:140px;padding-top:10px;position:relative;overflow:hidden}
 .tl-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;min-width:0;position:relative}
 .tl-bar-wrap{flex:1;width:100%;display:flex;flex-direction:column;justify-content:flex-end;min-height:0}
 .tl-bar{width:100%;border-radius:3px 3px 0 0;min-height:2px;transition:.3s}
@@ -2419,7 +2419,7 @@ function render2fa(){
   var confEl=document.getElementById('tfa2ConfBar');
   confEl.innerHTML='';
   confs.forEach(function(c){
-    var h=Math.max(4,Math.round(c.n/maxC*100));
+    var h=Math.max(4,Math.round(c.n/maxC*56));
     var isDisparo=c.dia===DISPARO;
     var cor=isDisparo?'#7c3aed':'#3b82f6';
     var label=c.dia.substring(5);
