@@ -77,7 +77,7 @@ def main():
     g_30d = grupo[(grupo['dia'] >= cut30) & (grupo['dia'] < DISPARO)]
 
     # Confirmações 2FA por dia
-    lf['time_dt'] = pd.to_datetime(lf['Time'])
+    lf['time_dt'] = pd.to_datetime(lf['Time'], format='mixed')
     lf['dia_conf'] = lf['time_dt'].dt.strftime('%Y-%m-%d')
     confs = lf.groupby('dia_conf').size().reset_index(name='n')
     confirmacoes = [{'dia': r['dia_conf'], 'n': int(r['n'])} for _, r in confs.iterrows()]
