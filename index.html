@@ -1189,8 +1189,8 @@ body.ai-open .wrap{max-width:100%}
     </div>
 
     <div class="full-card">
-      <div class="card-title">Confirmacoes 2FA por Dia <span>leads que concluiram o 2FA — pico indica sucesso do disparo</span></div>
-      <div id="tfa2ConfBar" style="display:flex;align-items:flex-end;gap:4px;height:120px;padding-top:20px"></div>
+      <div class="card-title">Confirmacoes 2FA por Dia <span>leads que concluiram o 2FA · pico indica sucesso do disparo · role lateralmente para ver todos os dias →</span></div>
+      <div id="tfa2ConfBar" style="display:flex;align-items:flex-end;gap:4px;height:150px;padding-top:20px;overflow-x:auto;overflow-y:hidden"></div>
     </div>
 
     <div class="full-card">
@@ -2423,7 +2423,7 @@ function render2fa(){
     var isDisparo=c.dia===DISPARO;
     var cor=isDisparo?'#7c3aed':'#3b82f6';
     var label=c.dia.substring(5);
-    confEl.innerHTML+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">'
+    confEl.innerHTML+='<div style="flex:1 0 24px;display:flex;flex-direction:column;align-items:center;gap:2px">'
       +'<div style="font-size:9px;color:#666">'+num(c.n)+'</div>'
       +'<div style="width:100%;min-width:18px;height:'+h+'px;background:'+cor+';border-radius:3px 3px 0 0'+(isDisparo?';outline:2px solid #7c3aed':'')+'" title="'+c.dia+': '+num(c.n)+' confirmações">'+(isDisparo?'<div style="position:relative;width:100%;text-align:center;font-size:8px;color:#7c3aed;font-weight:700;margin-top:-14px">⚡</div>':'')+'</div>'
       +'<div style="font-size:9px;color:#888;writing-mode:vertical-rl;transform:rotate(180deg);height:28px;text-align:center">'+label+'</div>'
