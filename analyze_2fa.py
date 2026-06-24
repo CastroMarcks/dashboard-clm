@@ -119,6 +119,31 @@ def main():
     top_falhas = top_falhas[:10]
     print(f'[2fa]  top falhas: {len(top_falhas)} jornadas')
 
+    # ----- Cross-tab filtravel do grupo 2FA (recomputo client-side respeitando filtros do topo) -----
+    BU_MAP = {'ERP': 'ERP', 'Conta': 'Conta Digital', 'Envios': 'Envios',
+              'Ecommerce': 'Ecommerce', 'Outros': 'Outros'}
+    cg = grupo.copy()
+    cg['bu_m'] = cg['bu'].map(BU_MAP).fillna('Outros')
+    for col in ['objetivo', 'metrica', 'flag_pontual', 'status']:
+        cg[col] = cg[col].fillna('').astype(str)
+    cg['jful'] = cg['nome_jornada'].fillna('').astype(str)  # nome completo p/ casar com filtro global de jornada
+    # flag de confirmacao por registro: 'p' pre-confirmacao do lead, 'o' pos, '' lead sem confirmacao
+    dcl = cg['dia_conf_lead'].fillna('').astype(str)
+    has_conf = (dcl != '') & (dcl != 'nan')
+    cg['cf'] = ''
+    cg.loc[has_conf & (cg['dia'] < dcl), 'cf'] = 'p'
+    cg.loc[has_conf & (cg['dia'] >= dcl), 'cf'] = 'o'
+
+    jornadas_idx = sorted(cg['jful'].unique().tolist())
+    jpos = {j: i for i, j in enumerate(jornadas_idx)}
+
+    grp = cg.groupby(['dia', 'jful', 'status', 'bu_m', 'objetivo', 'metrica', 'flag_pontual', 'cf']).size().reset_index(name='n')
+    grp['j'] = grp['jful'].map(jpos)
+    grp = grp.rename(columns={'dia': 'd', 'status': 's', 'bu_m': 'b', 'objetivo': 'o', 'metrica': 'm', 'flag_pontual': 'f', 'cf': 'c'})
+    cross2fa = grp[['d', 'j', 's', 'b', 'o', 'm', 'f', 'c', 'n']].to_dict('records')
+    sem_map = dict(zip(grupo['dia'], grupo['semana']))
+    print(f'[2fa]  cross filtravel: {len(cross2fa):,} linhas | {len(jornadas_idx):,} jornadas')
+
     out = {
         'disparo_date':   DISPARO,
         'total_leads':    len(lead_ids),
@@ -133,6 +158,11 @@ def main():
         'confirmacoes':   confirmacoes,
         'versoes_2fa':    versoes,
         'top_falhas':     top_falhas,
+        'cross':          cross2fa,
+        'jornadas':       jornadas_idx,
+        'sem_map':        sem_map,
+        'dia_min':        grupo['dia'].min() if len(grupo) else None,
+        'dia_max':        grupo['dia'].max() if len(grupo) else None,
     }
 
     with open(OUT, 'w', encoding='utf-8') as f:

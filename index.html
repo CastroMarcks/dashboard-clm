@@ -2388,36 +2388,59 @@ function renderHeaderRange(){var el=document.getElementById('dataRange');if(!el|
 fetch('data_2fa.json').then(function(r){if(!r.ok)return;return r.json();}).then(function(d){if(d){DATA_2FA=d;var active=document.querySelector('.nav-item.ativo');if(active&&active.dataset.sec==='2fa')render2fa();}}).catch(function(){});
 
 // ---- RENDER ANALISE 2FA ----
+function m2fa(rs){var t=0,rd=0,fl=0,snt=0,dl=0;for(var i=0;i<rs.length;i++){var r=rs[i],n=r.n,s=r.s;t+=n;if(s==='read'||s==='click')rd+=n;else if(s==='failed')fl+=n;else if(s==='sent')snt+=n;else if(s==='delivered')dl+=n;}var ent=snt+dl+rd;return{total:t,read:rd,entrega:ent,falha:fl,tx_lei:t?Math.round(rd/t*1000)/10:0,tx_ent:t?Math.round(ent/t*1000)/10:0,tx_fal:t?Math.round(fl/t*1000)/10:0};}
 function render2fa(){
   var d=DATA_2FA;
   if(!d){document.getElementById('sec-2fa').innerHTML='<div class="empty-state" style="padding:40px"><div class="ico">⏳</div><h3>Carregando dados 2FA...</h3></div>';return;}
+  var DISPARO='2026-05-12';
+  var f=(typeof getFilters==='function')?getFilters():{};
+  var J=d.jornadas||[],SEM=d.sem_map||{},cross=d.cross||[];
+  var jIdx=null;
+  if(f.jornadas&&f.jornadas.size>0){jIdx=new Set();for(var ij=0;ij<J.length;ij++){if(f.jornadas.has(J[ij]))jIdx.add(ij);}}
+  var di=f.dataIni||'',dfim=f.dataFim||'';
+  var rows=cross.filter(function(r){
+    if(di&&r.d<di)return false;
+    if(dfim&&r.d>dfim)return false;
+    if(f.bu&&r.b!==f.bu)return false;
+    if(f.objetivo&&r.o!==f.objetivo)return false;
+    if(f.metrica&&r.m!==f.metrica)return false;
+    if(f.flag&&r.f!==f.flag)return false;
+    if(jIdx&&!jIdx.has(r.j))return false;
+    return true;
+  });
+  var pre=[],pos=[],aft=[];
+  for(var i=0;i<rows.length;i++){var rr=rows[i];if(rr.c==='p')pre.push(rr);else if(rr.c==='o')pos.push(rr);if(rr.d>=DISPARO)aft.push(rr);}
+  var pc=m2fa(pre),pp=m2fa(pos),af=m2fa(aft);
+  var hasAfter=af.total>0;
+  var maxDia=null;for(var i=0;i<rows.length;i++){if(!maxDia||rows[i].d>maxDia)maxDia=rows[i].d;}
   document.getElementById('tfa2TotalLeads').textContent=num(d.total_leads);
-  document.getElementById('tfa2MaxDia').textContent=d.max_dia_whats?fmtDateBR(d.max_dia_whats):'—';
-  var hasAfter=d.after&&d.after.total>0;
-  if(hasAfter){var badge=document.getElementById('tfa2StatusBadge');badge.style.background='#d1fae5';badge.style.color='#065f46';badge.textContent='✅ Dados pós-disparo disponíveis';}
+  document.getElementById('tfa2MaxDia').textContent=maxDia?fmtDateBR(maxDia):(d.max_dia_whats?fmtDateBR(d.max_dia_whats):'—');
+  var badge=document.getElementById('tfa2StatusBadge');
+  if(hasAfter){badge.style.background='#d1fae5';badge.style.color='#065f46';badge.textContent='✅ Dados pós-disparo disponíveis';}
+  else{badge.style.background='#fef3c7';badge.style.color='#92400e';badge.textContent='⏳ Sem dados pós-disparo no filtro';}
 
-  var b=d.before,b30=d.before_30d,af=d.after,pc=d.pre_conf||{tx_lei:0,tx_fal:0,tx_ent:0,total:0},pp=d.pos_conf||{tx_lei:0,tx_fal:0,tx_ent:0,total:0};
   var kEl=document.getElementById('tfa2Kpis');
   kEl.innerHTML=''
     +'<div class="kpi-card"><div class="kpi-label">👥 Base 2FA</div><div class="kpi-val" style="color:#1a56db">'+num(d.total_leads)+'</div><div class="kpi-sub">empresas impactadas</div></div>'
-    +'<div class="kpi-card" title="Taxa de leitura historica de todo o período de dados (pré-disparo)"><div class="kpi-label">👁 Leitura pré-conf.</div><div class="kpi-val '+cls(pc.tx_lei,30,10)+'">'+pct(pc.tx_lei)+'</div><div class="kpi-sub">'+num(pc.total)+' msgs antes 2FA</div></div>'
-    +'<div class="kpi-card" title="Taxa de leitura após o lead confirmar 2FA individualmente"><div class="kpi-label">👁 Leitura pós-conf.</div><div class="kpi-val '+cls(pp.tx_lei,30,10)+'">'+pct(pp.tx_lei)+'</div><div class="kpi-sub">'+num(pp.total)+' msgs após 2FA</div></div>'
+    +'<div class="kpi-card" title="Taxa de leitura das msgs enviadas ANTES de cada lead confirmar o 2FA (no filtro atual)"><div class="kpi-label">👁 Leitura pré-conf.</div><div class="kpi-val '+cls(pc.tx_lei,30,10)+'">'+pct(pc.tx_lei)+'</div><div class="kpi-sub">'+num(pc.total)+' msgs antes 2FA</div></div>'
+    +'<div class="kpi-card" title="Taxa de leitura após o lead confirmar 2FA (no filtro atual)"><div class="kpi-label">👁 Leitura pós-conf.</div><div class="kpi-val '+cls(pp.tx_lei,30,10)+'">'+pct(pp.tx_lei)+'</div><div class="kpi-sub">'+num(pp.total)+' msgs após 2FA</div></div>'
     +'<div class="kpi-card" title="Variação de leitura: pós-confirmação vs pré-confirmação"><div class="kpi-label">📈 Delta leitura</div><div class="kpi-val '+(pp.tx_lei-pc.tx_lei>=0?'metric-good':'metric-bad')+'" style="font-size:20px">'+(pp.tx_lei-pc.tx_lei>=0?'+':'')+pct(Math.round((pp.tx_lei-pc.tx_lei)*10)/10)+'</div><div class="kpi-sub">pós vs pré confirmação</div></div>'
-    +(hasAfter?'<div class="kpi-card"><div class="kpi-label">👁 Leitura pós-12/05</div><div class="kpi-val '+cls(af.tx_lei,30,10)+'">'+pct(af.tx_lei)+'</div><div class="kpi-sub">'+num(af.total)+' msgs (pós disparo)</div></div>':'<div class="kpi-card" style="border:1px dashed #d1d5db;background:#f9fafb"><div class="kpi-label" style="color:#9ca3af">👁 Leitura pós-12/05</div><div class="kpi-val" style="color:#d1d5db;font-size:18px">—</div><div class="kpi-sub" style="color:#9ca3af">aguardando próx. envio</div></div>');
+    +(hasAfter?'<div class="kpi-card"><div class="kpi-label">👁 Leitura pós-12/05</div><div class="kpi-val '+cls(af.tx_lei,30,10)+'">'+pct(af.tx_lei)+'</div><div class="kpi-sub">'+num(af.total)+' msgs (pós disparo)</div></div>':'<div class="kpi-card" style="border:1px dashed #d1d5db;background:#f9fafb"><div class="kpi-label" style="color:#9ca3af">👁 Leitura pós-12/05</div><div class="kpi-val" style="color:#d1d5db;font-size:18px">—</div><div class="kpi-sub" style="color:#9ca3af">fora do filtro</div></div>');
 
-  var tl=d.timeline_semanal||[];
-  var DISPARO='2026-05-12';
-  var tlForRender=tl.map(function(s){return Object.assign({},s,{mes:s.semana.substring(2)});});
-  var maxVol=Math.max.apply(null,tl.map(function(s){return s.total;}));
+  var wk={};
+  for(var i=0;i<rows.length;i++){var r2=rows[i],sm=SEM[r2.d]||r2.d;(wk[sm]||(wk[sm]=[])).push(r2);}
+  var tl=Object.keys(wk).sort().map(function(s){var m=m2fa(wk[s]);return{semana:s,tx_lei:m.tx_lei,tx_fal:m.tx_fal,total:m.total};});
+  var tlForRender=tl.map(function(s){return{semana:s.semana,mes:s.semana.substring(2),tx_lei:s.tx_lei,tx_fal:s.tx_fal,total:s.total};});
+  var maxVol=Math.max.apply(null,tl.map(function(s){return s.total;}))||1;
   var maxFal=Math.max(10,Math.max.apply(null,tl.map(function(s){return s.tx_fal||0;}))*1.2);
   renderTfaBar('tfa2TlLeitura','tfa2TlLeituraTrend',tlForRender,'tx_lei',100,'#7c3aed');
   renderTfaBar('tfa2TlFalha','tfa2TlFalhaTrend',tlForRender,'tx_fal',maxFal,'#dc2626');
   renderTfaBar('tfa2TlVol','tfa2TlVolTrend',tlForRender,'total',maxVol,'#1a56db');
 
-  var confs=d.confirmacoes||[];
-  var maxC=Math.max.apply(null,confs.map(function(c){return c.n;}));
+  var confs=(d.confirmacoes||[]).filter(function(c){if(di&&c.dia<di)return false;if(dfim&&c.dia>dfim)return false;return true;});
+  var maxC=Math.max.apply(null,confs.map(function(c){return c.n;}))||1;
   var confEl=document.getElementById('tfa2ConfBar');
-  confEl.innerHTML='';
+  confEl.innerHTML=confs.length?'':'<div class="empty-state" style="padding:16px"><p style="font-size:11px">Sem confirmações no período.</p></div>';
   confs.forEach(function(c){
     var h=Math.max(4,Math.round(c.n/maxC*56));
     var isDisparo=c.dia===DISPARO;
@@ -2466,8 +2489,11 @@ function render2fa(){
     +'</tr>'
     +'</tbody></table>';
 
-  // — Top 10 jornadas com maiores falhas (grupo 2FA · WhatsApp)
-  var tf=d.top_falhas||[];
+  // — Top 10 jornadas com maiores falhas (grupo 2FA · WhatsApp) — recomputado no filtro
+  var jstat={};
+  for(var i=0;i<rows.length;i++){var r3=rows[i];var jo=jstat[r3.j]||(jstat[r3.j]={n:0,fl:0});jo.n+=r3.n;if(r3.s==='failed')jo.fl+=r3.n;}
+  var tf=[];Object.keys(jstat).forEach(function(ji){var o=jstat[ji];var nm=J[ji]||'';if(o.fl>0&&nm&&nm.trim())tf.push({j:nm.substring(0,80),n:o.n,fl:o.fl,taxa_falha:o.n?Math.round(o.fl/o.n*1000)/10:0});});
+  tf.sort(function(a,b){return b.fl-a.fl;});tf=tf.slice(0,10);
   var tfHtml='<div style="margin-top:18px;font-size:10px;font-weight:600;color:#6b7280;letter-spacing:.05em;text-transform:uppercase;padding:6px 8px;background:#f3f4f6;border-radius:6px">Top 10 Jornadas com Maiores Falhas (grupo 2FA · WhatsApp)</div>';
   if(!tf.length){
     tfHtml+='<div style="padding:12px;text-align:center;color:#9ca3af;font-size:11px;font-style:italic">Sem falhas registradas no grupo.</div>';
