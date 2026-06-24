@@ -1194,7 +1194,7 @@ body.ai-open .wrap{max-width:100%}
     </div>
 
     <div class="full-card">
-      <div class="card-title">Resumo Antes vs Depois <span>comparativo de metricas do grupo no canal WhatsApp</span></div>
+      <div class="card-title">Resumo Antes vs Depois <span>confirmação 2FA + top 10 jornadas com falhas · grupo WhatsApp</span></div>
       <div id="tfa2Tabela" style="overflow-x:auto"></div>
     </div>
   </div>
@@ -2464,25 +2464,33 @@ function render2fa(){
     +deltaCell(pp.tx_ent,pc.tx_ent,false)
     +deltaCell(pp.tx_fal,pc.tx_fal,true)
     +'</tr>'
-    // — bloco pré/pós disparo 12/05
-    +'<tr><td colspan="5" style="padding:6px 8px;background:#f3f4f6;font-size:10px;font-weight:600;color:#6b7280;letter-spacing:.05em;text-transform:uppercase">Antes vs Depois do Disparo 12/05 (data de corte fixa)</td></tr>'
-    +'<tr style="background:#eff6ff">'
-    +'<td style="padding:8px;border-bottom:1px solid #e5e7eb">⬅️ Pré-disparo (até 11/05)</td>'
-    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb">'+num(b.total)+'</td>'
-    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+cls(b.tx_lei,30,10)+'">'+pct(b.tx_lei)+'</td>'
-    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+cls(b.tx_ent,80,60)+'">'+pct(b.tx_ent)+'</td>'
-    +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+clsInv(b.tx_fal,3,8)+'">'+pct(b.tx_fal)+'</td>'
-    +'</tr>'
-    +(hasAfter
-      ?'<tr style="background:#f0fdf4"><td style="padding:8px">➡️ Pós-disparo (12/05+)</td>'
-        +'<td style="text-align:right;padding:8px">'+num(af.total)+'</td>'
-        +'<td style="text-align:right;padding:8px" class="'+cls(af.tx_lei,30,10)+'">'+pct(af.tx_lei)+'</td>'
-        +'<td style="text-align:right;padding:8px" class="'+cls(af.tx_ent,80,60)+'">'+pct(af.tx_ent)+'</td>'
-        +'<td style="text-align:right;padding:8px" class="'+clsInv(af.tx_fal,3,8)+'">'+pct(af.tx_fal)+'</td></tr>'
-      :'<tr><td colspan="5" style="padding:10px;text-align:center;color:#9ca3af;font-size:11px;font-style:italic">⏳ Dados pós-12/05 ainda não disponíveis — populará automaticamente no próximo refresh após novos envios ao grupo.</td></tr>'
-    )
     +'</tbody></table>';
-  document.getElementById('tfa2Tabela').innerHTML=tbody;
+
+  // — Top 10 jornadas com maiores falhas (grupo 2FA · WhatsApp)
+  var tf=d.top_falhas||[];
+  var tfHtml='<div style="margin-top:18px;font-size:10px;font-weight:600;color:#6b7280;letter-spacing:.05em;text-transform:uppercase;padding:6px 8px;background:#f3f4f6;border-radius:6px">Top 10 Jornadas com Maiores Falhas (grupo 2FA · WhatsApp)</div>';
+  if(!tf.length){
+    tfHtml+='<div style="padding:12px;text-align:center;color:#9ca3af;font-size:11px;font-style:italic">Sem falhas registradas no grupo.</div>';
+  } else {
+    tfHtml+='<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:6px"><thead><tr>'
+      +'<th style="text-align:left;padding:8px;border-bottom:2px solid #e5e7eb;background:#f9fafb;width:28px">#</th>'
+      +'<th style="text-align:left;padding:8px;border-bottom:2px solid #e5e7eb;background:#f9fafb">Jornada</th>'
+      +'<th style="text-align:right;padding:8px;border-bottom:2px solid #e5e7eb;background:#f9fafb">Mensagens</th>'
+      +'<th style="text-align:right;padding:8px;border-bottom:2px solid #e5e7eb;background:#f9fafb">Falhas</th>'
+      +'<th style="text-align:right;padding:8px;border-bottom:2px solid #e5e7eb;background:#f9fafb">Taxa de Falha</th>'
+      +'</tr></thead><tbody>';
+    tf.forEach(function(r,i){
+      tfHtml+='<tr>'
+        +'<td style="padding:8px;border-bottom:1px solid #e5e7eb;color:#9ca3af">'+(i+1)+'</td>'
+        +'<td style="padding:8px;border-bottom:1px solid #e5e7eb">'+r.j+'</td>'
+        +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb">'+num(r.n)+'</td>'
+        +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb;font-weight:600;color:#dc2626">'+num(r.fl)+'</td>'
+        +'<td style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb" class="'+clsInv(r.taxa_falha,3,8)+'">'+pct(r.taxa_falha)+'</td>'
+        +'</tr>';
+    });
+    tfHtml+='</tbody></table>';
+  }
+  document.getElementById('tfa2Tabela').innerHTML=tbody+tfHtml;
 }
 function renderTfaBar(barId,svgId,data,key,maxVal,cor,markDate){
   var el=document.getElementById(barId);if(!el)return;

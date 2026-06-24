@@ -99,6 +99,26 @@ def main():
         'v2_1': int((lf[col_c] == 1).sum()),
     }
 
+    # Top 10 jornadas com mais falhas dentro do grupo 2FA (whats) — ordenado por volume absoluto
+    grupo['nome_jornada'] = grupo['nome_jornada'].fillna('').astype(str)
+    top_falhas = []
+    for jornada, g in grupo.groupby('nome_jornada'):
+        if not jornada.strip():
+            continue
+        n = len(g)
+        fl = int((g['status'] == 'failed').sum())
+        if fl == 0:
+            continue
+        top_falhas.append({
+            'j': jornada[:80],
+            'n': n,
+            'fl': fl,
+            'taxa_falha': round(fl / n * 100, 1),
+        })
+    top_falhas.sort(key=lambda x: x['fl'], reverse=True)
+    top_falhas = top_falhas[:10]
+    print(f'[2fa]  top falhas: {len(top_falhas)} jornadas')
+
     out = {
         'disparo_date':   DISPARO,
         'total_leads':    len(lead_ids),
@@ -112,6 +132,7 @@ def main():
         'timeline_diaria':  timeline_dia,
         'confirmacoes':   confirmacoes,
         'versoes_2fa':    versoes,
+        'top_falhas':     top_falhas,
     }
 
     with open(OUT, 'w', encoding='utf-8') as f:
